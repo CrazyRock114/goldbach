@@ -97,7 +97,16 @@ window.EDU_I18N = {
       "toastFound": "Pair Discovered! {p} + {q} = {n}",
       "toastAllFound": "All {count} Prime Pairs Found for {n}!",
       "alreadyOnScale": "{p} is already on the scale pan! Click it to remove.",
-      "hintTarget": "Hint: Target {n} can be balanced by {count} distinct pair(s): {pairs}"
+      "hintTarget": "Hint: Target {n} can be balanced by {count} distinct pair(s): {pairs}",
+      "presetSolo": "4 (Solo)",
+      "presetUnique": "12 (Unique)",
+      "presetOasis": "30 (Oasis)",
+      "presetDesert": "64 (Desert)",
+      "presetChampion": "98 (Champion)",
+      "clearBtn": "Clear Weights ✕",
+      "pairsFound": "{found} of {total} pairs found",
+      "targetLabelSvg": "TARGET",
+      "sumLabelSvg": "SUM: {sum}"
     },
     "matrix": {
       "teacherGuide": "🧑‍🏫 Teacher Guide (Sieve of Eratosthenes & Number Patterns): primes are highlighted in vibrant cyan. Notice how composites have their prime factorization displayed on hover. This visual grid helps students discover that every Goldbach pair reflects across the midpoint N/2.",
@@ -110,7 +119,12 @@ window.EDU_I18N = {
       "neither": "Neither prime nor composite",
       "allPairsFound": "Found {count} Goldbach prime pair(s) for N = {n}:",
       "noPairsFound": "No prime pairs found for {n}.",
-      "bothPrimeDesc": "Self-Pair: {p} + {p} = {n}"
+      "bothPrimeDesc": "Self-Pair: {p} + {p} = {n}",
+      "inspectPrompt": "Click a prime number in the grid below to inspect its partner!",
+      "targetStatus": "Target N = <strong>{target}</strong>.",
+      "legendSelected": "Prime p (Selected)",
+      "legendPartner": "Prime Partner q (Match!)",
+      "legendComposite": "Composite Partner (Not Prime)"
     },
     "clock": {
       "teacherGuide": "🧑‍🏫 Teacher Guide (Clock Arithmetic & Modulo Symmetry): Placing numbers on a circular clock transforms Goldbach pairs into geometric chords. Notice that when N is divisible by 6, chords form a dense, symmetric web of bridges — yielding nearly double the prime pairs!",
@@ -130,7 +144,8 @@ window.EDU_I18N = {
       "selfPair": "🌟 (Self-Pair)",
       "tip": "💡 Tip: Chords reflect horizontally across the vertical axis! Click any prime pair chip on the right to focus.",
       "cardTitle": "The Multiples-of-6 Prime Bonus",
-      "cardDesc": "Notice how chords reflect across the central symmetry axis. When N is divisible by 6, chords form a dense, symmetric web of bridges!"
+      "cardDesc": "Notice how chords reflect across the central symmetry axis. When N is divisible by 6, chords form a dense, symmetric web of bridges!",
+      "symmetricTip": "Chords reflect horizontally across the vertical axis! Click any prime pair chip on the right to focus."
     },
     "comet": {
       "teacherGuide": "🧑‍🏫 Teacher Guide (Goldbach Comet & Asymptotics): The Goldbach Comet is the scatterplot of k(N) (number of prime pairs) against N. Students can visually discover the upper ridge (\"Oasis Numbers\" like 840, 1260, highly composite) vs the bottom floor (\"Desert Numbers\" like powers of 2).",
@@ -151,13 +166,17 @@ window.EDU_I18N = {
       "pminLabel": "Smallest Prime p_min = {pmin}",
       "hoverTip": "(Click star to lock and investigate!)",
       "lockedBadge": "LOCKED 🔒",
-      "inspectorEmpty": "Click or hover over any star in the constellation above to inspect its prime anatomy!",
+      "inspectorEmpty": "Click or hover over any star point in the constellation above to inspect its prime anatomy!",
       "btnWeigh": "Weigh on Scale ⚖️",
       "btnClock": "View on Clock ⏰",
       "btnGrid": "Grid View 🔢",
       "toastScale": "Switched to Balance Scale! Weighing prime pairs for N = {n}",
       "toastClock": "Switched to Modulo Clock! Inspecting geometric chords for N = {n}",
-      "toastMatrix": "Switched to 100-Grid! Lit up all Goldbach pairs for N = {n}"
+      "toastMatrix": "Switched to 100-Grid! Lit up all Goldbach pairs for N = {n}",
+      "inspectorTitle": "Star Inspector & Data Station:",
+      "evenNumberTitle": "Even Number N = {n}",
+      "factorizationLabel": "Prime Factorization",
+      "pairsListLabel": "Pairs"
     },
     "detective": {
       "teacherGuide": "🧑‍🏫 Teacher Guide (Gamified Number Theory Challenges): These 6 tiered cases encourage inductive reasoning and hypothesis testing. Students test their conjectures about prime distribution, smallest Goldbach primes p_min(N), and champion integers.",
@@ -220,7 +239,8 @@ window.EDU_I18N = {
           "hint": "Hint: It is just two steps away from 100.",
           "explanation": "GENIUS DETECTIVE! 98 = 19 + 79. Every prime below 19 fails because 98 - p is composite!"
         }
-      ]
+      ],
+      "caseSolvedToast": "Case #{num} Solved!"
     },
     "worksheet": {
       "teacherGuide": "🧑‍🏫 Teacher Guide (Classroom Practice & Assessment): Generate differentiated, print-ready worksheets with clean typography for classroom handouts. Select your grade level and problem count, then click Print Worksheet to open the system print dialog.",
@@ -233,7 +253,7 @@ window.EDU_I18N = {
       "includeKey": "Include Teacher Answer Key",
       "printBtn": "Print Worksheet 🖨️",
       "sheetTitle": "Goldbach's Conjecture: Prime Pair Discovery Challenge",
-      "studentName": "Student Name: _______________________",
+      "studentName": "Name: ___________________________",
       "date": "Date: _____________",
       "score": "Score: _____ / {count}",
       "instructions": "Instructions: For each even number below, find two prime numbers that add up to equal it. Write the prime numbers on the blanks provided!",
@@ -242,7 +262,12 @@ window.EDU_I18N = {
       "bonusTitle": "🌟 Bonus Challenge Question:",
       "bonusPrompt": "Can you find an even number that has only one single pair of prime numbers? Name at least two such numbers and show their prime sums!",
       "answerKeyTitle": "Teacher Answer Key (All Valid Goldbach Pairs):",
-      "none": "None"
+      "none": "None",
+      "count6": "6 Problems",
+      "count10": "10 Problems",
+      "count14": "14 Problems",
+      "subSeries": "Mathematics Department • Educational Discovery Series",
+      "studentDateClass": "Date: ________________ Class: _____"
     },
     "badges": {
       "solo_four": {
@@ -320,7 +345,16 @@ window.EDU_I18N = {
       "toastFound": "Paar entdeckt! {p} + {q} = {n}",
       "toastAllFound": "Alle {count} Primzahlpaare für {n} gefunden!",
       "alreadyOnScale": "{p} liegt bereits auf der Waagschale! Klicke darauf zum Entfernen.",
-      "hintTarget": "Hinweis: Ziel {n} kann durch {count} Paar(e) ausgeglichen werden: {pairs}"
+      "hintTarget": "Hinweis: Ziel {n} kann durch {count} Paar(e) ausgeglichen werden: {pairs}",
+      "presetSolo": "4 (Solo)",
+      "presetUnique": "12 (Einzig)",
+      "presetOasis": "30 (Oase)",
+      "presetDesert": "64 (Wüste)",
+      "presetChampion": "98 (Champion)",
+      "clearBtn": "Gewichte leeren ✕",
+      "pairsFound": "{found} von {total} Paaren gefunden",
+      "targetLabelSvg": "ZIEL",
+      "sumLabelSvg": "SUMME: {sum}"
     },
     "matrix": {
       "teacherGuide": "🧑‍🏫 Lehrer-Leitfaden (Sieb des Eratosthenes & Zahlenmuster): Primzahlen leuchten cyanblau. Beim Überfahren mit der Maus wird die Primfaktorzerlegung von zusammengesetzten Zahlen angezeigt. Jedes Goldbach-Paar spiegelt sich symmetrisch am Mittelpunkt N/2.",
@@ -333,7 +367,12 @@ window.EDU_I18N = {
       "neither": "Weder Primzahl noch zusammengesetzt",
       "allPairsFound": "{count} Goldbach-Primzahlpaar(e) für N = {n} gefunden:",
       "noPairsFound": "Keine Primzahlpaare für {n} gefunden.",
-      "bothPrimeDesc": "Selbst-Paar: {p} + {p} = {n}"
+      "bothPrimeDesc": "Selbst-Paar: {p} + {p} = {n}",
+      "inspectPrompt": "Klicke unten auf eine Primzahl, um ihren Partner zu prüfen!",
+      "targetStatus": "Ziel N = <strong>{target}</strong>.",
+      "legendSelected": "Primzahl p (Ausgewählt)",
+      "legendPartner": "Primzahl-Partner q (Treffer!)",
+      "legendComposite": "Zusammengesetzter Partner (Keine Primzahl)"
     },
     "clock": {
       "teacherGuide": "🧑‍🏫 Lehrer-Leitfaden (Uhr-Arithmetik & Modulo-Symmetrie): Auf einem Zifferblatt werden Goldbach-Paare zu geometrischen Sehnen. Wenn N durch 6 teilbar ist, entsteht ein besonders dichtes Netz von Sehnen — mit fast doppelt so vielen Paaren!",
@@ -353,7 +392,8 @@ window.EDU_I18N = {
       "selfPair": "🌟 (Selbst-Paar)",
       "tip": "💡 Tipp: Sehnen spiegeln sich horizontal an der vertikalen Achse! Klicke rechts auf ein Paar zum Fokussieren.",
       "cardTitle": "Der 6er-Vielfachen-Primzahl-Bonus",
-      "cardDesc": "Beobachte die Spiegelsymmetrie! Ist N durch 6 teilbar, formen die Sehnen ein besonders dichtes Verbindungsnetz."
+      "cardDesc": "Beobachte die Spiegelsymmetrie! Ist N durch 6 teilbar, formen die Sehnen ein besonders dichtes Verbindungsnetz.",
+      "symmetricTip": "Sehnen spiegeln sich horizontal an der vertikalen Achse! Klicke rechts auf ein Paar zum Fokussieren."
     },
     "comet": {
       "teacherGuide": "🧑‍🏫 Lehrer-Leitfaden (Goldbach-Komet & Asymptotik): Der Goldbach-Komet ist das Streudiagramm von k(N) gegen N. Schüler entdecken die obere Decke (\"Oasen-Zahlen\" wie 840, 1260) und den unteren Boden (\"Wüsten-Zahlen\" wie Zweierpotenzen).",
@@ -374,13 +414,17 @@ window.EDU_I18N = {
       "pminLabel": "Kleinste Primzahl p_min = {pmin}",
       "hoverTip": "(Stern anklicken zum Arretieren!)",
       "lockedBadge": "ARRETIERT 🔒",
-      "inspectorEmpty": "Klicke oder fahre über einen Stern im Sternbild oben, um seine Primzahlanatomie zu inspizieren!",
+      "inspectorEmpty": "Klicke oder bewege den Mauszeiger über einen Stern, um seine Primzahlzerlegung zu analysieren!",
       "btnWeigh": "Auf Waage wiegen ⚖️",
       "btnClock": "Auf Uhr zeigen ⏰",
       "btnGrid": "Im Gitter zeigen 🔢",
       "toastScale": "Zur Balkenwaage gewechselt! Wiege Paare für N = {n}",
       "toastClock": "Zur Modulo-Uhr gewechselt! Untersuche Sehnen für N = {n}",
-      "toastMatrix": "Zum 100er-Gitter gewechselt! Paare für N = {n} markiert"
+      "toastMatrix": "Zum 100er-Gitter gewechselt! Paare für N = {n} markiert",
+      "inspectorTitle": "Sternen-Inspektor & Datenstation:",
+      "evenNumberTitle": "Gerade Zahl N = {n}",
+      "factorizationLabel": "Primfaktorzerlegung",
+      "pairsListLabel": "Paare"
     },
     "detective": {
       "teacherGuide": "🧑‍🏫 Lehrer-Leitfaden (Spielerische Zahlentheorie): Diese 6 Fälle fördern induktives Denken und Hypothesentests über Primzahlverteilungen, kleinste Primzahlen p_min(N) und Rekordzahlen.",
@@ -443,7 +487,8 @@ window.EDU_I18N = {
           "hint": "Hinweis: Sie liegt nur zwei Schritte unter 100.",
           "explanation": "MEISTERDETEKTIV! 98 = 19 + 79. Jede Primzahl unter 19 scheidet aus, weil 98 - p zusammengesetzt ist!"
         }
-      ]
+      ],
+      "caseSolvedToast": "Fall #{num} gelöst!"
     },
     "worksheet": {
       "teacherGuide": "🧑‍🏫 Lehrer-Leitfaden (Übung & Leistungsnachweis): Erstelle differenzierte, druckfertige Arbeitsblätter mit sauberer Typografie für den Unterricht. Wähle Klassenstufe und Aufgabenanzahl, dann klicke auf Drucken.",
@@ -456,7 +501,7 @@ window.EDU_I18N = {
       "includeKey": "Lehrer-Lösungsbogen beilegen",
       "printBtn": "Arbeitsblatt drucken 🖨️",
       "sheetTitle": "Goldbach-Vermutung: Primzahlpaar-Entdeckerblatt",
-      "studentName": "Name: _______________________",
+      "studentName": "Name: ___________________________",
       "date": "Datum: _____________",
       "score": "Punkte: _____ / {count}",
       "instructions": "Anleitung: Finde für jede gerade Zahl unten zwei Primzahlen, deren Summe genau diese Zahl ergibt. Trage die Primzahlen in die Lücken ein!",
@@ -465,7 +510,12 @@ window.EDU_I18N = {
       "bonusTitle": "🌟 Bonus-Herausforderung:",
       "bonusPrompt": "Kennst du eine gerade Zahl mit genau einem einzigen Primzahlpaar? Nenne mindestens zwei und zeige ihre Summen!",
       "answerKeyTitle": "Lehrer-Lösungsbogen (Alle gültigen Goldbach-Paare):",
-      "none": "Keine"
+      "none": "Keine",
+      "count6": "6 Aufgaben",
+      "count10": "10 Aufgaben",
+      "count14": "14 Aufgaben",
+      "subSeries": "Mathematische Abteilung • Pädagogische Entdeckungsreihe",
+      "studentDateClass": "Datum: ________________ Klasse: _____"
     },
     "badges": {
       "solo_four": {
@@ -543,7 +593,16 @@ window.EDU_I18N = {
       "toastFound": "Paire Découverte ! {p} + {q} = {n}",
       "toastAllFound": "Les {count} paires premières de {n} ont été trouvées !",
       "alreadyOnScale": "{p} est déjà sur le plateau ! Cliquez dessus pour le retirer.",
-      "hintTarget": "Indice : La cible {n} possède {count} paire(s) de Goldbach : {pairs}"
+      "hintTarget": "Indice : La cible {n} possède {count} paire(s) de Goldbach : {pairs}",
+      "presetSolo": "4 (Seul)",
+      "presetUnique": "12 (Unique)",
+      "presetOasis": "30 (Oasis)",
+      "presetDesert": "64 (Désert)",
+      "presetChampion": "98 (Champion)",
+      "clearBtn": "Effacer les poids ✕",
+      "pairsFound": "{found} sur {total} paires trouvées",
+      "targetLabelSvg": "CIBLE",
+      "sumLabelSvg": "SOMME : {sum}"
     },
     "matrix": {
       "teacherGuide": "🧑‍🏫 Guide Pédagogique (Crible d'Ératosthène & Motifs) : Les nombres premiers brillent en cyan éclatant. Au survol, la décomposition en facteurs premiers des nombres composés s'affiche. Chaque paire de Goldbach se reflète de façon symétrique par rapport au milieu N/2.",
@@ -556,7 +615,12 @@ window.EDU_I18N = {
       "neither": "Ni premier ni composé",
       "allPairsFound": "{count} paire(s) de Goldbach trouvée(s) pour N = {n} :",
       "noPairsFound": "Aucune paire première trouvée pour {n}.",
-      "bothPrimeDesc": "Auto-paire : {p} + {p} = {n}"
+      "bothPrimeDesc": "Auto-paire : {p} + {p} = {n}",
+      "inspectPrompt": "Cliquez sur un nombre premier dans la grille ci-dessous pour trouver son partenaire !",
+      "targetStatus": "Cible N = <strong>{target}</strong>.",
+      "legendSelected": "Premier p (Sélectionné)",
+      "legendPartner": "Partenaire Premier q (Succès !)",
+      "legendComposite": "Partenaire Composé (Non Premier)"
     },
     "clock": {
       "teacherGuide": "🧑‍🏫 Guide Pédagogique (Arithmétique Modulaire & Symétrie) : Disposer les entiers sur un cadran circulaire transforme les paires en cordes géométriques. Lorsque N est un multiple de 6, les cordes créent un réseau dense et symétrique — produisant presque le double de paires !",
@@ -576,7 +640,8 @@ window.EDU_I18N = {
       "selfPair": "🌟 (Auto-Paire)",
       "tip": "💡 Astuce : Les cordes se reflètent horizontalement le long de l'axe vertical ! Cliquez sur une paire à droite pour zoomer.",
       "cardTitle": "Le Bonus des Multiples de 6",
-      "cardDesc": "Admirez la symétrie ! Si N est divisible par 6, les cordes forment une passerelle particulièrement riche et dense."
+      "cardDesc": "Admirez la symétrie ! Si N est divisible par 6, les cordes forment une passerelle particulièrement riche et dense.",
+      "symmetricTip": "Les cordes se reflètent horizontalement par rapport à l'axe vertical ! Cliquez à droite pour cibler une paire."
     },
     "comet": {
       "teacherGuide": "🧑‍🏫 Guide Pédagogique (Comète de Goldbach & Asymptotique) : La comète est le nuage de points de k(N) en fonction de N. Les élèves découvrent visuellement la crête supérieure (« Nombres Oasis » comme 840, 1260) et le plancher inférieur (« Nombres Désert » comme les puissances de 2).",
@@ -597,13 +662,17 @@ window.EDU_I18N = {
       "pminLabel": "Plus petit premier p_min = {pmin}",
       "hoverTip": "(Cliquez sur une étoile pour la verrouiller !)",
       "lockedBadge": "VERROUILLÉ 🔒",
-      "inspectorEmpty": "Cliquez ou survolez une étoile dans la constellation ci-dessus pour inspecter son anatomie première !",
+      "inspectorEmpty": "Cliquez ou survolez une étoile de la constellation ci-dessus pour inspecter sa structure première !",
       "btnWeigh": "Peser sur la Balance ⚖️",
       "btnClock": "Voir sur l'Horloge ⏰",
       "btnGrid": "Voir dans la Grille 🔢",
       "toastScale": "Bascule sur la Balance ! Pesée des paires pour N = {n}",
       "toastClock": "Bascule sur l'Horloge ! Inspection des cordes pour N = {n}",
-      "toastMatrix": "Bascule sur la Grille ! Paires illuminées pour N = {n}"
+      "toastMatrix": "Bascule sur la Grille ! Paires illuminées pour N = {n}",
+      "inspectorTitle": "Station d'Inspection Stellaire :",
+      "evenNumberTitle": "Nombre Pair N = {n}",
+      "factorizationLabel": "Factorisation Première",
+      "pairsListLabel": "Paires"
     },
     "detective": {
       "teacherGuide": "🧑‍🏫 Guide Pédagogique (Énigmes de Théorie des Nombres) : Ces 6 dossiers d'enquête développent le raisonnement inductif et la formulation d'hypothèses sur la répartition des nombres premiers.",
@@ -666,7 +735,8 @@ window.EDU_I18N = {
           "hint": "Indice : Il est situé à seulement deux pas de 100.",
           "explanation": "MAÎTRE DÉTECTIVE ! 98 = 19 + 79. Tous les nombres premiers inférieurs à 19 échouent car 98 - p est composé !"
         }
-      ]
+      ],
+      "caseSolvedToast": "Affaire #{num} Résolue !"
     },
     "worksheet": {
       "teacherGuide": "🧑‍🏫 Guide Pédagogique (Exercices & Évaluation) : Générez des fiches d'exercices différenciées et prêtes à imprimer pour la classe. Choisissez le niveau et le nombre d'exercices, puis cliquez sur Imprimer.",
@@ -679,7 +749,7 @@ window.EDU_I18N = {
       "includeKey": "Inclure le corrigé enseignant",
       "printBtn": "Imprimer la fiche 🖨️",
       "sheetTitle": "Conjecture de Goldbach : Défi de Découverte des Paires Premières",
-      "studentName": "Nom de l'élève : _______________________",
+      "studentName": "Nom : ___________________________",
       "date": "Date : _____________",
       "score": "Note : _____ / {count}",
       "instructions": "Consignes : Pour chaque nombre pair ci-dessous, trouvez deux nombres premiers dont la somme est égale à ce nombre. Écrivez les nombres premiers sur les lignes prévues !",
@@ -688,7 +758,12 @@ window.EDU_I18N = {
       "bonusTitle": "🌟 Question Défi Bonus :",
       "bonusPrompt": "Pouvez-vous trouver un nombre pair qui n'a qu'une seule paire de nombres premiers ? Citez-en au moins deux et donnez leurs sommes !",
       "answerKeyTitle": "Corrigé Enseignant (Toutes les paires de Goldbach valides) :",
-      "none": "Aucune"
+      "none": "Aucune",
+      "count6": "6 Problèmes",
+      "count10": "10 Problèmes",
+      "count14": "14 Problèmes",
+      "subSeries": "Département de Mathématiques • Série Découverte Éducative",
+      "studentDateClass": "Date : ________________ Classe : _____"
     },
     "badges": {
       "solo_four": {
@@ -766,7 +841,16 @@ window.EDU_I18N = {
       "toastFound": "Coppia Trovata! {p} + {q} = {n}",
       "toastAllFound": "Tutte le {count} coppie prime per {n} trovate!",
       "alreadyOnScale": "{p} è già sul piatto! Fai clic su di esso per rimuoverlo.",
-      "hintTarget": "Suggerimento: Il bersaglio {n} ha {count} coppia/e di Goldbach: {pairs}"
+      "hintTarget": "Suggerimento: Il bersaglio {n} ha {count} coppia/e di Goldbach: {pairs}",
+      "presetSolo": "4 (Solo)",
+      "presetUnique": "12 (Unico)",
+      "presetOasis": "30 (Oasi)",
+      "presetDesert": "64 (Deserto)",
+      "presetChampion": "98 (Campione)",
+      "clearBtn": "Cancella pesi ✕",
+      "pairsFound": "{found} di {total} coppie trovate",
+      "targetLabelSvg": "BERSAGLIO",
+      "sumLabelSvg": "SOMMA: {sum}"
     },
     "matrix": {
       "teacherGuide": "🧑‍🏫 Guida Docente (Crivello di Eratostene & Schemi Numerici): I numeri primi brillano in ciano. Al passaggio del mouse viene visualizzata la scomposizione in fattori primi. Ogni coppia di Goldbach si riflette simmetricamente rispetto al punto medio N/2.",
@@ -779,7 +863,12 @@ window.EDU_I18N = {
       "neither": "Né primo né composto",
       "allPairsFound": "Trovate {count} coppia/e di Goldbach per N = {n}:",
       "noPairsFound": "Nessuna coppia prima trovata per {n}.",
-      "bothPrimeDesc": "Auto-coppia: {p} + {p} = {n}"
+      "bothPrimeDesc": "Auto-coppia: {p} + {p} = {n}",
+      "inspectPrompt": "Fai clic su un numero primo nella griglia sottostante per esaminare il suo partner!",
+      "targetStatus": "Bersaglio N = <strong>{target}</strong>.",
+      "legendSelected": "Primo p (Selezionato)",
+      "legendPartner": "Partner Primo q (Corrispondenza!)",
+      "legendComposite": "Partner Composto (Non Primo)"
     },
     "clock": {
       "teacherGuide": "🧑‍🏫 Guida Docente (Aritmetica dell'Orologio & Simmetria Modulare): Disporre i numeri su un cerchio trasforma le coppie in corde geometriche. Quando N è multiplo di 6, le corde formano una fitta rete simmetrica — raddoppiando quasi le coppie!",
@@ -799,7 +888,8 @@ window.EDU_I18N = {
       "selfPair": "🌟 (Auto-Coppia)",
       "tip": "💡 Suggerimento: Le corde si riflettono orizzontalmente lungo l'asse verticale! Fai clic su una coppia a destra per evidenziarla.",
       "cardTitle": "Il Bonus dei Multipli di 6",
-      "cardDesc": "Osserva la simmetria! Se N è divisibile per 6, le corde formano una rete di ponti straordinariamente densa."
+      "cardDesc": "Osserva la simmetria! Se N è divisibile per 6, le corde formano una rete di ponti straordinariamente densa.",
+      "symmetricTip": "Le corde si riflettono orizzontalmente sull'asse verticale! Fai clic su una coppia a destra per evidenziarla."
     },
     "comet": {
       "teacherGuide": "🧑‍🏫 Guida Docente (Cometa di Goldbach & Andamento Asintotico): La cometa è il grafico a dispersione di k(N) rispetto a N. Gli studenti scoprono il soffitto superiore (\"Numeri Oasi\" come 840, 1260) e il pavimento inferiore (\"Numeri Deserto\" come le potenze di 2).",
@@ -820,13 +910,17 @@ window.EDU_I18N = {
       "pminLabel": "Primo più piccolo p_min = {pmin}",
       "hoverTip": "(Fai clic su una stella per bloccarla!)",
       "lockedBadge": "BLOCCATO 🔒",
-      "inspectorEmpty": "Fai clic o passa il mouse su una stella nella costellazione per ispezionare la sua anatomia prima!",
+      "inspectorEmpty": "Fai clic o passa il mouse su qualsiasi stella nella costellazione per esaminare la sua anatomia prima!",
       "btnWeigh": "Pesa sulla Bilancia ⚖️",
       "btnClock": "Vedi sull'Orologio ⏰",
       "btnGrid": "Vedi nella Griglia 🔢",
       "toastScale": "Passato alla Bilancia! Pesata coppie per N = {n}",
       "toastClock": "Passato all'Orologio! Ispezione corde per N = {n}",
-      "toastMatrix": "Passato alla Griglia! Coppie illuminate per N = {n}"
+      "toastMatrix": "Passato alla Griglia! Coppie illuminate per N = {n}",
+      "inspectorTitle": "Stazione Dati & Ispettore Stellare:",
+      "evenNumberTitle": "Numero Pari N = {n}",
+      "factorizationLabel": "Scomposizione in Primi",
+      "pairsListLabel": "Coppie"
     },
     "detective": {
       "teacherGuide": "🧑‍🏫 Guida Docente (Sfide di Teoria dei Numeri): Questi 6 casi incoraggiano il pensiero induttivo e la verifica di congetture sulla distribuzione dei numeri primi.",
@@ -889,7 +983,8 @@ window.EDU_I18N = {
           "hint": "Suggerimento: Dista solo due passi da 100.",
           "explanation": "GENIO DETECTIVE! 98 = 19 + 79. Ogni primo inferiore a 19 fallisce perché 98 - p è composto!"
         }
-      ]
+      ],
+      "caseSolvedToast": "Caso #{num} Risolto!"
     },
     "worksheet": {
       "teacherGuide": "🧑‍🏫 Guida Docente (Esercitazione e Valutazione): Genera schede didattiche pronte per la stampa. Seleziona il livello scolastico e il numero di problemi, poi fai clic su Stampa Scheda.",
@@ -902,7 +997,7 @@ window.EDU_I18N = {
       "includeKey": "Includi Soluzioni Docente",
       "printBtn": "Stampa Scheda 🖨️",
       "sheetTitle": "Congettura di Goldbach: Sfida delle Coppie di Numeri Primi",
-      "studentName": "Nome Alunno: _______________________",
+      "studentName": "Nome: ___________________________",
       "date": "Data: _____________",
       "score": "Punteggio: _____ / {count}",
       "instructions": "Istruzioni: Per ogni numero pari sottostante, trova due numeri primi che sommati diano esattamente quel numero. Scrivi i numeri primi negli spazi vuoti!",
@@ -911,7 +1006,12 @@ window.EDU_I18N = {
       "bonusTitle": "🌟 Domanda Sfida Bonus:",
       "bonusPrompt": "Riesci a trovare un numero pari che abbia solo una singola coppia di numeri primi? Indicane almeno due e mostra le loro somme!",
       "answerKeyTitle": "Soluzioni per il Docente (Tutte le coppie di Goldbach valide):",
-      "none": "Nessuna"
+      "none": "Nessuna",
+      "count6": "6 Problemi",
+      "count10": "10 Problemi",
+      "count14": "14 Problemi",
+      "subSeries": "Dipartimento di Matematica • Serie Didattica di Scoperta",
+      "studentDateClass": "Data: ________________ Classe: _____"
     },
     "badges": {
       "solo_four": {
@@ -989,7 +1089,16 @@ window.EDU_I18N = {
       "toastFound": "素数ペア発見！ {p} + {q} = {n}",
       "toastAllFound": "{n} の全 {count} 個の素数ペアをすべて発見しました！",
       "alreadyOnScale": "{p} はすでに皿に乗っています！ クリックして取り外します。",
-      "hintTarget": "ヒント: 目標 {n} には {count} 組の素数ペアがあります: {pairs}"
+      "hintTarget": "ヒント: 目標 {n} には {count} 組の素数ペアがあります: {pairs}",
+      "presetSolo": "4 (唯一解)",
+      "presetUnique": "12 (最後の唯一解)",
+      "presetOasis": "30 (オアシス)",
+      "presetDesert": "64 (砂漠)",
+      "presetChampion": "98 (チャンピオン)",
+      "clearBtn": "重りをクリア ✕",
+      "pairsFound": "{total}組中 {found}組を発見",
+      "targetLabelSvg": "目標値",
+      "sumLabelSvg": "合計: {sum}"
     },
     "matrix": {
       "teacherGuide": "🧑‍🏫 指導者ガイド（エラトステネスの篩と数の構造）: 素数はシアン色で光ります。合成数にカーソルを合わせると素因数分解が表示されます。どのゴールドバッハ・ペアも中央値 N/2 を挟んで対称に位置していることに着目させてください。",
@@ -1002,7 +1111,12 @@ window.EDU_I18N = {
       "neither": "素数でも合成数でもない",
       "allPairsFound": "N = {n} のゴールドバッハ・ペアが {count} 組見つかりました:",
       "noPairsFound": "{n} の素数ペアは見つかりませんでした。",
-      "bothPrimeDesc": "同数ペア: {p} + {p} = {n}"
+      "bothPrimeDesc": "同数ペア: {p} + {p} = {n}",
+      "inspectPrompt": "下のマスから素数を1つクリックして、ペアになる相手の数を調べましょう！",
+      "targetStatus": "目標 N = <strong>{target}</strong>",
+      "legendSelected": "素数 p（選択中）",
+      "legendPartner": "相棒の素数 q（成立！）",
+      "legendComposite": "合成数の相手（素数ではない）"
     },
     "clock": {
       "teacherGuide": "🧑‍🏫 指導者ガイド（時計の算術と合同式の対称性）: 数を円形時計に配置すると、ゴールドバッハ・ペアは幾何学的な弦（コード）になります。Nが6の倍数のとき、弦は対称的で密な美しい格子を形成し、ペア数がほぼ2倍に跳ね上がります！",
@@ -1022,7 +1136,8 @@ window.EDU_I18N = {
       "selfPair": "🌟（自分自身とのペア）",
       "tip": "💡 ヒント: 弦は垂直な対称軸を挟んで水平に対称となります！ 右側のペアチップをクリックすると個別確認できます。",
       "cardTitle": "6の倍数ボーナス",
-      "cardDesc": "幾何学的対称性に注目！ Nが6で割り切れるとき、弦は美しい対称ウェブを張り巡らせます。"
+      "cardDesc": "幾何学的対称性に注目！ Nが6で割り切れるとき、弦は美しい対称ウェブを張り巡らせます。",
+      "symmetricTip": "弦は垂直軸に対して左右対称に反射します！右側の素数対ボタンをクリックして注目してみましょう。"
     },
     "comet": {
       "teacherGuide": "🧑‍🏫 指導者ガイド（ゴールドバッハの彗星と漸近挙動）: 偶数 N に対する素数ペア数 k(N) をプロットした散布図を「ゴールドバッハの彗星」と呼びます。上空の上限（30の倍数などのオアシス数）と下限の底（2の累乗などの砂漠数）が美しい尾を引きます。",
@@ -1043,13 +1158,17 @@ window.EDU_I18N = {
       "pminLabel": "最小素数 p_min = {pmin}",
       "hoverTip": "（星をクリックして固定＆調査！）",
       "lockedBadge": "ロック中 🔒",
-      "inspectorEmpty": "上の星座に浮かぶ星をクリックまたはホバーして、素数の解剖データをチェックしよう！",
+      "inspectorEmpty": "上の星図の星にカーソルを合わせるかクリックして、素数構造を分析しましょう！",
       "btnWeigh": "天秤で量る ⚖️",
       "btnClock": "時計で見る ⏰",
       "btnGrid": "100方陣で見る 🔢",
       "toastScale": "天秤ばかりへ移動！ N = {n} の素数ペアを計量します",
       "toastClock": "剰余時計へ移動！ N = {n} の幾何学的弦を観察します",
-      "toastMatrix": "100グリッドへ移動！ N = {n} の全ペアを点灯しました"
+      "toastMatrix": "100グリッドへ移動！ N = {n} の全ペアを点灯しました",
+      "inspectorTitle": "星の観測所・データステーション：",
+      "evenNumberTitle": "偶数 N = {n}",
+      "factorizationLabel": "素因数分解",
+      "pairsListLabel": "素数対"
     },
     "detective": {
       "teacherGuide": "🧑‍🏫 指導者ガイド（ゲーム感覚の数論チャレンジ）: 難易度別の6つの事件ファイルを通して、帰納的推論や仮説検証力を養います。最小素数 p_min(N) やチャンピオン数の性質を探究します。",
@@ -1112,7 +1231,8 @@ window.EDU_I18N = {
           "hint": "ヒント: 100のちょうど2つ手前の数です。",
           "explanation": "天才名探偵！ 98 = 19 + 79。19未満の素数は 98 - p がすべて合成数になるためペアになれません！"
         }
-      ]
+      ],
+      "caseSolvedToast": "事件 #{num} 解決！"
     },
     "worksheet": {
       "teacherGuide": "🧑‍🏫 指導者ガイド（プリント学習と評価）: 学年や習熟度に応じた印刷用プリントを瞬時に作成できます。学年帯と問題数を選択し、「印刷」を押してください。",
@@ -1125,7 +1245,7 @@ window.EDU_I18N = {
       "includeKey": "解答・解説（教師用）を含める",
       "printBtn": "プリントを印刷 🖨️",
       "sheetTitle": "ゴールドバッハの予想: 素数ペア発見チャレンジ",
-      "studentName": "名前: _______________________",
+      "studentName": "氏名：___________________________",
       "date": "日付: _____________",
       "score": "得点: _____ / {count}",
       "instructions": "指示: 下の偶数それぞれについて、足してその数になる2つの素数を見つけ、空欄に書き込みましょう！",
@@ -1134,7 +1254,12 @@ window.EDU_I18N = {
       "bonusTitle": "🌟 ボーナス挑戦問題:",
       "bonusPrompt": "素数ペアがたった1組しかない偶数を見つけられますか？ その数を2つ以上挙げ、足し算の式を書いてみよう！",
       "answerKeyTitle": "教師用解答例（すべての有効なゴールドバッハ・ペア）:",
-      "none": "なし"
+      "none": "なし",
+      "count6": "6問",
+      "count10": "10問",
+      "count14": "14問",
+      "subSeries": "数学教育部 • 体験的探究学習シリーズ",
+      "studentDateClass": "日付：________________ 学級：_____"
     },
     "badges": {
       "solo_four": {
@@ -1212,7 +1337,16 @@ window.EDU_I18N = {
       "toastFound": "소수 쌍 발견! {p} + {q} = {n}",
       "toastAllFound": "{n}의 모든 {count}개 소수 쌍을 찾았습니다!",
       "alreadyOnScale": "{p}은(는) 이미 저울에 올려져 있습니다! 클릭하여 제거하세요.",
-      "hintTarget": "힌트: 목표 {n}은(는) {count}개의 골드바흐 소수 쌍이 있습니다: {pairs}"
+      "hintTarget": "힌트: 목표 {n}은(는) {count}개의 골드바흐 소수 쌍이 있습니다: {pairs}",
+      "presetSolo": "4 (단독)",
+      "presetUnique": "12 (유일)",
+      "presetOasis": "30 (오아시스)",
+      "presetDesert": "64 (사막)",
+      "presetChampion": "98 (챔피언)",
+      "clearBtn": "추 비우기 ✕",
+      "pairsFound": "{total}개 중 {found}개 발견",
+      "targetLabelSvg": "목표값",
+      "sumLabelSvg": "합계: {sum}"
     },
     "matrix": {
       "teacherGuide": "🧑‍🏫 교사용 가이드 (에라토스테네스의 체 & 수 배열표): 소수는 밝은 청록색으로 빛납니다. 마우스를 올리면 합성수의 소인수분해가 표시됩니다. 모든 골드바흐 쌍이 중앙값 N/2를 중심으로 대칭을 이루는 것을 확인시켜 주세요.",
@@ -1225,7 +1359,12 @@ window.EDU_I18N = {
       "neither": "소수도 합성수도 아님",
       "allPairsFound": "N = {n}의 골드바흐 소수 쌍 {count}개를 찾았습니다:",
       "noPairsFound": "{n}의 소수 쌍을 찾지 못했습니다.",
-      "bothPrimeDesc": "자기 쌍: {p} + {p} = {n}"
+      "bothPrimeDesc": "자기 쌍: {p} + {p} = {n}",
+      "inspectPrompt": "아래 그리드에서 소수를 클릭하여 파트너 수를 확인해보세요!",
+      "targetStatus": "목표 N = <strong>{target}</strong>",
+      "legendSelected": "소수 p (선택됨)",
+      "legendPartner": "소수 파트너 q (성공!)",
+      "legendComposite": "합성수 파트너 (소수 아님)"
     },
     "clock": {
       "teacherGuide": "🧑‍🏫 교사용 가이드 (시계 산술과 잉여류 대칭): 수를 원형 시계에 배치하면 골드바흐 쌍이 기하학적 현(chord)으로 변환됩니다. N이 6의 배수일 때 현들이 대칭적이고 빽빽한 거미줄을 형성하여 소수 쌍이 거의 2배로 증가합니다!",
@@ -1245,7 +1384,8 @@ window.EDU_I18N = {
       "selfPair": "🌟 (자기 쌍)",
       "tip": "💡 팁: 현들은 수직축을 중심으로 좌우 수평 대칭을 이룹니다! 오른쪽 쌍 버튼을 눌러 개별 확인하세요.",
       "cardTitle": "6의 배수 소수 보너스",
-      "cardDesc": "기하학적 대칭을 관찰하세요! N이 6으로 나누어떨어질 때 현들이 조화롭고 풍성한 네트워크를 형성합니다."
+      "cardDesc": "기하학적 대칭을 관찰하세요! N이 6으로 나누어떨어질 때 현들이 조화롭고 풍성한 네트워크를 형성합니다.",
+      "symmetricTip": "현들은 수직축을 기준으로 좌우 대칭을 이룹니다! 오른쪽의 소수 쌍 칩을 클릭하여 집중 탐색해보세요."
     },
     "comet": {
       "teacherGuide": "🧑‍🏫 교사용 가이드 (골드바흐 혜성과 점근선): 짝수 N에 따른 소수 쌍의 개수 k(N)을 나타낸 산점도를 '골드바흐 혜성'이라 부릅니다. 윗부분의 오아시스 수(30의 배수)와 아랫부분의 사막 수(2의 거듭제곱)가 만드는 꼬리를 탐구합니다.",
@@ -1266,13 +1406,17 @@ window.EDU_I18N = {
       "pminLabel": "가장 작은 소수 p_min = {pmin}",
       "hoverTip": "(별을 클릭하여 고정하고 조사하세요!)",
       "lockedBadge": "고정됨 🔒",
-      "inspectorEmpty": "위의 별자리에서 별을 클릭하거나 마우스를 올려 소수 해부학 데이터를 확인하세요!",
+      "inspectorEmpty": "위의 별자리에서 별을 클릭하거나 마우스를 올려 소수 구조를 탐색하세요!",
       "btnWeigh": "저울에 올리기 ⚖️",
       "btnClock": "시계로 보기 ⏰",
       "btnGrid": "격자로 보기 🔢",
       "toastScale": "양팔 저울로 이동! N = {n}의 소수 쌍을 계량합니다",
       "toastClock": "모듈로 시계로 이동! N = {n}의 기하학적 현을 관찰합니다",
-      "toastMatrix": "100-격자로 이동! N = {n}의 모든 쌍을 밝혔습니다"
+      "toastMatrix": "100-격자로 이동! N = {n}의 모든 쌍을 밝혔습니다",
+      "inspectorTitle": "별 관측소 및 데이터 스테이션:",
+      "evenNumberTitle": "짝수 N = {n}",
+      "factorizationLabel": "소인수분해",
+      "pairsListLabel": "소수 쌍"
     },
     "detective": {
       "teacherGuide": "🧑‍🏫 교사용 가이드 (게임형 정수론 도전): 단계별 6개의 사건 파일을 통해 귀납적 추론과 가설 검증 능력을 기릅니다. 최소 소수 p_min(N)과 챔피언 수의 특징을 탐구합니다.",
@@ -1335,7 +1479,8 @@ window.EDU_I18N = {
           "hint": "힌트: 100에서 단 2칸 모자란 수입니다.",
           "explanation": "천재 명탐정! 98 = 19 + 79. 19 미만의 모든 소수는 98 - p가 합성수가 되어 실패합니다!"
         }
-      ]
+      ],
+      "caseSolvedToast": "사건 #{num} 해결!"
     },
     "worksheet": {
       "teacherGuide": "🧑‍🏫 교사용 가이드 (인쇄 학습지 & 평가): 학년과 수준에 맞춘 깔끔한 출력용 학습지를 즉시 생성합니다. 학년과 문항 수를 선택하고 '인쇄하기'를 누르세요.",
@@ -1348,7 +1493,7 @@ window.EDU_I18N = {
       "includeKey": "교사용 정답표 포함",
       "printBtn": "학습지 인쇄 🖨️",
       "sheetTitle": "골드바흐의 추측: 소수 쌍 발견 도전 과제",
-      "studentName": "이름: _______________________",
+      "studentName": "이름: ___________________________",
       "date": "날짜: _____________",
       "score": "점수: _____ / {count}",
       "instructions": "안내: 아래의 각 짝수에 대해, 더해서 그 수가 되는 두 소수를 찾아 빈칸에 적으세요!",
@@ -1357,7 +1502,12 @@ window.EDU_I18N = {
       "bonusTitle": "🌟 보너스 도전 문제:",
       "bonusPrompt": "소수 쌍이 오직 하나뿐인 짝수를 찾을 수 있나요? 2개 이상 찾고 그 덧셈식을 적어보세요!",
       "answerKeyTitle": "교사용 정답표 (모든 유효한 골드바흐 쌍):",
-      "none": "없음"
+      "none": "없음",
+      "count6": "6문제",
+      "count10": "10문제",
+      "count14": "14문제",
+      "subSeries": "수학 교육부 • 교육적 탐구 학습 시리즈",
+      "studentDateClass": "날짜: ________________ 학급: _____"
     },
     "badges": {
       "solo_four": {
@@ -1435,7 +1585,16 @@ window.EDU_I18N = {
       "toastFound": "发现质数对！ {p} + {q} = {n}",
       "toastAllFound": "{n} 的全部 {count} 组质数对已集齐！",
       "alreadyOnScale": "{p} 已经在天平盘上了！点击它可取下。",
-      "hintTarget": "提示：目标数 {n} 共有 {count} 组质数分解：{pairs}"
+      "hintTarget": "提示：目标数 {n} 共有 {count} 组质数分解：{pairs}",
+      "presetSolo": "4 (独解)",
+      "presetUnique": "12 (唯一)",
+      "presetOasis": "30 (绿洲)",
+      "presetDesert": "64 (沙漠)",
+      "presetChampion": "98 (冠军)",
+      "clearBtn": "清空砝码 ✕",
+      "pairsFound": "已找到 {found} / {total} 组素数对",
+      "targetLabelSvg": "目标值",
+      "sumLabelSvg": "当前和: {sum}"
     },
     "matrix": {
       "teacherGuide": "🧑‍🏫 教师指南（埃拉托斯特尼筛法与数字规律）: 质数以亮青色高亮显示。鼠标悬停时可查看合数的质因数分解。引导学生发现每组哥德巴赫质数对都关于中心点 N/2 对称分布。",
@@ -1448,7 +1607,12 @@ window.EDU_I18N = {
       "neither": "既非质数也非合数",
       "allPairsFound": "找到 N = {n} 的 {count} 组哥德巴赫质数对：",
       "noPairsFound": "未找到 {n} 的质数对。",
-      "bothPrimeDesc": "自身对：{p} + {p} = {n}"
+      "bothPrimeDesc": "自身对：{p} + {p} = {n}",
+      "inspectPrompt": "点击下方网格中的任意素数，探寻与它凑成目标数的搭档！",
+      "targetStatus": "当前目标 N = <strong>{target}</strong>",
+      "legendSelected": "素数 p（已选择）",
+      "legendPartner": "素数搭档 q（匹配成功！）",
+      "legendComposite": "合数搭档（非素数）"
     },
     "clock": {
       "teacherGuide": "🧑‍🏫 教师指南（时钟算术与同余对称性）: 将数字排列在圆盘时钟上，哥德巴赫质数对便化作一条条几何弦。当 N 是 6 的倍数时，弦构成致密对称的桥梁网络，质数对数量几乎翻倍！",
@@ -1468,7 +1632,8 @@ window.EDU_I18N = {
       "selfPair": "🌟 (自身对)",
       "tip": "💡 提示：所有弦关于垂直对称轴水平反射对称！点击右侧质数对按钮可聚焦观察。",
       "cardTitle": "6的倍数质数奖赏",
-      "cardDesc": "观察美妙的几何对称！当 N 能被 6 整除时，弦线构成了一张极为致密的彩虹桥网。"
+      "cardDesc": "观察美妙的几何对称！当 N 能被 6 整除时，弦线构成了一张极为致密的彩虹桥网。",
+      "symmetricTip": "琴弦关于垂直中轴水平镜像对称！点击右侧任意素数对按钮可高亮聚焦。"
     },
     "comet": {
       "teacherGuide": "🧑‍🏫 教师指南（哥德巴赫彗星与渐近规律）: 将偶数 N 对应的质数对数量 k(N) 绘制成散点图，即为壮丽的“哥德巴赫彗星”。学生可以直观观察到上方的天花板（绿洲数如 840、1260）与下方的地板（沙漠数如 2 的幂次）。",
@@ -1489,13 +1654,17 @@ window.EDU_I18N = {
       "pminLabel": "最小质数 p_min = {pmin}",
       "hoverTip": "(点击星星可锁定并深入探究！)",
       "lockedBadge": "已锁定 🔒",
-      "inspectorEmpty": "点击或悬停在上方星座中的星星上，即可启动质数解剖数据仪！",
+      "inspectorEmpty": "在上方星座星图中悬停或点击任意恒星，解析它的素数结构！",
       "btnWeigh": "在天平上称量 ⚖️",
       "btnClock": "在时钟上观察 ⏰",
       "btnGrid": "在百数表中点亮 🔢",
       "toastScale": "切换到天平称重！正在称量 N = {n} 的质数对",
       "toastClock": "切换到模数时钟！正在观察 N = {n} 的几何弦",
-      "toastMatrix": "切换到百数表！已点亮 N = {n} 的所有质数对"
+      "toastMatrix": "切换到百数表！已点亮 N = {n} 的所有质数对",
+      "inspectorTitle": "恒星探测站与数据中心：",
+      "evenNumberTitle": "偶数 N = {n}",
+      "factorizationLabel": "质因数分解",
+      "pairsListLabel": "素数对"
     },
     "detective": {
       "teacherGuide": "🧑‍🏫 教师指南（游戏化数论挑战）: 这 6 个分层探案卷宗鼓励学生进行归纳推理与猜想验证，探索最小质数 p_min(N) 与纪录冠军数的奥秘。",
@@ -1558,7 +1727,8 @@ window.EDU_I18N = {
           "hint": "提示：距离 100 仅有两步之遥。",
           "explanation": "神探降世！98 = 19 + 79。小于 19 的所有质数都因 98 - p 为合数而通通失效！"
         }
-      ]
+      ],
+      "caseSolvedToast": "第 #{num} 号案件破获成功！"
     },
     "worksheet": {
       "teacherGuide": "🧑‍🏫 教师指南（课堂练习与评估）: 一键生成排版工整、分层级的课堂打印练习单。选择年级段与题量后，点击“打印练习单”即可调出打印对话框。",
@@ -1571,7 +1741,7 @@ window.EDU_I18N = {
       "includeKey": "附带教师参考答案",
       "printBtn": "打印练习单 🖨️",
       "sheetTitle": "哥德巴赫猜想：质数对发现探索挑战单",
-      "studentName": "姓名: _______________________",
+      "studentName": "姓名：___________________________",
       "date": "日期: _____________",
       "score": "得分: _____ / {count}",
       "instructions": "答题说明：对于下方的每一个偶数，请找出两个相加等于它的质数，并将它们分别写在横线上！",
@@ -1580,7 +1750,12 @@ window.EDU_I18N = {
       "bonusTitle": "🌟 附加挑战思考题:",
       "bonusPrompt": "你能找到只有一个质数对的偶数吗？请至少写出两个这样的数字并列出它们的质数求和式！",
       "answerKeyTitle": "教师参考答案（所有有效哥德巴赫质数对）:",
-      "none": "无"
+      "none": "无",
+      "count6": "6 道题目",
+      "count10": "10 道题目",
+      "count14": "14 道题目",
+      "subSeries": "数学教研部 • 启发式探究教学系列练习",
+      "studentDateClass": "日期：________________ 班级：_____"
     },
     "badges": {
       "solo_four": {
@@ -1658,7 +1833,16 @@ window.EDU_I18N = {
       "toastFound": "發現質數對！ {p} + {q} = {n}",
       "toastAllFound": "{n} 的全部 {count} 組質數對已集齊！",
       "alreadyOnScale": "{p} 已經在天平盤上了！點擊它可取下。",
-      "hintTarget": "提示：目標數 {n} 共有 {count} 組質數分解：{pairs}"
+      "hintTarget": "提示：目標數 {n} 共有 {count} 組質數分解：{pairs}",
+      "presetSolo": "4 (獨解)",
+      "presetUnique": "12 (唯一)",
+      "presetOasis": "30 (綠洲)",
+      "presetDesert": "64 (沙漠)",
+      "presetChampion": "98 (冠軍)",
+      "clearBtn": "清空砝碼 ✕",
+      "pairsFound": "已找到 {found} / {total} 組質數對",
+      "targetLabelSvg": "目標值",
+      "sumLabelSvg": "當前和: {sum}"
     },
     "matrix": {
       "teacherGuide": "🧑‍🏫 教師指南（埃拉托斯特尼篩法與數字規律）: 質數以亮青色高亮顯示。滑鼠懸停時可檢視合數的質因數分解。引導學生發現每組哥德巴赫質數對皆關於中心點 N/2 對稱分布。",
@@ -1671,7 +1855,12 @@ window.EDU_I18N = {
       "neither": "既非質數也非合數",
       "allPairsFound": "找到 N = {n} 的 {count} 組哥德巴赫質數對：",
       "noPairsFound": "未找到 {n} 的質數對。",
-      "bothPrimeDesc": "自身對：{p} + {p} = {n}"
+      "bothPrimeDesc": "自身對：{p} + {p} = {n}",
+      "inspectPrompt": "點擊下方網格中的任意質數，探尋與它湊成目標數的搭檔！",
+      "targetStatus": "當前目標 N = <strong>{target}</strong>",
+      "legendSelected": "質數 p（已選擇）",
+      "legendPartner": "質數搭檔 q（匹配成功！）",
+      "legendComposite": "合數搭檔（非質數）"
     },
     "clock": {
       "teacherGuide": "🧑‍🏫 教師指南（時鐘算術與同餘對稱性）: 將數字排列在圓盤時鐘上，哥德巴赫質數對便化作一條條幾何弦。當 N 是 6 的倍數時，弦構成緻密對稱的橋梁網絡，質數對數量幾乎翻倍！",
@@ -1691,7 +1880,8 @@ window.EDU_I18N = {
       "selfPair": "🌟 (自身對)",
       "tip": "💡 提示：所有弦關於垂直對稱軸水平反射對稱！點擊右側質數對按鈕可聚焦觀察。",
       "cardTitle": "6的倍數質數獎賞",
-      "cardDesc": "觀察美妙的幾何對稱！當 N 能被 6 整除時，弦線構成了一張極為緻密的彩虹橋網。"
+      "cardDesc": "觀察美妙的幾何對稱！當 N 能被 6 整除時，弦線構成了一張極為緻密的彩虹橋網。",
+      "symmetricTip": "琴弦關於垂直中軸水平鏡像對稱！點擊右側任意質數對按鈕可高亮聚焦。"
     },
     "comet": {
       "teacherGuide": "🧑‍🏫 教師指南（哥德巴赫彗星與漸近規律）: 將偶數 N 對應的質數對數量 k(N) 繪製成散佈圖，即為壯麗的「哥德巴赫彗星」。學生可以直觀觀察到上方的天花板（綠洲數如 840、1260）與下方的地板（沙漠數如 2 的次方）。",
@@ -1712,13 +1902,17 @@ window.EDU_I18N = {
       "pminLabel": "最小質數 p_min = {pmin}",
       "hoverTip": "(點擊星星可鎖定並深入探究！)",
       "lockedBadge": "已鎖定 🔒",
-      "inspectorEmpty": "點擊或懸停在上方星座中的星星上，即可啟動質數解剖數據儀！",
+      "inspectorEmpty": "在上方星座星圖中懸停或點擊任意恆星，解析它的質數結構！",
       "btnWeigh": "在天平上秤量 ⚖️",
       "btnClock": "在時鐘上觀察 ⏰",
       "btnGrid": "在百數表中點亮 🔢",
       "toastScale": "切換到天平稱重！正在秤量 N = {n} 的質數對",
       "toastClock": "切換到模數時鐘！正在觀察 N = {n} 的幾何弦",
-      "toastMatrix": "切換到百數表！已點亮 N = {n} 的所有質数對"
+      "toastMatrix": "切換到百數表！已點亮 N = {n} 的所有質数對",
+      "inspectorTitle": "恆星探測站與數據中心：",
+      "evenNumberTitle": "偶數 N = {n}",
+      "factorizationLabel": "質因數分解",
+      "pairsListLabel": "質數對"
     },
     "detective": {
       "teacherGuide": "🧑‍🏫 教師指南（遊戲化數論挑戰）: 這 6 個分層探案卷宗鼓勵學生進行歸納推理與猜想驗證，探索最小質數 p_min(N) 與紀錄冠軍數的奧秘。",
@@ -1781,7 +1975,8 @@ window.EDU_I18N = {
           "hint": "提示：距離 100 僅有兩步之遙。",
           "explanation": "神探降世！98 = 19 + 79。小於 19 的所有質數都因 98 - p 為合數而通通失效！"
         }
-      ]
+      ],
+      "caseSolvedToast": "第 #{num} 號案件破獲成功！"
     },
     "worksheet": {
       "teacherGuide": "🧑‍🏫 教師指南（課堂練習與評估）: 一鍵產生排版工整、分層級的課堂列印練習單。選擇年級段與題量後，點擊「列印練習單」即可調出列印對話框。",
@@ -1794,7 +1989,7 @@ window.EDU_I18N = {
       "includeKey": "附帶教師參考答案",
       "printBtn": "列印練習單 🖨️",
       "sheetTitle": "哥德巴赫猜想：質數對發現探索挑戰單",
-      "studentName": "姓名: _______________________",
+      "studentName": "姓名：___________________________",
       "date": "日期: _____________",
       "score": "得分: _____ / {count}",
       "instructions": "答題說明：對於下方的每一個偶數，請找出兩個相加等於它的質數，並將它們分別寫在橫線上！",
@@ -1803,7 +1998,12 @@ window.EDU_I18N = {
       "bonusTitle": "🌟 附加挑戰思考題:",
       "bonusPrompt": "你能找到只有一個質數對的偶數嗎？請至少寫出兩個這樣的數字並列出它們的質數求和式！",
       "answerKeyTitle": "教師參考答案（所有有效哥德巴赫質數對）:",
-      "none": "無"
+      "none": "無",
+      "count6": "6 道題目",
+      "count10": "10 道題目",
+      "count14": "14 道題目",
+      "subSeries": "數學教研部 • 啟發式探究教學系列練習",
+      "studentDateClass": "日期：________________ 班級：_____"
     },
     "badges": {
       "solo_four": {
@@ -1849,39 +2049,44 @@ window.EDU_I18N = {
         val = val[parts[i]];
       } else {
         // Fallback to English
-        var fallbackDict = this.translations['en'];
-        var fallbackVal = fallbackDict;
-        for (var j = 0; j < parts.length; j++) {
-          if (fallbackVal && typeof fallbackVal === 'object' && parts[j] in fallbackVal) {
-            fallbackVal = fallbackVal[parts[j]];
-          } else {
-            fallbackVal = null;
-            break;
-          }
-        }
-        val = fallbackVal || keyPath;
+        val = null;
         break;
       }
     }
 
-    if (typeof val !== 'string') return val;
-
-    // Parameter interpolation
-    if (params && typeof params === 'object') {
-      for (var p in params) {
-        val = val.replace(new RegExp('\\{' + p + '\\}', 'g'), params[p]);
+    if (val === null || val === undefined) {
+      // Try fallback to en
+      var enDict = this.translations['en'];
+      val = enDict;
+      for (var j = 0; j < parts.length; j++) {
+        if (val && typeof val === 'object' && parts[j] in val) {
+          val = val[parts[j]];
+        } else {
+          val = keyPath;
+          break;
+        }
       }
     }
+
+    if (typeof val !== 'string') {
+      return val;
+    }
+
+    if (params && typeof params === 'object') {
+      for (var p in params) {
+        val = val.replace(new RegExp('\\{' + p + '\\}', 'g'), String(params[p]));
+      }
+    }
+
     return val;
   },
 
   /**
-   * Switch language and update DOM
+   * Sets current language and updates all [data-i18n] DOM elements
    */
   setLanguage: function(lang) {
-    if (!this.languages[lang]) {
-      console.warn('Unsupported language: ' + lang);
-      return;
+    if (!this.translations[lang]) {
+      lang = 'en';
     }
     this.currentLang = lang;
     try {
@@ -1930,7 +2135,7 @@ window.EDU_I18N = {
   },
 
   /**
-   * Initialize language from localStorage or navigator
+   * Initialize language from localStorage or navigator and apply to DOM
    */
   init: function() {
     var savedLang = 'en';
@@ -1955,6 +2160,18 @@ window.EDU_I18N = {
     }
 
     this.currentLang = savedLang;
+
+    // Apply to DOM if document is ready, or hook DOMContentLoaded
+    var self = this;
+    if (typeof document !== 'undefined') {
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() {
+          self.setLanguage(self.currentLang);
+        });
+      } else {
+        self.setLanguage(self.currentLang);
+      }
+    }
   }
 };
 

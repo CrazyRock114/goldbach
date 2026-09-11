@@ -237,7 +237,9 @@ const GLab = {
       if (audioBtn) {
         audioBtn.addEventListener('click', () => {
           const isMuted = this.audio.toggleMute();
-          audioBtn.innerHTML = (isMuted ? '🔇' : '🔊') + ' Sound';
+          const l = (window.GLabI18N && window.GLabI18N.currentLang) || 'en';
+          const sText = window.GLabI18N ? window.GLabI18N.t('sound', l) : 'Sound';
+          audioBtn.innerHTML = (isMuted ? '🔇 ' : '🔊 ') + sText;
         });
       }
 

@@ -24,7 +24,7 @@
     body {
       background-color: var(--bg);
       color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", "Noto Sans JP", "Noto Sans KR", "Helvetica Neue", Arial, sans-serif;
       padding: 20px;
       line-height: 1.5;
       min-height: 100vh;
@@ -702,11 +702,11 @@
           </div>
           <div class="preset-group">
             <span style="font-size: 12px; color: var(--muted);" data-i18n="scale.presetLabel">Quick Presets:</span>
-            <button class="btn btn-sm" onclick="setPresetTarget(4)">4 (Solo)</button>
-            <button class="btn btn-sm" onclick="setPresetTarget(12)">12 (Unique)</button>
-            <button class="btn btn-sm" onclick="setPresetTarget(30)">30 (Oasis)</button>
-            <button class="btn btn-sm" onclick="setPresetTarget(64)">64 (Desert)</button>
-            <button class="btn btn-sm" onclick="setPresetTarget(98)">98 (Champion)</button>
+            <button class="btn btn-sm" onclick="setPresetTarget(4)" data-i18n="scale.presetSolo">4 (Solo)</button>
+            <button class="btn btn-sm" onclick="setPresetTarget(12)" data-i18n="scale.presetUnique">12 (Unique)</button>
+            <button class="btn btn-sm" onclick="setPresetTarget(30)" data-i18n="scale.presetOasis">30 (Oasis)</button>
+            <button class="btn btn-sm" onclick="setPresetTarget(64)" data-i18n="scale.presetDesert">64 (Desert)</button>
+            <button class="btn btn-sm" onclick="setPresetTarget(98)" data-i18n="scale.presetChampion">98 (Champion)</button>
           </div>
         </div>
 
@@ -729,7 +729,7 @@
                 <path d="M 60,135 Q 110,155 160,135 Z" fill="#fbbf24" opacity="0.9"/>
                 <circle cx="110" cy="115" r="28" fill="#d97706"/>
                 <text x="110" y="121" text-anchor="middle" fill="#ffffff" font-weight="900" font-size="18" id="svg-target-val">24</text>
-                <text x="110" y="152" text-anchor="middle" fill="#fbbf24" font-size="11" font-weight="bold">TARGET</text>
+                <text x="110" y="152" text-anchor="middle" fill="#fbbf24" font-size="11" font-weight="bold" data-i18n="scale.targetLabelSvg">TARGET</text>
 
                 <!-- Right Pan (Sum p1 + p2) -->
                 <line x1="470" y1="72" x2="440" y2="135" stroke="#94a3b8" stroke-width="2"/>
@@ -763,14 +763,14 @@
             <h3 style="font-size: 15px; font-weight: 700; color: #ffffff;" data-i18n="scale.trayTitle">Prime Weight Tray</h3>
             <p style="font-size: 12px; color: var(--muted); margin-top: 2px;" data-i18n="scale.traySubtitle">Click any prime below to add it to or remove it from the scale pan:</p>
           </div>
-          <button class="btn btn-sm btn-accent" onclick="resetScale()">Clear Weights ✕</button>
+          <button class="btn btn-sm btn-accent" onclick="resetScale()" data-i18n="scale.clearBtn">Clear Weights ✕</button>
         </div>
         <div id="prime-tray" class="chips-tray"></div>
 
         <div style="margin-top: 20px; padding: 14px; background: #070a12; border-radius: 8px; border: 1px solid var(--card-border);">
           <div style="display: flex; justify-content: space-between; align-items: center;">
             <strong style="color: var(--accent);"><span id="found-target-label" data-i18n="scale.discoveredTitle">Discovered Prime Pairs for {n}:</span> <span id="found-target-title" style="display:none;">24</span></strong>
-            <span id="pairs-completion-badge" style="font-size: 12px; color: var(--muted);">0 of 3 pairs found</span>
+            <span id="pairs-completion-badge" style="font-size: 12px; color: var(--muted);" data-i18n="scale.pairsFound">0 of 3 pairs found</span>
           </div>
           <div id="found-pairs-list" style="display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap;"></div>
         </div>
@@ -811,16 +811,16 @@
           <button class="btn btn-sm" onclick="clearMatrixHighlights()" data-i18n="matrix.clearBtn">Clear Highlights ✕</button>
         </div>
 
-        <div id="matrix-feedback" style="padding: 12px 16px; background: #070a12; border-radius: 8px; border: 1px solid var(--card-border); margin-bottom: 12px; font-size: 13px; min-height: 48px; display: flex; align-items: center; flex-wrap: wrap; gap: 8px;">
+        <div id="matrix-feedback" style="padding: 12px 16px; background: #070a12; border-radius: 8px; border: 1px solid var(--card-border); margin-bottom: 12px; font-size: 13px; min-height: 48px; display: flex; align-items: center; flex-wrap: wrap; gap: 8px;" data-i18n="matrix.inspectPrompt">
           Click a prime number in the grid below to inspect its partner!
         </div>
 
         <div class="matrix-grid" id="matrixGrid"></div>
 
         <div style="display: flex; gap: 16px; margin-top: 12px; font-size: 12px; color: var(--muted); flex-wrap: wrap;">
-          <span style="display: flex; align-items: center; gap: 6px;"><span style="width: 14px; height: 14px; background: #38bdf8; border-radius: 3px; display: inline-block;"></span> Prime p (Selected)</span>
-          <span style="display: flex; align-items: center; gap: 6px;"><span style="width: 14px; height: 14px; background: #34d399; border-radius: 3px; display: inline-block;"></span> Prime Partner q (Match!)</span>
-          <span style="display: flex; align-items: center; gap: 6px;"><span style="width: 14px; height: 14px; background: #f87171; border-radius: 3px; display: inline-block;"></span> Composite Partner (Not Prime)</span>
+          <span style="display: flex; align-items: center; gap: 6px;"><span style="width: 14px; height: 14px; background: #38bdf8; border-radius: 3px; display: inline-block;"></span> <span data-i18n="matrix.legendSelected">Prime p (Selected)</span></span>
+          <span style="display: flex; align-items: center; gap: 6px;"><span style="width: 14px; height: 14px; background: #34d399; border-radius: 3px; display: inline-block;"></span> <span data-i18n="matrix.legendPartner">Prime Partner q (Match!)</span></span>
+          <span style="display: flex; align-items: center; gap: 6px;"><span style="width: 14px; height: 14px; background: #f87171; border-radius: 3px; display: inline-block;"></span> <span data-i18n="matrix.legendComposite">Composite Partner (Not Prime)</span></span>
         </div>
       </div>
     </div>
@@ -910,8 +910,8 @@
         <!-- Star Inspector Data Station -->
         <div id="cometInspector" style="margin-bottom: 16px; padding: 14px 18px; background: #070a12; border-radius: 10px; border: 1px solid var(--card-border); min-height: 80px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
           <div>
-            <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted);">Star Inspector & Data Station:</div>
-            <div id="cometInspectDetail" style="font-size: 14px; margin-top: 4px; color: var(--text);">
+            <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted);" data-i18n="comet.inspectorTitle">Star Inspector & Data Station:</div>
+            <div id="cometInspectDetail" style="font-size: 14px; margin-top: 4px; color: var(--text);" data-i18n="comet.inspectorEmpty">
               Click or hover over any star point in the constellation above to inspect its prime anatomy!
             </div>
           </div>
@@ -987,9 +987,9 @@
           <div>
             <label style="font-size: 13px; color: var(--muted); margin-right: 8px;" data-i18n="worksheet.countLabel">Problem Count:</label>
             <select id="ws-count" onchange="generateWorksheet()" style="padding: 6px 10px; background: #0f172a; color: white; border: 1px solid var(--card-border); border-radius: 6px;">
-              <option value="6">6 Problems</option>
-              <option value="10" selected>10 Problems</option>
-              <option value="14">14 Problems</option>
+              <option value="6" data-i18n="worksheet.count6">6 Problems</option>
+              <option value="10" selected data-i18n="worksheet.count10">10 Problems</option>
+              <option value="14" data-i18n="worksheet.count14">14 Problems</option>
             </select>
           </div>
 
@@ -1005,11 +1005,11 @@
         <div class="ws-header">
           <div>
             <div class="ws-title" data-i18n="worksheet.sheetTitle">Goldbach's Conjecture: Prime Pair Discovery Challenge</div>
-            <div style="font-size: 14px; color: #4b5563; margin-top: 4px;">Mathematics Department • Educational Discovery Series</div>
+            <div style="font-size: 14px; color: #4b5563; margin-top: 4px;" data-i18n="worksheet.subSeries">Mathematics Department • Educational Discovery Series</div>
           </div>
           <div class="ws-meta">
-            <span id="ws-student-name">Name: ___________________________</span><br>
-            <span id="ws-student-date">Date: ________________ Class: _____</span>
+            <span id="ws-student-name" data-i18n="worksheet.studentName">Name: ___________________________</span><br>
+            <span id="ws-student-date" data-i18n="worksheet.studentDateClass">Date: ________________ Class: _____</span>
           </div>
         </div>
 

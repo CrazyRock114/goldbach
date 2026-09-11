@@ -585,7 +585,7 @@ function updateDiscoveredPairsList() {
     : null;
   const totalAvailable = targetData ? targetData.pairs.length : getGoldbachPairsFor(scaleTarget).length;
 
-  if (badgeEl) badgeEl.innerText = `${scaleDiscoveredPairs.length} / ${totalAvailable}`;
+  if (badgeEl) badgeEl.innerText = _t('scale.pairsFound', { found: scaleDiscoveredPairs.length, total: totalAvailable });
 
   if (scaleDiscoveredPairs.length === 0) {
     container.innerHTML = `<span style="color: var(--muted); font-size: 13px;">${_t('matrix.noPairsFound', { n: scaleTarget })}</span>`;
@@ -705,7 +705,7 @@ function clearMatrixHighlights() {
     c.style.boxShadow = '';
   });
   const fb = document.getElementById('matrix-feedback');
-  if (fb) fb.innerHTML = `Target N = <strong>${matrixTarget}</strong>.`;
+  if (fb) fb.innerHTML = _t('matrix.targetStatus', { target: matrixTarget });
 }
 
 function onMatrixCellClicked(num, isPr) {
@@ -1547,7 +1547,7 @@ function onCometMouseMove(e) {
       }).join(' • ');
 
       tooltip.innerHTML = `
-        <div style="font-weight: bold; color: #38bdf8; font-size: 14px;">Even Number N = ${nearest.n}</div>
+        <div style="font-weight: bold; color: #38bdf8; font-size: 14px;">${_t('comet.evenNumberTitle', { n: nearest.n })}</div>
         <div style="color: #fbbf24; font-size: 13px; font-weight: bold;">${_t('comet.pairsLabel', { count: nearest.k })}</div>
         <div style="color: #94a3b8; font-size: 11px;">${_t('comet.pminLabel', { pmin: nearest.pmin })}</div>
         ${tagsDesc ? `<div style="margin-top: 4px; font-size: 10px; color: #a5f3fc;">${tagsDesc}</div>` : ''}
@@ -1627,17 +1627,17 @@ function updateCometInspector(pt, isLocked) {
 
   detailEl.innerHTML = `
     <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
-      <strong style="font-size: 16px; color: var(--primary);">Even Number N = ${pt.n}</strong>
+      <strong style="font-size: 16px; color: var(--primary);">${_t('comet.evenNumberTitle', { n: pt.n })}</strong>
       ${isLocked ? `<span style="font-size: 11px; background: #22c55e; color: #000; padding: 2px 6px; border-radius: 4px; font-weight: bold;">${_t('comet.lockedBadge')}</span>` : ''}
       ${tagsDesc}
     </div>
     <div style="font-size: 13px; color: var(--muted); margin-top: 4px;">
-      Prime Factorization: <strong style="color: white;">${getPrimeFactorsStr(pt.n)}</strong> &nbsp;•&nbsp;
+      ${_t('comet.factorizationLabel')}: <strong style="color: white;">${getPrimeFactorsStr(pt.n)}</strong> &nbsp;•&nbsp;
       ${_t('comet.pairsLabel', { count: pt.k })} &nbsp;•&nbsp;
       ${_t('comet.pminLabel', { pmin: pt.pmin })}
     </div>
     <div style="font-size: 12px; color: #94a3b8; margin-top: 4px;">
-      Pairs: ${pairs.map(p => `${p[0]}+${p[1]}`).join(', ') || _t('worksheet.none')}
+      ${_t('comet.pairsListLabel')}: ${pairs.map(p => `${p[0]}+${p[1]}`).join(', ') || _t('worksheet.none')}
     </div>
   `;
 
@@ -1840,7 +1840,7 @@ function solveDetectiveCase(caseNum) {
     fireConfetti();
     if (feedback) feedback.innerHTML = `<span style="color: var(--green);">${expl}</span>`;
 
-    showToast(`Case #${caseNum} Solved!`, expl, '🕵️‍♂️');
+    showToast(_t('detective.caseSolvedToast', { num: caseNum }), expl, '🕵️‍♂️');
 
     if (caseNum < 6) {
       solvedCases[caseNum + 1] = false;
@@ -1968,8 +1968,8 @@ window.addEventListener('load', () => {
   pickRandomTarget();
   drawClock();
   initMatrix();
-  if (window.EDU_I18N && typeof window.EDU_I18N.init === 'function') {
-    window.EDU_I18N.init();
+  if (window.EDU_I18N && typeof window.EDU_I18N.setLanguage === 'function') {
+    window.EDU_I18N.setLanguage(window.EDU_I18N.currentLang || 'en');
   }
 });
 
