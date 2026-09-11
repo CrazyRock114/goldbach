@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 064: Monte Carlo Prime Darts - Goldbach Discovery Labs</title>
+  <link rel="stylesheet" href="common.css">
+  <style>
+    .dart-dashboard {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    @media (max-width: 768px) {
+      .dart-dashboard {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    .hud-card {
+      background: var(--card-bg-subtle);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-sm);
+      padding: 12px;
+      text-align: center;
+    }
+    .hud-title {
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .hud-num {
+      font-size: 22px;
+      font-weight: 800;
+      font-family: monospace;
+      margin-top: 4px;
+    }
+    .dart-canvas-wrap {
+      height: 380px;
+      position: relative;
+    }
+  </style>
+</head>
+<body>
+  <div id="lab-nav" class="lab-nav"></div>
+
+  <div class="container">
+    <div class="lab-header">
+      <h1>Lab 064: Monte Carlo Prime Darts</h1>
+      <p class="hook">Throw thousands of random prime coordinate darts $(p_1, p_2)$ onto a 2D integer square $[0, N]^2$. Measure how often random prime pairs collide onto the Goldbach diagonal $x + y = N$!</p>
+    </div>
+
+    <div class="lab-stage">
+      <div class="controls-bar">
+        <div class="control-group">
+          <label for="dart-n">Target Even <i>N</i>:</label>
+          <input type="range" id="dart-n" min="20" max="100" step="4" value="50">
+          <span style="font-size: 18px; font-weight: 800; color: var(--accent);" id="dart-n-val">50</span>
+        </div>
+        <button class="btn btn-primary btn-sm" id="btn-throw-100">🎯 Throw 200 Darts</button>
+        <button class="btn btn-secondary btn-sm" id="btn-auto-stream">▶ Auto Stream</button>
+        <button class="btn btn-secondary btn-sm" id="btn-clear-darts">🔄 Clear Board</button>
+      </div>
+
+      <div class="dart-dashboard">
+        <div class="hud-card">
+          <div class="hud-title">Total Darts Thrown</div>
+          <div class="hud-num" style="color: #f8fafc;" id="stat-total">0</div>
+        </div>
+        <div class="hud-card">
+          <div class="hud-title">Goldbach Bullseyes (p+q=N)</div>
+          <div class="hud-num" style="color: #34d399;" id="stat-hits">0</div>
+        </div>
+        <div class="hud-card">
+          <div class="hud-title">Empirical Hit Rate</div>
+          <div class="hud-num" style="color: #38bdf8;" id="stat-rate">0.00%</div>
+        </div>
+        <div class="hud-card">
+          <div class="hud-title">Theoretical Pairs g(N)</div>
+          <div class="hud-num" style="color: #fbbf24;" id="stat-pairs">4 Pairs</div>
+        </div>
+      </div>
+
+      <div class="canvas-container dart-canvas-wrap">
+        <canvas id="dartCanvas" height="380"></canvas>
+      </div>
+    </div>
+
+    <div class="pedagogy-grid">
+      <div class="pedagogy-card story">
+        <h2>✨ Monte Carlo Simulation of Additive Lattice Hits</h2>
+        <p>In the <b>Monte Carlo method</b>, mathematicians use simulated randomness to estimate physical properties and geometrical intersections.</p>
+        <p>Here, the dartboard is a 2D coordinate grid with side length $N$. Each dart has prime coordinates $(p, q)$ chosen uniformly at random from the set of primes less than $N$.</p>
+        <p>The Goldbach line is the diagonal $x + y = N$. Any dart landing on this line represents an empirical Goldbach pair! Because there are $\pi(N)$ primes under $N$, the total sample space of pairs is $\pi(N)^2$. The probability of hitting the line is precisely $\frac{2 g(N)}{\pi(N)^2}$.</p>
+      </div>
+
+      <div class="pedagogy-card challenge">
+        <h2>🎯 Try This! (Hands-On Challenges)</h2>
+        <div class="challenge-item">
+          <span class="badge">Challenge 1</span>
+          Throw 500 darts at $N = 50$. Did at least 5 darts hit the Goldbach line?
+          <button class="reveal-btn" data-target="ans-1">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-1">
+            For $N = 50$, there are $\pi(50) = 15$ primes, so $15 \times 15 = 225$ possible prime coordinate points. Since there are 4 unordered pairs ($3+47, 7+43, 13+37, 19+31$) giving 8 ordered points, the hit probability is $8 / 225 \approx 3.55\%$. In 500 throws, expect $\approx 18$ hits!
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 2</span>
+          Why are all the darts on the board confined to prime coordinates rather than uniformly scattered everywhere?
+          <button class="reveal-btn" data-target="ans-2">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-2">
+            Because our random generator only picks primes! This restricts the darts to the prime cross-lattice $\mathbb{P} \times \mathbb{P}$, demonstrating that Goldbach is a question about lattice intersections.
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 3</span>
+          Increase $N$ to 100 and observe how the empirical hit rate changes.
+          <button class="reveal-btn" data-target="ans-3">💡 Density Analysis</button>
+          <div class="answer" id="ans-3">
+            As $N$ grows, $\pi(N)$ grows, expanding the lattice area $\pi(N)^2$ faster than $g(N)$, so the single-throw probability decreases as $\sim \frac{\ln^2 N}{N}$.
+          </div>
+        </div>
+      </div>
+
+      <div class="pedagogy-card rigor">
+        <h2>📐 Probability Density on Prime Product Spaces</h2>
+        <p>Let $\Omega_N = \mathbb{P}_{\le N} \times \mathbb{P}_{\le N}$ be the discrete sample space with uniform measure $\mu(p, q) = \frac{1}{\pi(N)^2}$. The hit event $H_N = \{(p, q) \in \Omega_N \mid p + q = N\}$ has measure:</p>
+        <div class="math-formula">
+          P(H_N) = \frac{r_2(N)}{\pi(N)^2} \sim \frac{2 \mathfrak{S}(N) \frac{N}{\ln^2 N}}{(N / \ln N)^2} = \frac{2 \mathfrak{S}(N)}{N}
+        </div>
+        <p>Because $P(H_N) \sim \Theta(1/N)$, independent Monte Carlo sampling converges to the exact singular series coefficient $\mathfrak{S}(N)$ by the Law of Large Numbers.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <a href="index.html">← Return to 100 Explorations Hub</a> | Goldbach Discovery Labs &copy; 2026
+  </footer>
+
+  <script src="i18n.js"></script>
+  <script src="common.js"></script>
+  <script>
+    const sliderN = document.getElementById('dart-n');
+    const dispN = document.getElementById('dart-n-val');
+    const btnThrow = document.getElementById('btn-throw-100');
+    const btnStream = document.getElementById('btn-auto-stream');
+    const btnClear = document.getElementById('btn-clear-darts');
+    const statTotal = document.getElementById('stat-total');
+    const statHits = document.getElementById('stat-hits');
+    const statRate = document.getElementById('stat-rate');
+    const statPairs = document.getElementById('stat-pairs');
+    const canvas = document.getElementById('dartCanvas');
+    const ctx = canvas.getContext('2d');
+
+    let totalThrows = 0;
+    let totalHits = 0;
+    let darts = [];
+    let isStreaming = false;
+    let streamInterval = null;
+
+    function resetStats() {
+      totalThrows = 0;
+      totalHits = 0;
+      darts = [];
+      statTotal.textContent = '0';
+      statHits.textContent = '0';
+      statRate.textContent = '0.00%';
+      const N = parseInt(sliderN.value);
+      const pairs = GLab.getGoldbachPairs(N);
+      statPairs.textContent = `${pairs.length} Pairs`;
+      render();
+    }
+
+    function throwBatch(count) {
+      const N = parseInt(sliderN.value);
+      const primes = GLab.getPrimes(N);
+      if (primes.length < 2) return;
+
+      for (let i = 0; i < count; i++) {
+        const p1 = primes[Math.floor(Math.random() * primes.length)];
+        const p2 = primes[Math.floor(Math.random() * primes.length)];
+        const isHit = (p1 + p2 === N);
+
+        totalThrows++;
+        if (isHit) totalHits++;
+
+        darts.push({ p1, p2, isHit });
+        if (darts.length > 1500) darts.shift(); // keep canvas responsive
+      }
+
+      statTotal.textContent = totalThrows.toLocaleString();
+      statHits.textContent = totalHits.toLocaleString();
+      const rate = totalThrows > 0 ? ((totalHits / totalThrows) * 100).toFixed(2) : '0.00';
+      statRate.textContent = `${rate}%`;
+
+      if (totalHits > 0) GLab.audio.playClick();
+      render();
+    }
+
+    function render() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const N = parseInt(sliderN.value);
+      const padding = 35;
+      const size = Math.min(canvas.width, canvas.height) - padding * 2;
+      const originX = (canvas.width - size) / 2;
+      const originY = padding;
+
+      // Board border
+      ctx.strokeStyle = '#334155';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(originX, originY, size, size);
+
+      // Goldbach Line: x + y = N  ->  y = N - x
+      // From (0, N) to (N, 0)
+      ctx.strokeStyle = '#34d399';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(originX, originY); // (0, N) in canvas y-down
+      ctx.lineTo(originX + size, originY + size); // (N, 0)
+      ctx.stroke();
+
+      // Goldbach target label
+      ctx.fillStyle = '#34d399';
+      ctx.font = 'bold 12px monospace';
+      ctx.fillText(`Goldbach Line: x + y = ${N}`, originX + 10, originY + 20);
+
+      // Render Darts
+      darts.forEach(d => {
+        const x = originX + (d.p1 / N) * size;
+        const y = originY + (1 - d.p2 / N) * size;
+
+        if (d.isHit) {
+          ctx.fillStyle = '#fbbf24';
+          ctx.beginPath();
+          ctx.arc(x, y, 4, 0, Math.PI * 2);
+          ctx.fill();
+        } else {
+          ctx.fillStyle = 'rgba(56, 189, 248, 0.4)';
+          ctx.beginPath();
+          ctx.arc(x, y, 2, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      });
+    }
+
+    function resizeCanvas() {
+      canvas.width = canvas.parentElement.clientWidth;
+      render();
+    }
+    window.addEventListener('resize', resizeCanvas);
+
+    btnThrow.addEventListener('click', () => throwBatch(200));
+
+    btnStream.addEventListener('click', () => {
+      isStreaming = !isStreaming;
+      if (isStreaming) {
+        btnStream.textContent = '⏸ Pause Stream';
+        btnStream.classList.add('btn-primary');
+        streamInterval = setInterval(() => throwBatch(30), 80);
+      } else {
+        btnStream.textContent = '▶ Auto Stream';
+        btnStream.classList.remove('btn-primary');
+        clearInterval(streamInterval);
+      }
+    });
+
+    btnClear.addEventListener('click', resetStats);
+
+    sliderN.addEventListener('input', () => {
+      dispN.textContent = sliderN.value;
+      resetStats();
+      GLab.audio.playClick();
+    });
+
+    GLab.init({
+      labNum: 64,
+      title: "Monte Carlo Prime Darts",
+      clusterNum: 7,
+      clusterName: "Combinatorics, Generating Functions & Probability",
+      prevId: "lab063_cramer_random_model",
+      nextId: "lab065_goldbach_matrix_100"
+    });
+
+    resizeCanvas();
+    resetStats();
+  </script>
+</body>
+</html>

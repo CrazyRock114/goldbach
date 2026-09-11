@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 036: Comet Density & Ratio Distribution - Goldbach Discovery Labs</title>
+  <link rel="stylesheet" href="common.css">
+  <style>
+    .histogram-stage {
+      height: 400px;
+      position: relative;
+    }
+  </style>
+</head>
+<body>
+  <div id="lab-nav" class="lab-nav"></div>
+
+  <div class="container">
+    <div class="lab-header">
+      <h1>Lab 036: Comet Density & Ratio Distribution</h1>
+      <p class="hook">Normalize the Goldbach comet by dividing out $N / \ln^2 N$. The resulting histogram reveals three distinct Gaussian peaks corresponding to modular resonances!</p>
+    </div>
+
+    <div class="lab-stage">
+      <div class="controls-bar">
+        <div class="control-group">
+          <label for="sample-size">Sample Range (N up to):</label>
+          <input type="range" id="sample-size" min="200" max="2000" step="100" value="1000">
+          <span style="font-size: 16px; font-weight: 700; color: var(--accent);" id="sample-val">1,000</span>
+        </div>
+        <div class="stat-pill" style="margin-left: auto;">
+          <span>Distribution Peaks:</span>
+          <span class="num" style="color: var(--green);">3 Modal Peaks</span>
+        </div>
+      </div>
+
+      <div class="canvas-container histogram-stage">
+        <canvas id="histCanvas" height="400"></canvas>
+      </div>
+
+      <div style="margin-top: 14px; background: var(--card-bg-subtle); padding: 12px 18px; border-radius: var(--radius-sm); border: 1px solid var(--card-border); display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap; gap: 12px;">
+        <div style="text-align: center;">
+          <span style="font-size: 11px; color: #94a3b8; text-transform: uppercase;">Peak 1 (6k ± 2)</span>
+          <div style="font-size: 18px; font-weight: 800; color: #34d399;">ρ ≈ 1.32</div>
+        </div>
+        <div style="text-align: center;">
+          <span style="font-size: 11px; color: #94a3b8; text-transform: uppercase;">Peak 2 (6k)</span>
+          <div style="font-size: 18px; font-weight: 800; color: #38bdf8;">ρ ≈ 2.64</div>
+        </div>
+        <div style="text-align: center;">
+          <span style="font-size: 11px; color: #94a3b8; text-transform: uppercase;">Peak 3 (30k Oasis)</span>
+          <div style="font-size: 18px; font-weight: 800; color: #fbbf24;">ρ ≈ 3.52</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pedagogy-grid">
+      <div class="pedagogy-card story">
+        <h2>✨ Intuitive Concept: The Three Bell Curves</h2>
+        <p>In raw counts, $g(N)$ seems to fluctuate chaotically between low valleys and high skyscrapers. But what happens if you divide by the overall growth rate $N / \ln^2 N$?</p>
+        <p>The chaos instantly condenses into <b>three beautifully neat peaks</b>!</p>
+        <ul>
+          <li><b>Peak 1 (Center $\approx 1.32$):</b> Numbers that are NOT divisible by 3 ($6k \pm 2$).</li>
+          <li><b>Peak 2 (Center $\approx 2.64$):</b> Numbers that ARE divisible by 3 ($6k$). Notice this is exactly $2 \times 1.32$!</li>
+          <li><b>Peak 3 (Center $\approx 3.52$):</b> Numbers divisible by both 3 and 5 ($30k$)! ($2.64 \times 4/3 \approx 3.52$).</li>
+        </ul>
+      </div>
+
+      <div class="pedagogy-card challenge">
+        <h2>🎯 Try This! (Hands-On Challenges)</h2>
+        <div class="challenge-item">
+          <span class="badge">Challenge 1</span>
+          Why is there a clear "valley" (gap) between Peak 1 ($\approx 1.32$) and Peak 2 ($\approx 2.64$)?
+          <button class="reveal-btn" data-target="ans-1">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-1">
+            Because an integer is either divisible by 3 or it is not! There is no "half-divisibility" by 3. This sharp arithmetic dichotomy creates the pronounced valley separating the two peaks.
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 2</span>
+          Slide sample size up to 2,000. Do the peaks get sharper or blurrier?
+          <button class="reveal-btn" data-target="ans-2">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-2">
+            The peaks become <b>sharper and more distinct</b>! As $N$ grows, the random fluctuations become small compared to the dominating modular factors.
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 3</span>
+          Can any integer ever have a normalized ratio $\rho < 1.0$?
+          <button class="reveal-btn" data-target="ans-3">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-3">
+            For small numbers like $N=4$ or $N=6$, edge effects can occur, but asymptotically, the minimum ratio is strictly bounded below by $2 C_2 \approx 1.3203 > 1.0$!
+          </div>
+        </div>
+      </div>
+
+      <div class="pedagogy-card rigor">
+        <h2>📐 Mathematical Rigor & Formal Definition</h2>
+        <p>Define the normalized density random variable $X_N = \frac{g(N)}{N / \ln^2 N}$. The probability measure on $\{4, 6, \dots, N\}$ decomposes as a finite mixture of conditional distributions:</p>
+        <div class="math-formula">
+          dF(x) = \sum_{r \in (\mathbb{Z}/30\mathbb{Z})} \frac{1}{30} dF_r(x)
+        </div>
+        <p>Each conditional distribution $F_r$ converges weakly to a Dirac measure concentrated at $\frac{1}{2} \mathfrak{S}(r)$, proving the multi-modal limit distribution.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <a href="index.html">← Return to 100 Explorations Hub</a> | Goldbach Discovery Labs &copy; 2026
+  </footer>
+
+  <script src="i18n.js"></script>
+  <script src="common.js"></script>
+  <script>
+    const slider = document.getElementById('sample-size');
+    const sampleVal = document.getElementById('sample-val');
+    const canvas = document.getElementById('histCanvas');
+    const ctx = canvas.getContext('2d');
+
+    function renderHistogram() {
+      const maxN = parseInt(slider.value);
+      sampleVal.textContent = maxN.toLocaleString();
+      GLab.sieve(maxN);
+
+      // Collect normalized ratios
+      const ratios = [];
+      for (let n = 12; n <= maxN; n += 2) {
+        const pairs = GLab.getGoldbachPairs(n).length;
+        const logN = Math.log(n);
+        const baseline = n / (logN * logN);
+        const rho = pairs / baseline;
+        ratios.push(rho);
+      }
+
+      const numBins = 45;
+      const minRho = 0.5;
+      const maxRho = 4.5;
+      const bins = new Array(numBins).fill(0);
+
+      ratios.forEach(r => {
+        if (r >= minRho && r < maxRho) {
+          const bIdx = Math.floor(((r - minRho) / (maxRho - minRho)) * numBins);
+          bins[bIdx]++;
+        }
+      });
+
+      const maxBin = Math.max(...bins, 1);
+
+      const w = canvas.width = canvas.parentElement.clientWidth;
+      const h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      const margin = 45;
+      const plotW = w - margin * 2;
+      const plotH = h - margin * 2;
+
+      // Draw Axes
+      ctx.strokeStyle = '#334155';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(margin, h - margin);
+      ctx.lineTo(w - margin, h - margin);
+      ctx.moveTo(margin, h - margin);
+      ctx.lineTo(margin, margin);
+      ctx.stroke();
+
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = '11px sans-serif';
+      ctx.fillText('Normalized Ratio ρ = g(N) / (N / ln² N)', w / 2 - 80, h - margin + 30);
+      ctx.fillText('Frequency', margin - 10, margin - 10);
+
+      // Draw Histogram Bars
+      const binWidth = plotW / numBins;
+
+      bins.forEach((count, idx) => {
+        const x = margin + idx * binWidth;
+        const barH = (count / maxBin) * plotH;
+        const y = h - margin - barH;
+
+        const binCenter = minRho + ((idx + 0.5) / numBins) * (maxRho - minRho);
+        let barColor = '#34d399'; // Default Peak 1
+        if (binCenter > 2.0 && binCenter < 3.0) barColor = '#38bdf8'; // Peak 2
+        else if (binCenter >= 3.0) barColor = '#fbbf24'; // Peak 3
+
+        ctx.fillStyle = barColor;
+        ctx.fillRect(x + 1, y, binWidth - 2, barH);
+      });
+
+      // Marker lines for theoretical peaks
+      const drawMarker = (rhoVal, label, color) => {
+        const mx = margin + ((rhoVal - minRho) / (maxRho - minRho)) * plotW;
+        ctx.strokeStyle = color;
+        ctx.setLineDash([4, 4]);
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(mx, margin);
+        ctx.lineTo(mx, h - margin);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        ctx.fillStyle = color;
+        ctx.font = 'bold 11px monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText(label, mx, margin - 6);
+      };
+
+      drawMarker(1.32, '1.32 (6k±2)', '#34d399');
+      drawMarker(2.64, '2.64 (6k)', '#38bdf8');
+      drawMarker(3.52, '3.52 (30k)', '#fbbf24');
+    }
+
+    slider.addEventListener('input', () => {
+      renderHistogram();
+      GLab.audio.playTone(320 + parseInt(slider.value) / 8, 0.05, 'sine', 0.05);
+    });
+
+    window.addEventListener('resize', renderHistogram);
+
+    GLab.init({
+      labNum: 36,
+      title: "Comet Density & Ratio Distribution",
+      clusterNum: 4,
+      clusterName: "The Goldbach Comet & Asymptotic Landscape",
+      prevId: "lab035_twin_prime_constant",
+      nextId: "lab037_smallest_prime_hunter"
+    });
+
+    renderHistogram();
+  </script>
+</body>
+</html>

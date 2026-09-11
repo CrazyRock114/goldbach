@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 043: The Circle Method (Major & Minor Arcs) - Goldbach Discovery Labs</title>
+  <link rel="stylesheet" href="common.css">
+  <style>
+    .circle-stage {
+      height: 420px;
+      position: relative;
+    }
+  </style>
+</head>
+<body>
+  <div id="lab-nav" class="lab-nav"></div>
+
+  <div class="container">
+    <div class="lab-header">
+      <h1>Lab 043: The Circle Method (Major & Minor Arcs)</h1>
+      <p class="hook">The Hardy-Littlewood Circle Method is the most powerful weapon in additive number theory. See how prime vectors resonate into massive beams on "Major Arcs" and cancel into dust on "Minor Arcs"!</p>
+    </div>
+
+    <div class="lab-stage">
+      <div class="controls-bar">
+        <div class="control-group">
+          <label for="alpha-slider">Circle Angle $\alpha$ (0 to 1):</label>
+          <input type="range" id="alpha-slider" min="0" max="1000" step="1" value="333">
+          <span style="font-size: 16px; font-weight: 700; color: var(--accent);" id="alpha-val">α = 0.333 (≈ 1/3)</span>
+        </div>
+        <button class="btn btn-sm" id="btn-snap-major">Snap to Major Arc (1/3) ▶</button>
+        <button class="btn btn-sm" id="btn-snap-minor">Snap to Minor Arc (0.391) ▶</button>
+        <div class="stat-pill" style="margin-left: auto;">
+          <span>Arc Classification:</span>
+          <span class="num" id="arc-badge" style="color: var(--green);">MAJOR ARC (Resonance!)</span>
+        </div>
+      </div>
+
+      <div class="canvas-container circle-stage">
+        <canvas id="circleCanvas" height="420"></canvas>
+      </div>
+
+      <div style="margin-top: 14px; background: var(--card-bg-subtle); padding: 12px 18px; border-radius: var(--radius-sm); border: 1px solid var(--card-border); display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap; gap: 12px;">
+        <div style="text-align: center;">
+          <span style="font-size: 11px; color: #fbbf24; text-transform: uppercase;">Major Arcs (𝔐)</span>
+          <div style="font-size: 15px; font-weight: 700; color: #fbbf24;">Constructive Resonance around a/q</div>
+        </div>
+        <div style="text-align: center;">
+          <span style="font-size: 11px; color: #94a3b8; text-transform: uppercase;">Minor Arcs (𝔪)</span>
+          <div style="font-size: 15px; font-weight: 700; color: #94a3b8;">Destructive Phase Cancellation</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pedagogy-grid">
+      <div class="pedagogy-card story">
+        <h2>✨ Intuitive Concept: Antennas in the Wind</h2>
+        <p>Imagine setting up antennas around a circle to detect radio signals. Each prime number $p$ is an antenna pointing at angle $2\pi p \alpha$.</p>
+        <ul>
+          <li><b>Major Arcs ($\mathfrak{M}$):</b> When $\alpha$ is close to a simple fraction like $1/2, 1/3, 2/3, 1/4$, the prime antennas all point in nearly the same direction! They add together into a <b>giant constructive beam</b>.</li>
+          <li><b>Minor Arcs ($\mathfrak{m}$):</b> Everywhere else, the prime antennas point in all random directions, pointing against one another and <b>canceling out into near zero</b>!</li>
+        </ul>
+        <p>By proving that the cancelation on minor arcs is strong enough, mathematicians proved that the major arc signal always wins!</p>
+      </div>
+
+      <div class="pedagogy-card challenge">
+        <h2>🎯 Try This! (Hands-On Challenges)</h2>
+        <div class="challenge-item">
+          <span class="badge">Challenge 1</span>
+          Slide $\alpha$ to $0.5$ ($1/2$). What happens to the Fourier vector coil?
+          <button class="reveal-btn" data-target="ans-1">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-1">
+            Since all odd primes are odd, $e^{2\pi i p (1/2)} = e^{i \pi p} = -1$! All prime vectors point directly left in absolute unison, creating the largest possible major arc beam!
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 2</span>
+          Slide $\alpha$ to a Minor Arc (e.g. $0.391$). How does the vector coil look?
+          <button class="reveal-btn" data-target="ans-2">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-2">
+            The vectors spiral tightly in random loops, canceling each other out into a tight cluster near the origin with almost zero net amplitude!
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 3</span>
+          Why is the Circle Method named after a circle?
+          <button class="reveal-btn" data-target="ans-3">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-3">
+            Because in complex analysis, Cauchy's integral formula integrates along a closed circular contour $|z| = r$ in the complex plane to extract polynomial coefficients!
+          </div>
+        </div>
+      </div>
+
+      <div class="pedagogy-card rigor">
+        <h2>📐 Mathematical Rigor & Formal Definition</h2>
+        <p>Let $f(\alpha) = \sum_{p \le N} (\ln p) e^{2\pi i p \alpha}$. The unit interval $[0, 1]$ is dissected into disjoint sets $\mathfrak{M} \cup \mathfrak{m}$:</p>
+        <div class="math-formula">
+          \mathfrak{M}(q, a) = \left\{\alpha \in [0, 1] : \left|\alpha - \frac{a}{q}\right| \le \frac{P}{N}\right\}, \quad 1 \le q \le P, \quad (a, q) = 1
+        </div>
+        <p>On $\mathfrak{M}$, Dirichlet characters provide asymptotic evaluation $\int_\mathfrak{M} f(\alpha)^3 e^{-2\pi i N \alpha} d\alpha \sim \frac{1}{2} \mathfrak{S}(N) N^2$, while on $\mathfrak{m}$, Vinogradov's bilinear estimate ensures $\sup_{\alpha \in \mathfrak{m}} |f(\alpha)| \ll N (\ln N)^{-A}$.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <a href="index.html">← Return to 100 Explorations Hub</a> | Goldbach Discovery Labs &copy; 2026
+  </footer>
+
+  <script src="i18n.js"></script>
+  <script src="common.js"></script>
+  <script>
+    const slider = document.getElementById('alpha-slider');
+    const alphaVal = document.getElementById('alpha-val');
+    const arcBadge = document.getElementById('arc-badge');
+    const btnMajor = document.getElementById('btn-snap-major');
+    const btnMinor = document.getElementById('btn-snap-minor');
+    const canvas = document.getElementById('circleCanvas');
+    const ctx = canvas.getContext('2d');
+
+    const primes = GLab.getPrimes(80);
+
+    function isNearMajor(alpha) {
+      const rationals = [
+        { q: 1, a: 0 }, { q: 1, a: 1 },
+        { q: 2, a: 1 },
+        { q: 3, a: 1 }, { q: 3, a: 2 },
+        { q: 4, a: 1 }, { q: 4, a: 3 },
+        { q: 6, a: 1 }, { q: 6, a: 5 }
+      ];
+      for (const r of rationals) {
+        if (Math.abs(alpha - r.a / r.q) < 0.025) {
+          return `${r.a}/${r.q}`;
+        }
+      }
+      return null;
+    }
+
+    function renderCircleMethod() {
+      const alpha = parseInt(slider.value) / 1000;
+      alphaVal.textContent = `α = ${alpha.toFixed(3)}`;
+
+      const majorFraction = isNearMajor(alpha);
+      if (majorFraction) {
+        arcBadge.textContent = `MAJOR ARC (≈ ${majorFraction})`;
+        arcBadge.style.color = 'var(--green)';
+      } else {
+        arcBadge.textContent = 'MINOR ARC (Phase Cancellation)';
+        arcBadge.style.color = 'var(--muted)';
+      }
+
+      const w = canvas.width = canvas.parentElement.clientWidth;
+      const h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      // Left: Unit Circle with Major Arcs
+      const leftCx = w * 0.28;
+      const cy = h / 2;
+      const R = 110;
+
+      ctx.strokeStyle = '#334155';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(leftCx, cy, R, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Highlight Major Arcs along circle rim
+      const majorFractions = [0, 1/2, 1/3, 2/3, 1/4, 3/4, 1/6, 5/6];
+      majorFractions.forEach(f => {
+        const th = f * Math.PI * 2 - Math.PI / 2;
+        ctx.strokeStyle = '#fbbf24';
+        ctx.lineWidth = 6;
+        ctx.beginPath();
+        ctx.arc(leftCx, cy, R, th - 0.12, th + 0.12);
+        ctx.stroke();
+      });
+
+      // Pointer for current alpha
+      const curTh = alpha * Math.PI * 2 - Math.PI / 2;
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(leftCx, cy);
+      ctx.lineTo(leftCx + Math.cos(curTh) * (R + 15), cy + Math.sin(curTh) * (R + 15));
+      ctx.stroke();
+
+      ctx.fillStyle = '#38bdf8';
+      ctx.beginPath();
+      ctx.arc(leftCx + Math.cos(curTh) * (R + 15), cy + Math.sin(curTh) * (R + 15), 5, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Right: Fourier Vector Walk Sum
+      const rightCx = w * 0.72;
+      let walkX = rightCx;
+      let walkY = cy;
+      const scale = 5.5;
+
+      ctx.strokeStyle = majorFraction ? '#fbbf24' : '#64748b';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(walkX, walkY);
+
+      primes.forEach(p => {
+        const vecTheta = 2 * Math.PI * p * alpha;
+        walkX += Math.cos(vecTheta) * scale;
+        walkY += Math.sin(vecTheta) * scale;
+        ctx.lineTo(walkX, walkY);
+      });
+      ctx.stroke();
+
+      // Origin dot
+      ctx.fillStyle = '#38bdf8';
+      ctx.beginPath();
+      ctx.arc(rightCx, cy, 5, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Tip dot (resultant amplitude |f(alpha)|)
+      ctx.fillStyle = majorFraction ? '#34d399' : '#f43f5e';
+      ctx.beginPath();
+      ctx.arc(walkX, walkY, 7, 0, Math.PI * 2);
+      ctx.fill();
+
+      const totalDist = Math.hypot(walkX - rightCx, walkY - cy);
+      ctx.fillStyle = '#f8fafc';
+      ctx.font = 'bold 13px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText(`Vector Sum Length: |f(α)| = ${(totalDist / scale).toFixed(1)}`, rightCx, h - 25);
+    }
+
+    slider.addEventListener('input', () => {
+      renderCircleMethod();
+      GLab.audio.playTone(300 + parseInt(slider.value) / 2, 0.04, 'sine', 0.06);
+    });
+
+    btnMajor.addEventListener('click', () => {
+      slider.value = 333; // 1/3
+      renderCircleMethod();
+      GLab.audio.playSuccess();
+    });
+
+    btnMinor.addEventListener('click', () => {
+      slider.value = 391; // Minor Arc
+      renderCircleMethod();
+      GLab.audio.playClick();
+    });
+
+    window.addEventListener('resize', renderCircleMethod);
+
+    GLab.init({
+      labNum: 43,
+      title: "The Circle Method (Major & Minor Arcs)",
+      clusterNum: 5,
+      clusterName: "Weak Goldbach & 3-Prime Partitions",
+      prevId: "lab042_journey_271_years",
+      nextId: "lab044_3d_simplex"
+    });
+
+    renderCircleMethod();
+  </script>
+</body>
+</html>

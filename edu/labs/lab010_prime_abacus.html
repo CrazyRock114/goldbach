@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 010: The Prime Bead Abacus - Goldbach Discovery Labs</title>
+  <link rel="stylesheet" href="common.css">
+  <style>
+    .abacus-stage {
+      height: 380px;
+      position: relative;
+    }
+    .abacus-readout {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      background: var(--card-bg-subtle);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-sm);
+      padding: 12px 20px;
+      margin-top: 14px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div id="lab-nav" class="lab-nav"></div>
+
+  <div class="container">
+    <div class="lab-header">
+      <h1>Lab 010: The Prime Bead Abacus</h1>
+      <p class="hook">Slide authentic prime beads along dual brass wires to reach exact numerical equilibrium. When the top bead $p$ and bottom bead $q$ sum to target $N$, the abacus glows with balanced energy!</p>
+    </div>
+
+    <div class="lab-stage">
+      <div class="controls-bar">
+        <div class="control-group">
+          <label for="target-abacus">Target Even <i>N</i>:</label>
+          <input type="range" id="target-abacus" min="6" max="50" step="2" value="20">
+          <span style="font-size: 18px; font-weight: 800; color: var(--accent);" id="abacus-target-val">20</span>
+        </div>
+        <button class="btn btn-sm" id="btn-snap-next-pair">⚡ Snap to Next Valid Pair</button>
+        <div class="stat-pill" style="margin-left: auto;">
+          <span>Balance Status:</span>
+          <span class="num" id="balance-badge" style="color: var(--accent);">Adjusting...</span>
+        </div>
+      </div>
+
+      <div class="canvas-container abacus-stage">
+        <canvas id="abacusCanvas" height="380"></canvas>
+      </div>
+
+      <div class="abacus-readout">
+        <div style="text-align: center;">
+          <div style="font-size: 12px; color: var(--muted); text-transform: uppercase;">Top Wire (p)</div>
+          <div style="font-size: 24px; font-weight: 800; color: #38bdf8;" id="readout-p">3</div>
+        </div>
+        <div style="font-size: 28px; font-weight: 800; color: var(--muted);">+</div>
+        <div style="text-align: center;">
+          <div style="font-size: 12px; color: var(--muted); text-transform: uppercase;">Bottom Wire (q)</div>
+          <div style="font-size: 24px; font-weight: 800; color: #34d399;" id="readout-q">17</div>
+        </div>
+        <div style="font-size: 28px; font-weight: 800; color: var(--muted);">=</div>
+        <div style="text-align: center;">
+          <div style="font-size: 12px; color: var(--muted); text-transform: uppercase;">Current Sum (p + q)</div>
+          <div style="font-size: 24px; font-weight: 800; color: var(--accent);" id="readout-sum">20</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pedagogy-grid">
+      <div class="pedagogy-card story">
+        <h2>✨ Intuitive Concept: Dual Wire Balancing</h2>
+        <p>The abacus is one of humanity's earliest counting tools. On this <b>Prime Bead Abacus</b>, each brass wire is calibrated to prime positions.</p>
+        <p>You control both wires independently. As you slide the top bead $p$ to the right, the bottom bead $q$ must adjust to keep the balance beam aligned with target weight $N$. If both numbers land on prime notches, the mechanical frame locks into place!</p>
+      </div>
+
+      <div class="pedagogy-card challenge">
+        <h2>🎯 Try This! (Hands-On Challenges)</h2>
+        <div class="challenge-item">
+          <span class="badge">Challenge 1</span>
+          Set Target $N=20$. Drag beads to discover both balanced prime configurations.
+          <button class="reveal-btn" data-target="ans-1">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-1">
+            The two balanced solutions are: $3 + 17 = 20$ and $7 + 13 = 20$.
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 2</span>
+          Try Target $N=30$. How many distinct balanced settings can you find?
+          <button class="reveal-btn" data-target="ans-2">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-2">
+            There are 3 solutions: $7 + 23 = 30$, $11 + 19 = 30$, and $13 + 17 = 30$.
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 3</span>
+          Why are there no prime notches for even numbers $>2$ on either wire?
+          <button class="reveal-btn" data-target="ans-3">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-3">
+            Because every even number greater than 2 is divisible by 2 and therefore composite!
+          </div>
+        </div>
+      </div>
+
+      <div class="pedagogy-card rigor">
+        <h2>📐 Mathematical Rigor & Formal Definition</h2>
+        <p>The prime abacus defines a discrete constrained optimization on the discrete product manifold $\mathbb{P} \times \mathbb{P} \subset \mathbb{N}^2$:</p>
+        <div class="math-formula">
+          \Phi(p, q) = |p + q - N|
+        </div>
+        <p>Equilibrium is defined by the zero-energy locus $\Phi(p, q) = 0$. Goldbach's conjecture asserts that the zero locus is non-empty for all $N \in 2\mathbb{N}_{\ge 4}$.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <a href="index.html">← Return to 100 Explorations Hub</a> | Goldbach Discovery Labs &copy; 2026
+  </footer>
+
+  <script src="i18n.js"></script>
+  <script src="common.js"></script>
+  <script>
+    const slider = document.getElementById('target-abacus');
+    const targetVal = document.getElementById('abacus-target-val');
+    const balanceBadge = document.getElementById('balance-badge');
+    const readoutP = document.getElementById('readout-p');
+    const readoutQ = document.getElementById('readout-q');
+    const readoutSum = document.getElementById('readout-sum');
+    const btnSnap = document.getElementById('btn-snap-next-pair');
+    const canvas = document.getElementById('abacusCanvas');
+    const ctx = canvas.getContext('2d');
+
+    const primes = GLab.getPrimes(60);
+    let pIdx = 1; // prime 3
+    let qIdx = 6; // prime 17
+
+    let draggingWire = null;
+
+    function renderAbacus() {
+      const n = parseInt(slider.value);
+      targetVal.textContent = n;
+
+      const pVal = primes[pIdx];
+      const qVal = primes[qIdx];
+      const sum = pVal + qVal;
+
+      readoutP.textContent = pVal;
+      readoutQ.textContent = qVal;
+      readoutSum.textContent = sum;
+
+      if (sum === n) {
+        balanceBadge.style.color = 'var(--green)';
+        balanceBadge.textContent = '✔ IN EQUILIBRIUM!';
+      } else if (sum < n) {
+        balanceBadge.style.color = 'var(--primary)';
+        balanceBadge.textContent = `Under Target (-${n - sum})`;
+      } else {
+        balanceBadge.style.color = 'var(--danger)';
+        balanceBadge.textContent = `Over Target (+${sum - n})`;
+      }
+
+      const w = canvas.width = canvas.parentElement.clientWidth;
+      const h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      // Wooden Frame borders
+      const frameMargin = 40;
+      const frameX = frameMargin;
+      const frameY = 30;
+      const frameW = w - frameMargin * 2;
+      const frameH = h - 60;
+
+      // Frame background
+      ctx.fillStyle = '#1e1b18';
+      ctx.fillRect(frameX, frameY, frameW, frameH);
+
+      // Frame border (wood texture)
+      ctx.strokeStyle = '#78350f';
+      ctx.lineWidth = 14;
+      ctx.strokeRect(frameX, frameY, frameW, frameH);
+
+      ctx.strokeStyle = '#b45309';
+      ctx.lineWidth = 4;
+      ctx.strokeRect(frameX + 5, frameY + 5, frameW - 10, frameH - 10);
+
+      // Brass Wires
+      const wire1Y = frameY + frameH * 0.35;
+      const wire2Y = frameY + frameH * 0.65;
+      const wireLeft = frameX + 25;
+      const wireRight = frameX + frameW - 25;
+      const wireSpan = wireRight - wireLeft;
+
+      ctx.strokeStyle = '#d97706';
+      ctx.lineWidth = 4;
+
+      // Wire 1
+      ctx.beginPath();
+      ctx.moveTo(wireLeft, wire1Y);
+      ctx.lineTo(wireRight, wire1Y);
+      ctx.stroke();
+
+      // Wire 2
+      ctx.beginPath();
+      ctx.moveTo(wireLeft, wire2Y);
+      ctx.lineTo(wireRight, wire2Y);
+      ctx.stroke();
+
+      // Prime notches on wires
+      primes.forEach((p, idx) => {
+        if (p > 50) return;
+        const frac = p / 50;
+        const x = wireLeft + frac * wireSpan;
+
+        ctx.fillStyle = 'rgba(251, 191, 36, 0.4)';
+        ctx.fillRect(x - 1, wire1Y - 8, 2, 16);
+        ctx.fillRect(x - 1, wire2Y - 8, 2, 16);
+
+        if (idx % 2 === 0) {
+          ctx.fillStyle = '#94a3b8';
+          ctx.font = '9px monospace';
+          ctx.textAlign = 'center';
+          ctx.fillText(p, x, wire1Y - 14);
+          ctx.fillText(p, x, wire2Y + 22);
+        }
+      });
+
+      // Draw Top Bead (Prime p)
+      const bead1X = wireLeft + (pVal / 50) * wireSpan;
+      drawAbacusBead(bead1X, wire1Y, pVal, '#38bdf8');
+
+      // Draw Bottom Bead (Prime q)
+      const bead2X = wireLeft + (qVal / 50) * wireSpan;
+      drawAbacusBead(bead2X, wire2Y, qVal, '#34d399');
+
+      // Vertical balance indicator cord if sum === n
+      if (sum === n) {
+        ctx.strokeStyle = 'rgba(52, 211, 153, 0.7)';
+        ctx.lineWidth = 3;
+        ctx.setLineDash([4, 4]);
+        ctx.beginPath();
+        ctx.moveTo(bead1X, wire1Y);
+        ctx.lineTo(bead2X, wire2Y);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
+    }
+
+    function drawAbacusBead(x, y, val, color) {
+      const radiusX = 22;
+      const radiusY = 32;
+
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.ellipse(x, y, radiusX, radiusY, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Highlight sheen
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.35)';
+      ctx.beginPath();
+      ctx.ellipse(x - 6, y - 6, radiusX * 0.4, radiusY * 0.4, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Text label
+      ctx.fillStyle = '#0b1120';
+      ctx.font = 'bold 15px monospace';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(val, x, y);
+    }
+
+    // Dragging interaction
+    canvas.addEventListener('pointerdown', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const clickY = e.clientY - rect.top;
+      const h = canvas.height;
+      const wire1Y = 30 + (h - 60) * 0.35;
+      const wire2Y = 30 + (h - 60) * 0.65;
+
+      if (Math.abs(clickY - wire1Y) < 40) {
+        draggingWire = 1;
+      } else if (Math.abs(clickY - wire2Y) < 40) {
+        draggingWire = 2;
+      }
+      handlePointerMove(e);
+    });
+
+    window.addEventListener('pointerup', () => {
+      draggingWire = null;
+    });
+
+    window.addEventListener('pointermove', (e) => {
+      if (draggingWire) handlePointerMove(e);
+    });
+
+    function handlePointerMove(e) {
+      const rect = canvas.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const w = canvas.width;
+      const wireLeft = 65;
+      const wireRight = w - 65;
+      const wireSpan = wireRight - wireLeft;
+
+      const frac = Math.max(0, Math.min(1, (clickX - wireLeft) / wireSpan));
+      const targetVal = frac * 50;
+
+      // Find nearest prime
+      let nearestIdx = 0;
+      let minDiff = 999;
+      primes.forEach((p, idx) => {
+        const diff = Math.abs(p - targetVal);
+        if (diff < minDiff) {
+          minDiff = diff;
+          nearestIdx = idx;
+        }
+      });
+
+      if (draggingWire === 1 && pIdx !== nearestIdx) {
+        pIdx = nearestIdx;
+        renderAbacus();
+        GLab.audio.playTone(400 + primes[pIdx] * 10, 0.06, 'triangle');
+      } else if (draggingWire === 2 && qIdx !== nearestIdx) {
+        qIdx = nearestIdx;
+        renderAbacus();
+        GLab.audio.playTone(300 + primes[qIdx] * 10, 0.06, 'triangle');
+      }
+    }
+
+    let snapPairIdx = 0;
+    btnSnap.addEventListener('click', () => {
+      const n = parseInt(slider.value);
+      const pairs = GLab.getGoldbachPairs(n);
+      if (pairs.length === 0) return;
+
+      const pair = pairs[snapPairIdx % pairs.length];
+      snapPairIdx++;
+
+      pIdx = primes.indexOf(pair[0]);
+      qIdx = primes.indexOf(pair[1]);
+      renderAbacus();
+      GLab.audio.playSuccess();
+    });
+
+    slider.addEventListener('input', () => {
+      renderAbacus();
+      GLab.audio.playClick();
+    });
+
+    window.addEventListener('resize', renderAbacus);
+
+    GLab.init({
+      labNum: 10,
+      title: "The Prime Bead Abacus",
+      clusterNum: 1,
+      clusterName: "Foundations & Small Integers",
+      prevId: "lab009_dominoes",
+      nextId: "lab011_mod6_gears"
+    });
+
+    renderAbacus();
+  </script>
+</body>
+</html>

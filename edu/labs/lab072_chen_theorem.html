@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 072: Chen's Theorem (1 + 2) - Goldbach Discovery Labs</title>
+  <link rel="stylesheet" href="common.css">
+  <style>
+    .chen-dashboard {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+    @media (max-width: 768px) {
+      .chen-dashboard {
+        grid-template-columns: 1fr;
+      }
+    }
+    .hud-box {
+      background: var(--card-bg-subtle);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-sm);
+      padding: 14px;
+      text-align: center;
+    }
+    .hud-label {
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .hud-val {
+      font-size: 26px;
+      font-weight: 800;
+      font-family: monospace;
+      margin-top: 4px;
+    }
+    .chen-pairs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 8px;
+      max-height: 280px;
+      overflow-y: auto;
+      padding: 4px;
+    }
+    .chen-card {
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 8px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      font-family: monospace;
+    }
+    .chen-card.goldbach {
+      border-color: #34d399;
+      background: rgba(6, 78, 59, 0.2);
+    }
+    .chen-card.semiprime {
+      border-color: #38bdf8;
+      background: rgba(30, 58, 138, 0.2);
+    }
+    .type-badge {
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+    .type-badge.gb {
+      background: #065f46;
+      color: #34d399;
+    }
+    .type-badge.semi {
+      background: #1e3a8a;
+      color: #38bdf8;
+    }
+  </style>
+</head>
+<body>
+  <div id="lab-nav" class="lab-nav"></div>
+
+  <div class="container">
+    <div class="lab-header">
+      <h1>Lab 072: Chen's Theorem: $N = p + P_2$ (1 + 2)</h1>
+      <p class="hook">In 1973, Chinese mathematician <b>Chen Jingrun (陈景润)</b> astonished the mathematical world with "1 + 2": every sufficiently large even number is the sum of a prime and an "almost prime" having at most 2 prime factors!</p>
+    </div>
+
+    <div class="lab-stage">
+      <div class="controls-bar">
+        <div class="control-group">
+          <label for="chen-n">Target Even <i>N</i>:</label>
+          <input type="range" id="chen-n" min="10" max="150" step="2" value="30">
+          <span style="font-size: 18px; font-weight: 800; color: var(--accent);" id="chen-n-val">30</span>
+        </div>
+        <div class="stat-pill" style="margin-left: auto;">
+          <span>Theorem Status:</span>
+          <span class="num" style="color: #34d399;">PROVEN THEOREM (Chen 1973)</span>
+        </div>
+      </div>
+
+      <div class="chen-dashboard">
+        <div class="hud-box">
+          <div class="hud-label">True Goldbach Pairs (1 + 1)</div>
+          <div class="hud-val" style="color: #34d399;" id="cnt-goldbach">3 Pairs</div>
+          <div style="font-size: 11px; color: var(--muted); margin-top: 2px;">p + Prime</div>
+        </div>
+        <div class="hud-box">
+          <div class="hud-label">Semiprime Pairs (1 + 2)</div>
+          <div class="hud-val" style="color: #38bdf8;" id="cnt-semiprime">5 Pairs</div>
+          <div style="font-size: 11px; color: var(--muted); margin-top: 2px;">p + (q₁ · q₂)</div>
+        </div>
+        <div class="hud-box">
+          <div class="hud-label">Total Chen Solutions</div>
+          <div class="hud-val" style="color: #fbbf24;" id="cnt-total">8 Solutions</div>
+          <div style="font-size: 11px; color: var(--muted); margin-top: 2px;">Guaranteed ≥ 1 for large N</div>
+        </div>
+      </div>
+
+      <div style="font-size: 12px; color: var(--muted); text-transform: uppercase; margin-bottom: 6px;">All Valid Chen Decompositions for Target N:</div>
+      <div class="chen-pairs-grid" id="pairs-grid"></div>
+    </div>
+
+    <div class="pedagogy-grid">
+      <div class="pedagogy-card story">
+        <h2>✨ The Summit of Modern Sieve Theory</h2>
+        <p>In the 1920s through 1960s, sieve theorists chased Goldbach by relaxing the primality condition to "almost primes" $P_r$ (numbers with at most $r$ prime factors):</p>
+        <ul>
+          <li><b>Brun (1920):</b> Proved "9 + 9" (every large even number is the sum of two numbers, each with $\le 9$ factors).</li>
+          <li><b>Rényi (1947):</b> Proved "$1 + c$" for some constant $c$.</li>
+          <li><b>Pan Chengdong & Wang Yuan:</b> Pushed bounds to "$1 + 4$" and "$1 + 3$".</li>
+          <li><b>Chen Jingrun (1966/1973):</b> Reached the ultimate pinnacle: <b>"1 + 2"</b>!</li>
+        </ul>
+        <p>Chen proved that every large even number is either $p + p'$ (a true Goldbach pair!) or $p + (q_1 \cdot q_2)$ (a prime plus a semiprime). To date, "1 + 2" remains the closest humanity has ever reached to the full conjecture.</p>
+      </div>
+
+      <div class="pedagogy-card challenge">
+        <h2>🎯 Try This! (Hands-On Challenges)</h2>
+        <div class="challenge-item">
+          <span class="badge">Challenge 1</span>
+          Set $N = 14$. Identify which decompositions are (1 + 1) and which are (1 + 2).
+          <button class="reveal-btn" data-target="ans-1">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-1">
+            $14 = 3 + 11$ (1+1, both prime), $14 = 7 + 7$ (1+1, both prime). But also $14 = 5 + 9 = 5 + (3 \times 3)$ is a valid (1+2) Chen decomposition!
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 2</span>
+          Why does adding semiprimes $(q_1 \cdot q_2)$ bypass the classical "parity barrier" of sieve theory?
+          <button class="reveal-btn" data-target="ans-2">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-2">
+            Chen introduced a brilliant "switching principle": by sieving weights over both primes and almost primes simultaneously, the parity obstruction cancels out, allowing rigorous positive lower bounds!
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 3</span>
+          For $N = 30$, how many total Chen decompositions are there?
+          <button class="reveal-btn" data-target="ans-3">💡 Count Check</button>
+          <div class="answer" id="ans-3">
+            $N=30$ has 3 true Goldbach pairs ($7+23, 11+19, 13+17$) plus multiple (1+2) semiprime pairs ($5+25 = 5+5^2$, $19+11$, etc.), yielding over 6 Chen solutions!
+          </div>
+        </div>
+      </div>
+
+      <div class="pedagogy-card rigor">
+        <h2>📐 Formal Statement of Chen's Theorem (1973)</h2>
+        <p>Let $P_2$ denote an integer with at most two prime factors counted with multiplicity ($\Omega(n) \le 2$).</p>
+        <div class="math-formula">
+          \forall N \in 2\mathbb{N}, N \ge N_0: \quad \sum_{\substack{p + P_2 = N \\ p \in \mathbb{P}, \Omega(P_2) \le 2}} 1 \ge 0.67 \prod_{p > 2, p \mid N} \frac{p-1}{p-2} \prod_{p > 2} \left(1 - \frac{1}{(p-1)^2}\right) \frac{N}{\ln^2 N}
+        </div>
+        <p>Because the lower bound coefficient $0.67 \mathfrak{S}(N) \frac{N}{\ln^2 N} > 0$ for all large $N$, Chen's theorem guarantees an abundance of $(1+2)$ representations asymptotically.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <a href="index.html">← Return to 100 Explorations Hub</a> | Goldbach Discovery Labs &copy; 2026
+  </footer>
+
+  <script src="i18n.js"></script>
+  <script src="common.js"></script>
+  <script>
+    const sliderN = document.getElementById('chen-n');
+    const dispN = document.getElementById('chen-n-val');
+    const cntGb = document.getElementById('cnt-goldbach');
+    const cntSemi = document.getElementById('cnt-semiprime');
+    const cntTot = document.getElementById('cnt-total');
+    const pairsGrid = document.getElementById('pairs-grid');
+
+    function countPrimeFactors(n) {
+      if (n <= 1) return 0;
+      let count = 0;
+      let d = 2;
+      let temp = n;
+      while (d * d <= temp) {
+        while (temp % d === 0) {
+          count++;
+          temp /= d;
+        }
+        d++;
+      }
+      if (temp > 1) count++;
+      return count;
+    }
+
+    function update() {
+      const N = parseInt(sliderN.value);
+      dispN.textContent = N;
+
+      const primes = GLab.getPrimes(N);
+      const goldbachList = [];
+      const semiprimeList = [];
+
+      for (const p of primes) {
+        if (p * 2 > N) break; // unordered
+        const rem = N - p;
+        const omega = countPrimeFactors(rem);
+
+        if (omega === 1) {
+          goldbachList.push({ p, rem, type: 'gb', label: `${rem} (Prime)` });
+        } else if (omega === 2) {
+          semiprimeList.push({ p, rem, type: 'semi', label: `${rem} (Semiprime)` });
+        }
+      }
+
+      cntGb.textContent = `${goldbachList.length} Pairs`;
+      cntSemi.textContent = `${semiprimeList.length} Pairs`;
+      cntTot.textContent = `${goldbachList.length + semiprimeList.length} Solutions`;
+
+      pairsGrid.innerHTML = '';
+
+      goldbachList.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'chen-card goldbach';
+        div.innerHTML = `
+          <span><b>${item.p}</b> + <b>${item.rem}</b></span>
+          <span class="type-badge gb">1 + 1</span>
+        `;
+        pairsGrid.appendChild(div);
+      });
+
+      semiprimeList.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'chen-card semiprime';
+        div.innerHTML = `
+          <span><b>${item.p}</b> + <b>${item.rem}</b></span>
+          <span class="type-badge semi">1 + 2</span>
+        `;
+        pairsGrid.appendChild(div);
+      });
+    }
+
+    sliderN.addEventListener('input', () => {
+      update();
+      GLab.audio.playClick();
+    });
+
+    GLab.init({
+      labNum: 72,
+      title: "Chen's Theorem (1 + 2)",
+      clusterNum: 8,
+      clusterName: "Historical Perspectives & Conjectures",
+      prevId: "lab071_goldbach_euler_letter",
+      nextId: "lab073_schnirelmann_constant"
+    });
+
+    update();
+  </script>
+</body>
+</html>

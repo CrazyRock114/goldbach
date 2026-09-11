@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 006: Cousin & Sexy Prime Constellations - Goldbach Discovery Labs</title>
+  <link rel="stylesheet" href="common.css">
+  <style>
+    .sky-container {
+      height: 420px;
+      position: relative;
+      background: radial-gradient(circle at 50% 50%, #0f172a, #030712);
+    }
+    .filter-pills {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .filter-btn {
+      background: var(--card-bg-subtle);
+      border: 1px solid var(--card-border);
+      color: var(--muted);
+      padding: 6px 14px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+    .filter-btn.active {
+      background: var(--primary);
+      color: #0b1120;
+      border-color: var(--primary);
+      box-shadow: 0 0 10px var(--primary-glow);
+    }
+    .constellation-details {
+      margin-top: 14px;
+      padding: 12px 16px;
+      background: var(--card-bg-subtle);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--card-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div id="lab-nav" class="lab-nav"></div>
+
+  <div class="container">
+    <div class="lab-header">
+      <h1>Lab 006: Cousin & Sexy Prime Constellations</h1>
+      <p class="hook">Beyond twin primes ($d=2$) lie cousin primes ($d=4$) and "sexy" primes ($d=6$, from Latin <i>sex</i>). Look up at the number-theory night sky to see these prime constellations generate Goldbach sums!</p>
+    </div>
+
+    <div class="lab-stage">
+      <div class="controls-bar">
+        <div class="filter-pills">
+          <button class="filter-btn active" data-diff="2">Twin Primes (d = 2)</button>
+          <button class="filter-btn" data-diff="4">Cousin Primes (d = 4)</button>
+          <button class="filter-btn" data-diff="6">Sexy Primes (d = 6)</button>
+          <button class="filter-btn" data-diff="all">All Constellations</button>
+        </div>
+        <div class="stat-pill" style="margin-left: auto;">
+          <span>Visible Pairs:</span>
+          <span class="num" id="visible-count">0</span>
+        </div>
+      </div>
+
+      <div class="canvas-container sky-container">
+        <canvas id="skyCanvas" height="420"></canvas>
+      </div>
+
+      <div class="constellation-details" id="details-box">
+        <div>
+          <span style="color: var(--muted); font-size: 12px; text-transform: uppercase;">Selected Constellation:</span>
+          <div style="font-size: 16px; font-weight: 700; color: var(--accent); margin-top: 2px;" id="pair-text">Hover or click any star to inspect its constellation!</div>
+        </div>
+        <div class="stat-pill">
+          <span>Goldbach Sum:</span>
+          <span class="num" id="sum-text">--</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pedagogy-grid">
+      <div class="pedagogy-card story">
+        <h2>✨ Intuitive Concept: The Prime Family Tree</h2>
+        <p>Primes don't just appear randomly; they form cosmic families with fixed gaps:</p>
+        <ul>
+          <li><b>Twin Primes ($d=2$):</b> The closest possible odd prime neighbors, like $(3, 5)$ and $(11, 13)$.</li>
+          <li><b>Cousin Primes ($d=4$):</b> Primes separated by 4, like $(3, 7)$, $(7, 11)$, and $(19, 23)$.</li>
+          <li><b>Sexy Primes ($d=6$):</b> Named after the Latin word for six! Primes separated by 6, like $(5, 11)$, $(7, 13)$, and $(17, 23)$. Because multiples of 6 are so abundant, sexy primes are extraordinarily common!</li>
+        </ul>
+        <p>Every single such pair $(p, p+d)$ gives a direct Goldbach decomposition for the even number <b>$N = 2p + d$</b>, centered symmetrically around midpoint $m = p + d/2$.</p>
+      </div>
+
+      <div class="pedagogy-card challenge">
+        <h2>🎯 Try This! (Hands-On Challenges)</h2>
+        <div class="challenge-item">
+          <span class="badge">Challenge 1</span>
+          Switch to <b>Sexy Primes ($d=6$)</b>. Why are there so many more sexy pairs than twin or cousin pairs?
+          <button class="reveal-btn" data-target="ans-1">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-1">
+            Because $d=6 = 2 \times 3$ is a multiple of both 2 and 3! Adding 6 to a prime $p > 3$ never changes its residue modulo 2 or 3 ($p+6 \equiv p \pmod 2$ and $p+6 \equiv p \pmod 3$). This completely avoids being knocked out by divisibility by 2 or 3!
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 2</span>
+          Find a <b>Sexy Quadruplet</b>: four primes where each is 6 greater than the previous!
+          <button class="reveal-btn" data-target="ans-2">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-2">
+            The famous sexy quadruplet is <b>(5, 11, 17, 23)</b>! Notice $5+6=11$, $11+6=17$, $17+6=23$. They form three consecutive sexy pairs and three distinct Goldbach sums ($16, 28, 40$)!
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 3</span>
+          Select cousin prime $(7, 11)$. What is its sum, and what is its midpoint?
+          <button class="reveal-btn" data-target="ans-3">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-3">
+            $7 + 11 = 18$. The midpoint is $m = (7+11)/2 = 9$. Thus $2 \times 9 = 18 = 7 + 11$.
+          </div>
+        </div>
+      </div>
+
+      <div class="pedagogy-card rigor">
+        <h2>📐 Mathematical Rigor & Formal Definition</h2>
+        <p>For a fixed even difference $d \in 2\mathbb{N}$, a prime constellation is a pair $(p, p+d) \in \mathbb{P}^2$. By the Hardy-Littlewood $k$-tuple conjecture, the asymptotic density of such pairs is:</p>
+        <div class="math-formula">
+          \pi_d(x) \sim 2 C_2 \left(\prod_{p \mid d, p > 2} \frac{p-1}{p-2}\right) \frac{x}{\ln^2 x}
+        </div>
+        <p>When $d = 6$, the factor $\frac{3-1}{3-2} = 2$ doubles the asymptotic density compared to twin primes ($d=2$), formally proving why sexy primes are twice as dense in the Goldbach sky!</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <a href="index.html">← Return to 100 Explorations Hub</a> | Goldbach Discovery Labs &copy; 2026
+  </footer>
+
+  <script src="i18n.js"></script>
+  <script src="common.js"></script>
+  <script>
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const visibleCount = document.getElementById('visible-count');
+    const pairText = document.getElementById('pair-text');
+    const sumText = document.getElementById('sum-text');
+    const canvas = document.getElementById('skyCanvas');
+    const ctx = canvas.getContext('2d');
+
+    let currentFilter = '2';
+    let hoveredConstellation = null;
+
+    // Generate primes up to 120
+    const primes = GLab.getPrimes(120);
+
+    // Build star coordinates
+    const stars = {};
+    function layoutStars() {
+      const w = canvas.width = canvas.parentElement.clientWidth;
+      const h = canvas.height;
+      primes.forEach((p, idx) => {
+        // Pseudo-random but deterministic placement on sky
+        const angle = (p * 137.5) * (Math.PI / 180);
+        const radius = Math.sqrt(p / 120) * (Math.min(w, h) * 0.42);
+        stars[p] = {
+          x: w / 2 + Math.cos(angle) * radius,
+          y: h / 2 + Math.sin(angle) * radius,
+          prime: p
+        };
+      });
+    }
+
+    function getConstellations() {
+      const list = [];
+      for (let i = 0; i < primes.length; i++) {
+        for (let j = i + 1; j < primes.length; j++) {
+          const p1 = primes[i];
+          const p2 = primes[j];
+          const diff = p2 - p1;
+          if ([2, 4, 6].includes(diff)) {
+            list.push({ p1, p2, diff, sum: p1 + p2, m: (p1 + p2) / 2 });
+          }
+        }
+      }
+      return list;
+    }
+
+    const allConstellations = getConstellations();
+
+    function renderSky() {
+      const w = canvas.width;
+      const h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      // Draw faint background stars
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
+      for (let i = 0; i < 60; i++) {
+        const bgX = (i * 97) % w;
+        const bgY = (i * 131) % h;
+        ctx.fillRect(bgX, bgY, 1.5, 1.5);
+      }
+
+      // Filter active constellations
+      const active = allConstellations.filter(c => {
+        if (currentFilter === 'all') return true;
+        return c.diff === parseInt(currentFilter);
+      });
+      visibleCount.textContent = active.length;
+
+      // Draw lines between primes in active constellations
+      active.forEach(c => {
+        const s1 = stars[c.p1];
+        const s2 = stars[c.p2];
+        if (!s1 || !s2) return;
+
+        const isHovered = hoveredConstellation && 
+          ((hoveredConstellation.p1 === c.p1 && hoveredConstellation.p2 === c.p2) ||
+           (hoveredConstellation.p1 === c.p2 && hoveredConstellation.p2 === c.p1));
+
+        let color = '#38bdf8';
+        if (c.diff === 2) color = '#38bdf8'; // twin
+        else if (c.diff === 4) color = '#c084fc'; // cousin
+        else if (c.diff === 6) color = '#fbbf24'; // sexy
+
+        ctx.strokeStyle = isHovered ? '#ffffff' : color;
+        ctx.globalAlpha = isHovered ? 1.0 : (hoveredConstellation ? 0.2 : 0.6);
+        ctx.lineWidth = isHovered ? 3.5 : 1.5;
+
+        ctx.beginPath();
+        ctx.moveTo(s1.x, s1.y);
+        ctx.lineTo(s2.x, s2.y);
+        ctx.stroke();
+
+        // Midpoint marker if hovered
+        if (isHovered) {
+          const midX = (s1.x + s2.x) / 2;
+          const midY = (s1.y + s2.y) / 2;
+          ctx.fillStyle = '#34d399';
+          ctx.beginPath();
+          ctx.arc(midX, midY, 6, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      });
+      ctx.globalAlpha = 1.0;
+
+      // Draw Prime Stars
+      primes.forEach(p => {
+        const s = stars[p];
+        if (!s) return;
+
+        const isSelected = hoveredConstellation && (hoveredConstellation.p1 === p || hoveredConstellation.p2 === p);
+
+        ctx.fillStyle = isSelected ? '#fbbf24' : '#f8fafc';
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, isSelected ? 8 : 4, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Label
+        ctx.fillStyle = isSelected ? '#fbbf24' : '#94a3b8';
+        ctx.font = isSelected ? 'bold 13px monospace' : '10px monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText(p, s.x, s.y - (isSelected ? 12 : 7));
+      });
+    }
+
+    // Mouse interactions
+    canvas.addEventListener('mousemove', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const mouseX = e.clientX - rect.left;
+      const mouseY = e.clientY - rect.top;
+
+      let found = null;
+      for (const p of primes) {
+        const s = stars[p];
+        if (s) {
+          const dist = Math.hypot(s.x - mouseX, s.y - mouseY);
+          if (dist < 15) {
+            // Find a matching constellation for this prime
+            const matches = allConstellations.filter(c => {
+              const matchesFilter = currentFilter === 'all' || c.diff === parseInt(currentFilter);
+              return matchesFilter && (c.p1 === p || c.p2 === p);
+            });
+            if (matches.length > 0) {
+              found = matches[0];
+              break;
+            }
+          }
+        }
+      }
+
+      if (found !== hoveredConstellation) {
+        hoveredConstellation = found;
+        if (found) {
+          const typeName = found.diff === 2 ? 'Twin Primes' : (found.diff === 4 ? 'Cousin Primes' : 'Sexy Primes');
+          pairText.innerHTML = `<span style="color:var(--primary);">${typeName}:</span> (${found.p1}, ${found.p2}) &nbsp;|&nbsp; Midpoint m = ${found.m}`;
+          sumText.textContent = `${found.p1} + ${found.p2} = ${found.sum}`;
+          GLab.audio.playTone(350 + found.sum * 4, 0.15, 'sine', 0.1);
+        }
+        renderSky();
+      }
+    });
+
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentFilter = btn.dataset.diff;
+        hoveredConstellation = null;
+        renderSky();
+        GLab.audio.playClick();
+      });
+    });
+
+    window.addEventListener('resize', () => {
+      layoutStars();
+      renderSky();
+    });
+
+    GLab.init({
+      labNum: 6,
+      title: "Cousin & Sexy Prime Constellations",
+      clusterNum: 1,
+      clusterName: "Foundations & Small Integers",
+      prevId: "lab005_twin_prime_bridges",
+      nextId: "lab007_step_staircase"
+    });
+
+    layoutStars();
+    renderSky();
+  </script>
+</body>
+</html>

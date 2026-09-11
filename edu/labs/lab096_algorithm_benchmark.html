@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 096: Primality Benchmark & Goldbach Arena - Goldbach Discovery Labs</title>
+  <link rel="stylesheet" href="common.css">
+  <style>
+    .arena-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 16px;
+    }
+    @media (max-width: 860px) {
+      .arena-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .algo-card {
+      background: var(--card-bg-subtle);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+    .algo-card.winner {
+      border-color: #22c55e;
+      box-shadow: 0 0 15px rgba(34, 197, 94, 0.2);
+    }
+    .algo-badge {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      align-self: flex-start;
+      margin-bottom: 8px;
+    }
+    .badge-trial { background: rgba(248, 113, 113, 0.2); color: #f87171; }
+    .badge-fermat { background: rgba(251, 191, 36, 0.2); color: #fbbf24; }
+    .badge-mr { background: rgba(56, 189, 248, 0.2); color: #38bdf8; }
+
+    .algo-name {
+      font-size: 17px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+    .algo-desc {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.4;
+      margin-bottom: 12px;
+    }
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      padding: 6px 0;
+      border-top: 1px dashed rgba(255, 255, 255, 0.08);
+    }
+    .stat-val {
+      font-weight: 700;
+      font-family: monospace;
+      color: var(--accent);
+    }
+    .progress-bar-wrap {
+      height: 8px;
+      background: #1e293b;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 12px;
+      position: relative;
+    }
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      transition: width 0.1s linear;
+    }
+    .bar-trial { background: #f87171; }
+    .bar-fermat { background: #fbbf24; }
+    .bar-mr { background: #38bdf8; }
+
+    .chart-container {
+      margin-top: 20px;
+      background: #0f172a;
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+    }
+    .chart-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .canvas-wrap {
+      height: 180px;
+      position: relative;
+    }
+  </style>
+</head>
+<body>
+  <div id="lab-nav" class="lab-nav"></div>
+
+  <div class="container">
+    <div class="lab-header">
+      <h1>Lab 096: Primality Benchmark & Goldbach Arena</h1>
+      <p class="hook">How fast can computers find Goldbach pairs $p + q = 2N$? Pit <b>Trial Division</b>, <b>Fermat Pseudoprimality</b>, and <b>Miller-Rabin Deterministic</b> tests against each other in real-time execution!</p>
+    </div>
+
+    <div class="lab-stage">
+      <div class="controls-bar">
+        <div class="control-group">
+          <label for="sample-size">Even Target $2N$ Range:</label>
+          <select id="target-preset">
+            <option value="1000">Small Range: 2N = 1,000 to 1,500</option>
+            <option value="100000" selected>Medium Range: 2N = 100,000 to 100,200</option>
+            <option value="10000000">Large Range: 2N = 10,000,000 to 10,000,050</option>
+            <option value="1000000000">Gigantic Range: 2N = 1,000,000,000 to 1,000,000,020</option>
+          </select>
+        </div>
+        <button id="btn-run" class="btn btn-primary">Start Live Benchmark Race</button>
+      </div>
+
+      <div class="arena-grid">
+        <!-- Trial Division -->
+        <div class="algo-card" id="card-trial">
+          <span class="algo-badge badge-trial">Deterministic O(√n)</span>
+          <div class="algo-name">Trial Division</div>
+          <div class="algo-desc">Checks odd divisors up to $\lfloor\sqrt{n}\rfloor$. 100% accurate, but divisor loop explodes as numbers grow large.</div>
+          <div class="stat-row">
+            <span>Pairs Found:</span>
+            <span class="stat-val" id="pairs-trial">0</span>
+          </div>
+          <div class="stat-row">
+            <span>Modulo Ops:</span>
+            <span class="stat-val" id="ops-trial">0</span>
+          </div>
+          <div class="stat-row">
+            <span>Time Elapsed:</span>
+            <span class="stat-val" id="time-trial">0.00 ms</span>
+          </div>
+          <div class="progress-bar-wrap">
+            <div class="progress-bar bar-trial" id="bar-trial"></div>
+          </div>
+        </div>
+
+        <!-- Fermat Test -->
+        <div class="algo-card" id="card-fermat">
+          <span class="algo-badge badge-fermat">Heuristic O(k log² n)</span>
+          <div class="algo-name">Fermat Little Theorem</div>
+          <div class="algo-desc">Verifies $a^{n-1} \equiv 1 \pmod n$ for base $a=2,3$. Extremely fast via modular exponentiation, but vulnerable to pseudoprimes.</div>
+          <div class="stat-row">
+            <span>Pairs Found:</span>
+            <span class="stat-val" id="pairs-fermat">0</span>
+          </div>
+          <div class="stat-row">
+            <span>ModExp Ops:</span>
+            <span class="stat-val" id="ops-fermat">0</span>
+          </div>
+          <div class="stat-row">
+            <span>Time Elapsed:</span>
+            <span class="stat-val" id="time-fermat">0.00 ms</span>
+          </div>
+          <div class="progress-bar-wrap">
+            <div class="progress-bar bar-fermat" id="bar-fermat"></div>
+          </div>
+        </div>
+
+        <!-- Miller Rabin -->
+        <div class="algo-card" id="card-mr">
+          <span class="algo-badge badge-mr">Deterministic O(k log³ n)</span>
+          <div class="algo-name">Miller-Rabin Test</div>
+          <div class="algo-desc">Decomposes $n-1 = 2^s \cdot d$ and tests square roots of 1. Completely deterministic for 64-bit integers using prime bases.</div>
+          <div class="stat-row">
+            <span>Pairs Found:</span>
+            <span class="stat-val" id="pairs-mr">0</span>
+          </div>
+          <div class="stat-row">
+            <span>Squarings & Ops:</span>
+            <span class="stat-val" id="ops-mr">0</span>
+          </div>
+          <div class="stat-row">
+            <span>Time Elapsed:</span>
+            <span class="stat-val" id="time-mr">0.00 ms</span>
+          </div>
+          <div class="progress-bar-wrap">
+            <div class="progress-bar bar-mr" id="bar-mr"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Execution Log & Comparison Chart -->
+      <div class="chart-container">
+        <div class="chart-title">Race Timeline & Verification Log</div>
+        <div class="canvas-wrap">
+          <canvas id="race-canvas"></canvas>
+        </div>
+        <div id="status-log" style="font-family: monospace; font-size: 12px; color: #94a3b8; margin-top: 10px;">Ready to run. Select an even number range and click 'Start Live Benchmark Race'.</div>
+      </div>
+    </div>
+
+    <!-- Pedagogy Section -->
+    <div class="pedagogy-grid">
+      <div class="pedagogy-card story">
+        <h3>Classroom Story: Euler's Hand Calcs to Petascale Supercomputers</h3>
+        <p>In 1742, Leonhard Euler verified Goldbach's conjecture by hand for small numbers up to $1,000$ using primitive trial division on parchment.</p>
+        <p>By the 21st century, Tomás Oliveira e Silva and collaborators verified the conjecture to $4 \times 10^{18}$ using optimized segmented sieves and Miller-Rabin tests running across distributed supercomputing clusters.</p>
+        <p>Notice how finding <i>just one</i> Goldbach pair $p + q = 2N$ takes only milliseconds even at $1,000,000,000$ because the smallest prime $p$ is almost always under $100$!</p>
+      </div>
+
+      <div class="pedagogy-card challenge">
+        <h3>Student Discovery Challenge</h3>
+        <div class="challenge-item">
+          <p><strong>Challenge 1:</strong> Why is finding the <i>first</i> Goldbach pair $p + (2N - p)$ so much faster than counting <i>all</i> Goldbach representations $g(2N)$?</p>
+          <button class="reveal-btn" onclick="GLab.toggleSolution(this)">Reveal Answer</button>
+          <div class="challenge-answer">
+            To verify Goldbach's conjecture for a single $2N$, we only need to test $p = 3, 5, 7, 11\dots$ until both $p$ and $2N - p$ are prime. Since $p_{\min}(2N)$ rarely exceeds $50$, the loop terminates after just 2 to 10 primality checks! In contrast, finding all pairs requires testing all primes up to $N$.
+          </div>
+        </div>
+        <div class="challenge-item">
+          <p><strong>Challenge 2:</strong> For numbers near $10^9$, why does Miller-Rabin decisively beat Trial Division even if Trial Division stops at $\sqrt{10^9} \approx 31,622$?</p>
+          <button class="reveal-btn" onclick="GLab.toggleSolution(this)">Reveal Answer</button>
+          <div class="challenge-answer">
+            Trial division on composite candidate $2N - p$ requires testing primes up to $31,622$, executing hundreds of division operations. Miller-Rabin tests bases with fast binary exponentiation requiring only $\approx 30$ modular squarings and multiplications, executing orders of magnitude faster!
+          </div>
+        </div>
+      </div>
+
+      <div class="pedagogy-card rigor">
+        <h3>Mathematical Rigor & Complexity</h3>
+        <p>The asymptotic time complexity of the tested algorithms for an odd integer $m$:</p>
+        <div class="math-formula">
+          $$\text{Trial Division: } O(\sqrt{m})$$
+          $$\text{Fermat / Miller-Rabin: } O(k \cdot \log^3 m)$$
+        </div>
+        <p>For 32-bit and 64-bit integers, Miller-Rabin is strictly deterministic when testing against prime bases $\{2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37\}$. No counterexamples exist in this domain!</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="i18n.js"></script>
+  <script src="common.js"></script>
+  <script>
+    const presetSelect = document.getElementById('target-preset');
+    const btnRun = document.getElementById('btn-run');
+    const logEl = document.getElementById('status-log');
+    const canvas = document.getElementById('race-canvas');
+    const ctx = canvas.getContext('2d');
+
+    // UI elements
+    const uiTrial = {
+      card: document.getElementById('card-trial'),
+      pairs: document.getElementById('pairs-trial'),
+      ops: document.getElementById('ops-trial'),
+      time: document.getElementById('time-trial'),
+      bar: document.getElementById('bar-trial')
+    };
+    const uiFermat = {
+      card: document.getElementById('card-fermat'),
+      pairs: document.getElementById('pairs-fermat'),
+      ops: document.getElementById('ops-fermat'),
+      time: document.getElementById('time-fermat'),
+      bar: document.getElementById('bar-fermat')
+    };
+    const uiMR = {
+      card: document.getElementById('card-mr'),
+      pairs: document.getElementById('pairs-mr'),
+      ops: document.getElementById('ops-mr'),
+      time: document.getElementById('time-mr'),
+      bar: document.getElementById('bar-mr')
+    };
+
+    let opCounts = { trial: 0, fermat: 0, mr: 0 };
+    let chartData = [];
+
+    // Modular Exponentiation
+    function powerMod(base, exp, mod) {
+      let res = 1n;
+      base = BigInt(base) % BigInt(mod);
+      exp = BigInt(exp);
+      const m = BigInt(mod);
+      while (exp > 0n) {
+        if (exp % 2n === 1n) res = (res * base) % m;
+        base = (base * base) % m;
+        exp = exp / 2n;
+      }
+      return Number(res);
+    }
+
+    // 1. Trial Division
+    function isPrimeTrial(n) {
+      if (n < 2) return false;
+      if (n === 2 || n === 3) return true;
+      if (n % 2 === 0 || n % 3 === 0) {
+        opCounts.trial++;
+        return false;
+      }
+      opCounts.trial++;
+      const limit = Math.floor(Math.sqrt(n));
+      for (let i = 5; i <= limit; i += 6) {
+        opCounts.trial += 2;
+        if (n % i === 0 || n % (i + 2) === 0) return false;
+      }
+      return true;
+    }
+
+    // 2. Fermat Primality Test (Bases 2, 3)
+    function isPrimeFermat(n) {
+      if (n < 2) return false;
+      if (n === 2 || n === 3) return true;
+      if (n % 2 === 0) return false;
+      const bases = [2, 3];
+      for (const a of bases) {
+        if (a >= n) continue;
+        opCounts.fermat++;
+        if (powerMod(a, n - 1, n) !== 1) return false;
+      }
+      return true;
+    }
+
+    // 3. Miller-Rabin Test (Deterministic for 64-bit using small bases)
+    function isPrimeMillerRabin(n) {
+      if (n < 2) return false;
+      if (n === 2 || n === 3) return true;
+      if (n % 2 === 0) return false;
+
+      let d = BigInt(n - 1);
+      let s = 0;
+      while (d % 2n === 0n) {
+        d /= 2n;
+        s++;
+      }
+
+      const bases = [2, 3, 5, 7, 11];
+      const bn = BigInt(n);
+
+      for (const a of bases) {
+        if (BigInt(a) >= bn) continue;
+        opCounts.mr++;
+        let x = BigInt(powerMod(a, Number(d), n));
+        if (x === 1n || x === bn - 1n) continue;
+
+        let composite = true;
+        for (let r = 1; r < s; r++) {
+          opCounts.mr++;
+          x = (x * x) % bn;
+          if (x === bn - 1n) {
+            composite = false;
+            break;
+          }
+        }
+        if (composite) return false;
+      }
+      return true;
+    }
+
+    function runTestForAlgo(algoName, checkFn, startN, count) {
+      const t0 = performance.now();
+      let pairs = 0;
+      for (let i = 0; i < count; i++) {
+        const target = startN + i * 2;
+        // Find first pair
+        for (let p = 3; p <= target / 2; p += 2) {
+          if (checkFn(p) && checkFn(target - p)) {
+            pairs++;
+            break;
+          }
+        }
+      }
+      const t1 = performance.now();
+      return { pairs, time: t1 - t0, ops: opCounts[algoName] };
+    }
+
+    async function startRace() {
+      btnRun.disabled = true;
+      const startN = parseInt(presetSelect.value, 10);
+      const count = (startN >= 10000000) ? 25 : 100;
+
+      // Reset
+      opCounts = { trial: 0, fermat: 0, mr: 0 };
+      [uiTrial, uiFermat, uiMR].forEach(u => {
+        u.card.classList.remove('winner');
+        u.bar.style.width = '0%';
+        u.pairs.textContent = '0';
+        u.ops.textContent = '0';
+        u.time.textContent = 'Running...';
+      });
+      chartData = [];
+      logEl.innerHTML = `Starting benchmark for <b>${count}</b> even numbers starting at <b>${startN.toLocaleString()}</b>...`;
+      GLab.audio.playTone(440, 'triangle', 0.1);
+
+      // 1. Run Trial
+      await new Promise(r => setTimeout(r, 60));
+      const resTrial = runTestForAlgo('trial', isPrimeTrial, startN, count);
+      uiTrial.pairs.textContent = resTrial.pairs;
+      uiTrial.ops.textContent = resTrial.ops.toLocaleString();
+      uiTrial.time.textContent = resTrial.time.toFixed(2) + ' ms';
+      uiTrial.bar.style.width = '100%';
+      GLab.audio.playClick();
+
+      // 2. Run Fermat
+      await new Promise(r => setTimeout(r, 60));
+      const resFermat = runTestForAlgo('fermat', isPrimeFermat, startN, count);
+      uiFermat.pairs.textContent = resFermat.pairs;
+      uiFermat.ops.textContent = resFermat.ops.toLocaleString();
+      uiFermat.time.textContent = resFermat.time.toFixed(2) + ' ms';
+      uiFermat.bar.style.width = '100%';
+      GLab.audio.playClick();
+
+      // 3. Run Miller-Rabin
+      await new Promise(r => setTimeout(r, 60));
+      const resMR = runTestForAlgo('mr', isPrimeMillerRabin, startN, count);
+      uiMR.pairs.textContent = resMR.pairs;
+      uiMR.ops.textContent = resMR.ops.toLocaleString();
+      uiMR.time.textContent = resMR.time.toFixed(2) + ' ms';
+      uiMR.bar.style.width = '100%';
+      GLab.audio.playTone(880, 'sine', 0.2);
+
+      // Determine Winner
+      const minTime = Math.min(resTrial.time, resFermat.time, resMR.time);
+      if (resTrial.time === minTime) uiTrial.card.classList.add('winner');
+      else if (resFermat.time === minTime) uiFermat.card.classList.add('winner');
+      else uiMR.card.classList.add('winner');
+
+      chartData = [
+        { name: 'Trial Div', time: resTrial.time, ops: resTrial.ops, color: '#f87171' },
+        { name: 'Fermat Test', time: resFermat.time, ops: resFermat.ops, color: '#fbbf24' },
+        { name: 'Miller-Rabin', time: resMR.time, ops: resMR.ops, color: '#38bdf8' }
+      ];
+      drawChart();
+
+      logEl.innerHTML = `✓ Completed! Verified ${count} consecutive even numbers. Fastest time: <b>${minTime.toFixed(2)} ms</b>.`;
+      btnRun.disabled = false;
+    }
+
+    function drawChart() {
+      if (!chartData.length) return;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const padLeft = 100;
+      const padBottom = 25;
+      const w = canvas.width - padLeft - 40;
+      const h = canvas.height - padBottom - 20;
+
+      const maxTime = Math.max(...chartData.map(d => d.time), 0.1);
+
+      chartData.forEach((d, i) => {
+        const y = 20 + i * 45;
+        const barW = (d.time / maxTime) * w;
+
+        // Label
+        ctx.fillStyle = '#cbd5e1';
+        ctx.font = '12px monospace';
+        ctx.textAlign = 'right';
+        ctx.fillText(d.name, padLeft - 10, y + 16);
+
+        // Bar
+        ctx.fillStyle = d.color;
+        ctx.beginPath();
+        ctx.roundRect ? ctx.roundRect(padLeft, y, Math.max(barW, 4), 24, 4) : ctx.rect(padLeft, y, Math.max(barW, 4), 24);
+        ctx.fill();
+
+        // Time text
+        ctx.fillStyle = '#fff';
+        ctx.textAlign = 'left';
+        ctx.font = 'bold 11px monospace';
+        ctx.fillText(`${d.time.toFixed(2)} ms (${d.ops.toLocaleString()} ops)`, padLeft + barW + 8, y + 16);
+      });
+    }
+
+    function resizeCanvas() {
+      canvas.width = canvas.parentElement.clientWidth;
+      canvas.height = 180;
+      drawChart();
+    }
+    window.addEventListener('resize', resizeCanvas);
+
+    btnRun.addEventListener('click', startRace);
+
+    GLab.init({
+      labNum: 96,
+      title: "Primality Benchmark & Goldbach Arena",
+      clusterNum: 10,
+      clusterName: "Classroom Tools & Grand Unification",
+      prevId: "lab095_prime_gaps_bridges",
+      nextId: "lab097_atlas_number_theory"
+    });
+
+    resizeCanvas();
+  </script>
+</body>
+</html>

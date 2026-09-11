@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 044: 3D Triangular Simplex of Prime Triples - Goldbach Discovery Labs</title>
+  <link rel="stylesheet" href="common.css">
+  <style>
+    .simplex-stage {
+      height: 440px;
+      position: relative;
+    }
+  </style>
+</head>
+<body>
+  <div id="lab-nav" class="lab-nav"></div>
+
+  <div class="container">
+    <div class="lab-header">
+      <h1>Lab 044: 3D Triangular Simplex of Prime Triples</h1>
+      <p class="hook">In 3D space, $x + y + z = \text{Odd}$ carves out an equilateral triangular plane. Rotate the 3D coordinate simplex to see prime triples $(p_1, p_2, p_3)$ scatter like glowing stars across the triangle!</p>
+    </div>
+
+    <div class="lab-stage">
+      <div class="controls-bar">
+        <div class="control-group">
+          <label for="simplex-n">Target Odd <i>N</i>:</label>
+          <input type="range" id="simplex-n" min="9" max="51" step="2" value="27">
+          <span style="font-size: 18px; font-weight: 800; color: var(--accent);" id="n-val">27</span>
+        </div>
+        <div class="control-group">
+          <label for="rot-y">Rotate View:</label>
+          <input type="range" id="rot-y" min="-180" max="180" step="2" value="35">
+        </div>
+        <div class="stat-pill" style="margin-left: auto;">
+          <span>Prime Triples on Simplex:</span>
+          <span class="num" id="triples-badge">12 triples</span>
+        </div>
+      </div>
+
+      <div class="canvas-container simplex-stage">
+        <canvas id="simplexCanvas" height="440"></canvas>
+      </div>
+
+      <div style="margin-top: 14px; background: var(--card-bg-subtle); padding: 12px 18px; border-radius: var(--radius-sm); border: 1px solid var(--card-border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+        <span style="font-size: 11px; color: var(--muted); text-transform: uppercase;">Triples on Plane:</span>
+        <div style="font-size: 15px; font-weight: 700; color: var(--green);" id="triples-list">3+5+19, 3+7+17, 3+11+13, 5+5+17, 7+7+13, 7+9(comp)...</div>
+      </div>
+    </div>
+
+    <div class="pedagogy-grid">
+      <div class="pedagogy-card story">
+        <h2>✨ Intuitive Concept: The 3D Triangular Slice</h2>
+        <p>In 2D, the equation $x + y = N$ is a 1D diagonal line. But in 3D, adding a third prime dimension $x + y + z = N$ forms a <b>2D triangular plane slice (a simplex)</b>!</p>
+        <p>The three corners of this equilateral triangle touch the axes at $(N, 0, 0)$, $(0, N, 0)$, and $(0, 0, N)$.</p>
+        <p>Every point inside this triangle whose three coordinates are all prime numbers represents a valid Weak Goldbach partition! Because a 2D surface is vastly larger than a 1D line, odd numbers have a huge abundance of 3-prime solutions.</p>
+      </div>
+
+      <div class="pedagogy-card challenge">
+        <h2>🎯 Try This! (Hands-On Challenges)</h2>
+        <div class="challenge-item">
+          <span class="badge">Challenge 1</span>
+          Rotate the 3D view using the slider. Where does the center triple sit?
+          <button class="reveal-btn" data-target="ans-1">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-1">
+            Right at the barycentric center of the triangle! If $N/3$ is prime (like $N=9 \implies 3+3+3$ or $N=21 \implies 7+7+7$), a prime star sits directly at the center of the simplex!
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 2</span>
+          Set $N = 9$. How many prime triples lie on the simplex?
+          <button class="reveal-btn" data-target="ans-2">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-2">
+            Using odd primes, there is $3 + 3 + 3 = 9$. Using 2, there are permutations of $2 + 2 + 5 = 9$.
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 3</span>
+          Why does the number of solutions on the simplex grow quadratically ($O(N^2)$)?
+          <button class="reveal-btn" data-target="ans-3">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-3">
+            Because you can choose $p_1$ and $p_2$ independently from roughly $\pi(N)$ primes each, giving $(\pi(N))^2 \sim N^2 / \ln^2 N$ candidate pairs, so the total surface density scales with area!
+          </div>
+        </div>
+      </div>
+
+      <div class="pedagogy-card rigor">
+        <h2>📐 Mathematical Rigor & Formal Definition</h2>
+        <p>The standard 2-simplex scaled by $N$ is:</p>
+        <div class="math-formula">
+          \Delta_N^2 = \{(x, y, z) \in \mathbb{R}_{\ge 0}^3 \mid x + y + z = N\}
+        </div>
+        <p>The set of ternary Goldbach representations is $\mathcal{G}_3(N) = \Delta_N^2 \cap \mathbb{P}^3$. The Hardy-Littlewood asymptotic formula confirms that $\#\mathcal{G}_3(N) \sim \frac{1}{2} \mathfrak{S}_3(N) \frac{N^2}{\ln^3 N}$.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <a href="index.html">← Return to 100 Explorations Hub</a> | Goldbach Discovery Labs &copy; 2026
+  </footer>
+
+  <script src="i18n.js"></script>
+  <script src="common.js"></script>
+  <script>
+    const sliderN = document.getElementById('simplex-n');
+    const rotY = document.getElementById('rot-y');
+    const nVal = document.getElementById('n-val');
+    const triplesBadge = document.getElementById('triples-badge');
+    const triplesList = document.getElementById('triples-list');
+    const canvas = document.getElementById('simplexCanvas');
+    const ctx = canvas.getContext('2d');
+
+    function project3D(x, y, z, angleY, cx, cy, scale) {
+      // Isometric / 3D rotation around Y axis
+      const rad = angleY * (Math.PI / 180);
+      const rotX = x * Math.cos(rad) - z * Math.sin(rad);
+      const rotZ = x * Math.sin(rad) + z * Math.cos(rad);
+      const rotY = y;
+
+      // Project onto 2D
+      const px = cx + rotX * scale;
+      const py = cy - rotY * scale * 0.8 + rotZ * scale * 0.4;
+      return { x: px, y: py, z: rotZ };
+    }
+
+    function renderSimplex() {
+      const n = parseInt(sliderN.value);
+      nVal.textContent = n;
+      const angle = parseInt(rotY.value);
+
+      const triples = GLab.getTernaryPartitions(n, 40);
+      triplesBadge.textContent = `${triples.length} unique triples`;
+      triplesList.textContent = triples.slice(0, 5).map(t => `${t[0]}+${t[1]}+${t[2]}`).join(', ') + (triples.length > 5 ? '...' : '');
+
+      const w = canvas.width = canvas.parentElement.clientWidth;
+      const h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      const cx = w / 2;
+      const cy = h / 2 + 20;
+      const scale = Math.min(w, h) / (n * 1.8);
+
+      // Simplex vertices
+      const vX = project3D(n, 0, 0, angle, cx, cy, scale);
+      const vY = project3D(0, n, 0, angle, cx, cy, scale);
+      const vZ = project3D(0, 0, n, angle, cx, cy, scale);
+      const origin = project3D(0, 0, 0, angle, cx, cy, scale);
+
+      // Draw Coordinate axes
+      ctx.strokeStyle = '#334155';
+      ctx.lineWidth = 1.5;
+      [vX, vY, vZ].forEach(v => {
+        ctx.beginPath();
+        ctx.moveTo(origin.x, origin.y);
+        ctx.lineTo(v.x, v.y);
+        ctx.stroke();
+      });
+
+      // Draw Triangular Simplex Face
+      ctx.fillStyle = 'rgba(56, 189, 248, 0.15)';
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(vX.x, vX.y);
+      ctx.lineTo(vY.x, vY.y);
+      ctx.lineTo(vZ.x, vZ.y);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      // Vertex labels
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = '11px monospace';
+      ctx.fillText(`X (${n},0,0)`, vX.x + 8, vX.y);
+      ctx.fillText(`Y (0,${n},0)`, vY.x, vY.y - 10);
+      ctx.fillText(`Z (0,0,${n})`, vZ.x - 10, vZ.y + 14);
+
+      // Plot Prime Triples on Simplex
+      triples.forEach(t => {
+        // All permutations of (p1, p2, p3)
+        const perms = [
+          [t[0], t[1], t[2]], [t[0], t[2], t[1]],
+          [t[1], t[0], t[2]], [t[1], t[2], t[0]],
+          [t[2], t[0], t[1]], [t[2], t[1], t[0]]
+        ];
+
+        perms.forEach(p => {
+          const pt = project3D(p[0], p[1], p[2], angle, cx, cy, scale);
+          ctx.fillStyle = '#34d399';
+          ctx.beginPath();
+          ctx.arc(pt.x, pt.y, 4, 0, Math.PI * 2);
+          ctx.fill();
+        });
+      });
+    }
+
+    sliderN.addEventListener('input', () => {
+      renderSimplex();
+      GLab.audio.playTone(320 + parseInt(sliderN.value) * 6, 0.08, 'triangle');
+    });
+
+    rotY.addEventListener('input', renderSimplex);
+    window.addEventListener('resize', renderSimplex);
+
+    GLab.init({
+      labNum: 44,
+      title: "3D Triangular Simplex of Prime Triples",
+      clusterNum: 5,
+      clusterName: "Weak Goldbach & 3-Prime Partitions",
+      prevId: "lab043_circle_method",
+      nextId: "lab045_odd_minus_3"
+    });
+
+    renderSimplex();
+  </script>
+</body>
+</html>

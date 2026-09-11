@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 100: Grand Unification Laboratory - The Goldbach Symphony</title>
+  <link rel="stylesheet" href="common.css">
+  <style>
+    .grand-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: center;
+      background: #0f172a;
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin-bottom: 20px;
+    }
+    .unification-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+    @media (max-width: 900px) {
+      .unification-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .quad-card {
+      background: var(--card-bg-subtle);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+    }
+    .quad-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .quad-title {
+      font-size: 14px;
+      font-weight: 800;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .quad-badge {
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--accent);
+      font-weight: 700;
+    }
+    .quad-canvas-wrap {
+      height: 180px;
+      position: relative;
+      background: #020617;
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+    }
+    .quad-desc {
+      margin-top: 10px;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+    .grand-summary-bar {
+      margin-top: 16px;
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+    .stat-pill {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .stat-pill-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      color: var(--muted);
+      letter-spacing: 0.5px;
+    }
+    .stat-pill-val {
+      font-size: 18px;
+      font-weight: 800;
+      color: #fff;
+      font-family: monospace;
+    }
+    .badge-trophy {
+      background: linear-gradient(135deg, #f59e0b, #ec4899);
+      color: #fff;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
+    }
+  </style>
+</head>
+<body>
+  <div id="lab-nav" class="lab-nav"></div>
+
+  <div class="container">
+    <div class="lab-header">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+        <h1>Lab 100: Grand Unification Laboratory - The Goldbach Symphony</h1>
+        <span class="badge-trophy">★ 100th Discovery Lab Milestone ★</span>
+      </div>
+      <p class="hook">The culmination of our 100-lab voyage! Witness how physical scales, modular clocks, asymptotic comets, and ternary partitions harmonize into a single unified mathematical truth for any even number $2N$.</p>
+    </div>
+
+    <div class="lab-stage">
+      <!-- Master Controller -->
+      <div class="grand-controls">
+        <div class="control-group">
+          <label for="slider-even">Target Even Number $2N$:</label>
+          <input type="range" id="slider-even" min="4" max="240" step="2" value="90">
+          <span style="font-size: 22px; font-weight: 900; color: var(--accent); min-width: 48px;" id="val-even">90</span>
+        </div>
+        <button id="btn-audio-chord" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 6px;">
+          <span>♫</span> Play Harmonic Goldbach Chord
+        </button>
+        <button id="btn-fireworks" class="btn" style="background: #3b82f6;">Celebrate 100 Labs!</button>
+      </div>
+
+      <!-- Synchronized 4-Perspective Matrix -->
+      <div class="unification-grid">
+        <!-- 1. The Prime Balance Scale -->
+        <div class="quad-card">
+          <div class="quad-header">
+            <span class="quad-title">Perspective 1: The Prime Scale</span>
+            <span class="quad-badge">Physical Mechanics</span>
+          </div>
+          <div class="quad-canvas-wrap">
+            <canvas id="canvas-scale"></canvas>
+          </div>
+          <div class="quad-desc" id="desc-scale">
+            Prime weights balance the central fulcrum at $2N$.
+          </div>
+        </div>
+
+        <!-- 2. Modulo 6 Harmonic Ring -->
+        <div class="quad-card">
+          <div class="quad-header">
+            <span class="quad-title">Perspective 2: Modulo 6 Clock</span>
+            <span class="quad-badge">Modular Symmetries</span>
+          </div>
+          <div class="quad-canvas-wrap">
+            <canvas id="canvas-clock"></canvas>
+          </div>
+          <div class="quad-desc" id="desc-clock">
+            Primes congregate at $1$ and $5 \pmod 6$, reflecting across the axis of symmetry.
+          </div>
+        </div>
+
+        <!-- 3. Goldbach Comet & Singular Series -->
+        <div class="quad-card">
+          <div class="quad-header">
+            <span class="quad-title">Perspective 3: The Comet & Hardy-Littlewood</span>
+            <span class="quad-badge">Analytic Asymptotics</span>
+          </div>
+          <div class="quad-canvas-wrap">
+            <canvas id="canvas-comet"></canvas>
+          </div>
+          <div class="quad-desc" id="desc-comet">
+            Counting exact pairs $g(2N)$ vs Hardy-Littlewood conjecture prediction.
+          </div>
+        </div>
+
+        <!-- 4. Ternary Weak Goldbach Expansion -->
+        <div class="quad-card">
+          <div class="quad-header">
+            <span class="quad-title">Perspective 4: Weak Goldbach Expansion</span>
+            <span class="quad-badge">Helfgott Theorem</span>
+          </div>
+          <div class="quad-canvas-wrap">
+            <canvas id="canvas-ternary"></canvas>
+          </div>
+          <div class="quad-desc" id="desc-ternary">
+            Adding an odd prime $p_3$ decomposes $2N+1 = p_1 + p_2 + p_3$.
+          </div>
+        </div>
+      </div>
+
+      <!-- Summary Metrics Bar -->
+      <div class="grand-summary-bar">
+        <div class="stat-pill">
+          <span class="stat-pill-label">Total Pairs g(2N)</span>
+          <span class="stat-pill-val" id="sum-pairs" style="color: #38bdf8;">0</span>
+        </div>
+        <div class="stat-pill">
+          <span class="stat-pill-label">Smallest Prime p_min</span>
+          <span class="stat-pill-val" id="sum-pmin" style="color: #4ade80;">0</span>
+        </div>
+        <div class="stat-pill">
+          <span class="stat-pill-label">Hardy-Littlewood Estimate</span>
+          <span class="stat-pill-val" id="sum-hl" style="color: #f59e0b;">0.0</span>
+        </div>
+        <div class="stat-pill">
+          <span class="stat-pill-label">Singular Series Factor C(2N)</span>
+          <span class="stat-pill-val" id="sum-c2n" style="color: #ec4899;">0.00</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pedagogy Section -->
+    <div class="pedagogy-grid">
+      <div class="pedagogy-card story">
+        <h3>Classroom Story: The 100-Lab Odyssey & 300 Years of Curiosity</h3>
+        <p>You have traveled through 100 distinct interactive laboratories, from small primes in ancient Greece to modern sieve theory and supercomputer verification.</p>
+        <p>In 1742, Christian Goldbach noted a simple arithmetic mystery: <i>"Every even number is the sum of two primes."</i> Today, that simple sentence stands as a testament to the inexhaustible depth of elementary mathematics.</p>
+        <p>No matter how far humanity journeys into the infinite, the primes continue to dance in perfect, harmonious resonance!</p>
+      </div>
+
+      <div class="pedagogy-card challenge">
+        <h3>The Final Grand Goldbach Quest</h3>
+        <div class="challenge-item">
+          <p><strong>Mastery Question 1:</strong> Why does $2N = 90$ have significantly more Goldbach pairs than $2N = 64$?</p>
+          <button class="reveal-btn" onclick="GLab.toggleSolution(this)">Reveal Answer</button>
+          <div class="challenge-answer">
+            $90$ has prime factors $2, 3, 5$ ($90 = 2 \times 3^2 \times 5$). Every odd prime factor $p$ boosts the singular series product factor $\frac{p-1}{p-2}$, whereas $64 = 2^6$ has NO odd prime factors, giving it the lowest possible Goldbach richness!
+          </div>
+        </div>
+        <div class="challenge-item">
+          <p><strong>Mastery Question 2:</strong> What connects the Weak Goldbach Conjecture (Helfgott 2013) to the Strong Binary Conjecture?</p>
+          <button class="reveal-btn" onclick="GLab.toggleSolution(this)">Reveal Answer</button>
+          <div class="challenge-answer">
+            If the Strong Binary Conjecture is true, Weak Goldbach follows immediately: for any odd $M \ge 7$, subtract $3$ to get an even number $M - 3 = p_1 + p_2$, so $M = p_1 + p_2 + 3$ is a sum of 3 primes!
+          </div>
+        </div>
+      </div>
+
+      <div class="pedagogy-card rigor">
+        <h3>The Asymptotic Guarantee: Hardy-Littlewood</h3>
+        <p>The Hardy-Littlewood asymptotic formula for the number of representations:</p>
+        <div class="math-formula">
+          $$g(2N) \sim 2 C_2 \prod_{p \mid N, p > 2} \left(\frac{p-1}{p-2}\right) \int_2^{2N} \frac{dx}{\ln(x) \ln(2N-x)}$$
+        </div>
+        <p>Because the twin prime constant $2 C_2 \approx 1.3203 > 0$ and the integral diverges as $\Theta\left(\frac{2N}{\ln^2(2N)}\right)$, the conjecture is asymptotically guaranteed to have infinite partitions for all sufficiently large $2N$.</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="i18n.js"></script>
+  <script src="common.js"></script>
+  <script>
+    const sliderEven = document.getElementById('slider-even');
+    const valEven = document.getElementById('val-even');
+    const btnChord = document.getElementById('btn-audio-chord');
+    const btnFireworks = document.getElementById('btn-fireworks');
+
+    // Canvas contexts
+    const cScale = document.getElementById('canvas-scale');
+    const cClock = document.getElementById('canvas-clock');
+    const cComet = document.getElementById('canvas-comet');
+    const cTernary = document.getElementById('canvas-ternary');
+
+    const ctxScale = cScale.getContext('2d');
+    const ctxClock = cClock.getContext('2d');
+    const ctxComet = cComet.getContext('2d');
+    const ctxTernary = cTernary.getContext('2d');
+
+    // Fast Prime Sieve
+    const MAX = 2000;
+    const isPrime = new Uint8Array(MAX + 1);
+    isPrime.fill(1);
+    isPrime[0] = isPrime[1] = 0;
+    for (let p = 2; p * p <= MAX; p++) {
+      if (isPrime[p]) {
+        for (let i = p * p; i <= MAX; i += p) isPrime[i] = 0;
+      }
+    }
+    const primesList = [];
+    for (let i = 2; i <= MAX; i++) if (isPrime[i]) primesList.push(i);
+
+    let activePairs = [];
+    let fireworksParticles = [];
+
+    function update() {
+      const n = parseInt(sliderEven.value, 10);
+      valEven.textContent = n;
+
+      // Find all pairs
+      activePairs = [];
+      for (let p = 2; p <= n / 2; p++) {
+        if (isPrime[p] && isPrime[n - p]) {
+          activePairs.push([p, n - p]);
+        }
+      }
+
+      // Compute stats
+      const pmin = activePairs.length > 0 ? activePairs[0][0] : 0;
+      document.getElementById('sum-pairs').textContent = activePairs.length;
+      document.getElementById('sum-pmin').textContent = pmin;
+
+      // Singular Series C(2N)
+      const C2 = 0.6601618;
+      let factor = 2 * C2;
+      for (let p of primesList) {
+        if (p > 2 && n % p === 0) {
+          factor *= (p - 1) / (p - 2);
+        }
+        if (p > n) break;
+      }
+      const hlEstimate = factor * (n / Math.pow(Math.log(n), 2));
+      document.getElementById('sum-hl').textContent = hlEstimate.toFixed(1);
+      document.getElementById('sum-c2n').textContent = factor.toFixed(2);
+
+      drawScale(n);
+      drawClock(n);
+      drawComet(n);
+      drawTernary(n);
+    }
+
+    // 1. Scale
+    function drawScale(n) {
+      const w = cScale.width;
+      const h = cScale.height;
+      ctxScale.clearRect(0, 0, w, h);
+
+      const cx = w / 2;
+      const cy = h * 0.65;
+
+      // Fulcrum
+      ctxScale.fillStyle = '#475569';
+      ctxScale.beginPath();
+      ctxScale.moveTo(cx, cy - 10);
+      ctxScale.lineTo(cx - 20, cy + 30);
+      ctxScale.lineTo(cx + 20, cy + 30);
+      ctxScale.closePath();
+      ctxScale.fill();
+
+      // Lever beam
+      ctxScale.strokeStyle = '#38bdf8';
+      ctxScale.lineWidth = 4;
+      ctxScale.beginPath();
+      ctxScale.moveTo(cx - 100, cy - 10);
+      ctxScale.lineTo(cx + 100, cy - 10);
+      ctxScale.stroke();
+
+      // Weights
+      if (activePairs.length > 0) {
+        const [p, q] = activePairs[0];
+
+        // Left Pan
+        ctxScale.fillStyle = '#f59e0b';
+        ctxScale.beginPath();
+        ctxScale.arc(cx - 70, cy - 35, 18, 0, Math.PI * 2);
+        ctxScale.fill();
+        ctxScale.fillStyle = '#0f172a';
+        ctxScale.font = 'bold 12px monospace';
+        ctxScale.textAlign = 'center';
+        ctxScale.fillText(p, cx - 70, cy - 31);
+
+        // Right Pan
+        ctxScale.fillStyle = '#38bdf8';
+        ctxScale.beginPath();
+        ctxScale.arc(cx + 70, cy - 35, 22, 0, Math.PI * 2);
+        ctxScale.fill();
+        ctxScale.fillStyle = '#0f172a';
+        ctxScale.fillText(q, cx + 70, cy - 31);
+
+        // Center weight
+        ctxScale.fillStyle = '#a855f7';
+        ctxScale.font = 'bold 14px sans-serif';
+        ctxScale.fillText(`${p} + ${q} = ${n}`, cx, cy - 45);
+      }
+    }
+
+    // 2. Modulo 6 Clock
+    function drawClock(n) {
+      const w = cClock.width;
+      const h = cClock.height;
+      ctxClock.clearRect(0, 0, w, h);
+
+      const cx = w / 2;
+      const cy = h / 2;
+      const r = Math.min(w, h) * 0.38;
+
+      ctxClock.strokeStyle = '#334155';
+      ctxClock.lineWidth = 2;
+      ctxClock.beginPath();
+      ctxClock.arc(cx, cy, r, 0, Math.PI * 2);
+      ctxClock.stroke();
+
+      for (let i = 0; i < 6; i++) {
+        const theta = (i / 6) * Math.PI * 2 - Math.PI / 2;
+        const tx = cx + Math.cos(theta) * (r + 14);
+        const ty = cy + Math.sin(theta) * (r + 14);
+        ctxClock.fillStyle = (i === 1 || i === 5) ? '#38bdf8' : '#64748b';
+        ctxClock.font = 'bold 11px monospace';
+        ctxClock.textAlign = 'center';
+        ctxClock.fillText(i, tx, ty + 4);
+      }
+
+      // Target modulo
+      const targetMod = n % 6;
+      const targetTheta = (targetMod / 6) * Math.PI * 2 - Math.PI / 2;
+      ctxClock.strokeStyle = '#f59e0b';
+      ctxClock.lineWidth = 2;
+      ctxClock.beginPath();
+      ctxClock.moveTo(cx, cy);
+      ctxClock.lineTo(cx + Math.cos(targetTheta) * (r - 10), cy + Math.sin(targetTheta) * (r - 10));
+      ctxClock.stroke();
+
+      ctxClock.fillStyle = '#fff';
+      ctxClock.font = '11px sans-serif';
+      ctxClock.textAlign = 'center';
+      ctxClock.fillText(`2N ≡ ${targetMod} (mod 6)`, cx, cy + 5);
+    }
+
+    // 3. Comet
+    function drawComet(targetN) {
+      const w = cComet.width;
+      const h = cComet.height;
+      ctxComet.clearRect(0, 0, w, h);
+
+      const pad = 25;
+      const pw = w - pad * 2;
+      const ph = h - pad * 2;
+
+      for (let num = 4; num <= 240; num += 2) {
+        let cnt = 0;
+        for (let p = 2; p <= num / 2; p++) {
+          if (isPrime[p] && isPrime[num - p]) cnt++;
+        }
+        const px = pad + ((num - 4) / (240 - 4)) * pw;
+        const py = h - pad - (cnt / 25) * ph;
+
+        ctxComet.fillStyle = (num === targetN) ? '#ec4899' : (num % 6 === 0 ? '#38bdf8' : '#64748b');
+        ctxComet.beginPath();
+        ctxComet.arc(px, py, (num === targetN) ? 5 : 1.5, 0, Math.PI * 2);
+        ctxComet.fill();
+      }
+    }
+
+    // 4. Ternary Weak Goldbach
+    function drawTernary(n) {
+      const w = cTernary.width;
+      const h = cTernary.height;
+      ctxTernary.clearRect(0, 0, w, h);
+
+      const odd = n + 1;
+      let trio = null;
+      for (let p1 of primesList) {
+        if (p1 > odd) break;
+        for (let p2 of primesList) {
+          if (p1 + p2 > odd) break;
+          const p3 = odd - p1 - p2;
+          if (p3 >= 2 && isPrime[p3]) {
+            trio = [p1, p2, p3];
+            break;
+          }
+        }
+        if (trio) break;
+      }
+
+      ctxTernary.fillStyle = '#38bdf8';
+      ctxTernary.font = 'bold 15px sans-serif';
+      ctxTernary.textAlign = 'center';
+      ctxTernary.fillText(`Weak Goldbach (2N + 1 = ${odd}):`, w / 2, 40);
+
+      if (trio) {
+        ctxTernary.fillStyle = '#4ade80';
+        ctxTernary.font = 'bold 20px monospace';
+        ctxTernary.fillText(`${trio[0]} + ${trio[1]} + ${trio[2]} = ${odd}`, w / 2, 90);
+
+        ctxTernary.fillStyle = '#94a3b8';
+        ctxTernary.font = '12px sans-serif';
+        ctxTernary.fillText(`3 primes unconditionally verified! (Helfgott 2013)`, w / 2, 130);
+      }
+    }
+
+    // Chord synthesis
+    btnChord.addEventListener('click', () => {
+      if (!activePairs.length) return;
+      activePairs.slice(0, 4).forEach((pair, idx) => {
+        setTimeout(() => {
+          const f1 = 220 * (1 + Math.log(pair[0]) / 3);
+          const f2 = 220 * (1 + Math.log(pair[1]) / 3);
+          GLab.audio.playTone(f1, 'sine', 0.4);
+          setTimeout(() => GLab.audio.playTone(f2, 'triangle', 0.4), 80);
+        }, idx * 140);
+      });
+    });
+
+    // Celebration Fireworks
+    btnFireworks.addEventListener('click', () => {
+      GLab.audio.playTone(587.33, 'sine', 0.2); // D5
+      setTimeout(() => GLab.audio.playTone(880, 'sine', 0.3), 150); // A5
+
+      // Show toast
+      const toast = document.createElement('div');
+      toast.style.position = 'fixed';
+      toast.style.bottom = '30px';
+      toast.style.left = '50%';
+      toast.style.transform = 'translateX(-50%)';
+      toast.style.background = 'linear-gradient(135deg, #f59e0b, #ec4899)';
+      toast.style.color = '#fff';
+      toast.style.padding = '14px 24px';
+      toast.style.borderRadius = '999px';
+      toast.style.fontWeight = '800';
+      toast.style.fontSize = '15px';
+      toast.style.boxShadow = '0 0 30px rgba(236, 72, 153, 0.5)';
+      toast.style.zIndex = '9999';
+      toast.textContent = '🎉 Congratulations! All 100 Goldbach Discovery Labs Completed! 🎓';
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 4500);
+    });
+
+    sliderEven.addEventListener('input', () => {
+      update();
+      GLab.audio.playClick();
+    });
+
+    function resizeAll() {
+      [cScale, cClock, cComet, cTernary].forEach(c => {
+        c.width = c.parentElement.clientWidth;
+        c.height = c.parentElement.clientHeight;
+      });
+      update();
+    }
+    window.addEventListener('resize', resizeAll);
+
+    GLab.init({
+      labNum: 100,
+      title: "Grand Unification Laboratory",
+      clusterNum: 10,
+      clusterName: "Classroom Tools & Grand Unification",
+      prevId: "lab099_virtual_exhibition_hall",
+      nextId: "index"
+    });
+
+    resizeAll();
+  </script>
+</body>
+</html>

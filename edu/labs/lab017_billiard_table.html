@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 017: Goldbach Billiard Table - Goldbach Discovery Labs</title>
+  <link rel="stylesheet" href="common.css">
+  <style>
+    .billiard-stage {
+      height: 400px;
+      position: relative;
+      background: radial-gradient(circle at center, #064e3b 0%, #022c22 100%);
+      border: 8px solid #78350f;
+      border-radius: var(--radius-lg);
+      box-shadow: inset 0 0 30px rgba(0,0,0,0.8);
+    }
+    .cue-stats {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 14px;
+      background: var(--card-bg-subtle);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-sm);
+      padding: 12px 18px;
+    }
+  </style>
+</head>
+<body>
+  <div id="lab-nav" class="lab-nav"></div>
+
+  <div class="container">
+    <div class="lab-header">
+      <h1>Lab 017: Goldbach Billiard Table</h1>
+      <p class="hook">Shoot a billiard ball around a 6-cushion hexagonal table. Can your shot bounce between Prime Pockets (1 and 5) to score a verified Goldbach combination for target $N$?</p>
+    </div>
+
+    <div class="lab-stage">
+      <div class="controls-bar">
+        <div class="control-group">
+          <label for="billiard-n">Target <i>N</i>:</label>
+          <input type="range" id="billiard-n" min="6" max="60" step="2" value="24">
+          <span style="font-size: 18px; font-weight: 800; color: var(--accent);" id="n-val">24</span>
+        </div>
+        <button class="btn btn-primary btn-sm" id="btn-shoot">🎱 Shoot Cue Ball</button>
+        <button class="btn btn-sm" id="btn-next-pair">Next Target Pair ▶</button>
+        <div class="stat-pill" style="margin-left: auto;">
+          <span>Active Shot:</span>
+          <span class="num" id="shot-status" style="color: var(--green);">Ready</span>
+        </div>
+      </div>
+
+      <div class="canvas-container billiard-stage">
+        <canvas id="billiardCanvas" height="400"></canvas>
+      </div>
+
+      <div class="cue-stats">
+        <div>
+          <span style="font-size: 11px; color: var(--muted); text-transform: uppercase;">Current Trajectory:</span>
+          <div style="font-size: 16px; font-weight: 700; color: var(--text);" id="trajectory-text">Aiming from Prime p = 5 to Prime q = 19</div>
+        </div>
+        <div class="stat-pill">
+          <span>Target Score:</span>
+          <span class="num" id="score-text">5 + 19 = 24 ✔</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pedagogy-grid">
+      <div class="pedagogy-card story">
+        <h2>✨ Intuitive Concept: The Hexagonal Table</h2>
+        <p>Mathematical billiards studies the trajectory of a friction-free particle bouncing off polygonal walls.</p>
+        <p>On this 6-sided table, the walls represent residues modulo 6. Only two pockets are <b>Prime Pockets</b> (Pocket 1 and Pocket 5). The other four pockets (0, 2, 3, 4) are blocked by bumpers.</p>
+        <p>When you aim a cue shot for even target $N$, the ball must launch from one Prime Pocket $p$ and sink cleanly into another Prime Pocket $q$ such that $p + q = N$!</p>
+      </div>
+
+      <div class="pedagogy-card challenge">
+        <h2>🎯 Try This! (Hands-On Challenges)</h2>
+        <div class="challenge-item">
+          <span class="badge">Challenge 1</span>
+          When $N = 24$ ($N \equiv 0 \pmod 6$), click "Next Target Pair" to cycle through all 3 valid billiard trajectories.
+          <button class="reveal-btn" data-target="ans-1">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-1">
+            The 3 shots are: $(5, 19)$, $(7, 17)$, and $(11, 13)$. Notice that in every shot, one prime is $6k-1$ and the other is $6k+1$!
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 2</span>
+          Set $N = 22$ ($N \equiv 4 \pmod 6$). Which pockets do the primes launch from?
+          <button class="reveal-btn" data-target="ans-2">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-2">
+            $22 = 5 + 17$ (both $6k-1 \equiv 5 \pmod 6$) or $3 + 19$ (pocket 3 is 3). Since $5 + 5 \equiv 10 \equiv 4 \pmod 6$, both primes must land in Pocket 5!
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 3</span>
+          Why does Pocket 3 only open when one of the primes is literally the number 3?
+          <button class="reveal-btn" data-target="ans-3">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-3">
+            Because 3 is the only prime divisible by 3! Any other number landing on Pocket 3 is a multiple of 3 ($6k+3 = 3(2k+1)$) and therefore composite!
+          </div>
+        </div>
+      </div>
+
+      <div class="pedagogy-card rigor">
+        <h2>📐 Mathematical Rigor & Formal Definition</h2>
+        <p>In a dynamical billiard system $(\Omega, \mu, T)$ where $\Omega$ is a regular hexagon, the collision sequence $\{s_k\}$ on sides $\{0, 1, 2, 3, 4, 5\} \cong \mathbb{Z}/6\mathbb{Z}$ models symbolic dynamics.</p>
+        <div class="math-formula">
+          s_0 + s_1 \equiv N \pmod 6 \quad \text{with } s_0, s_1 \in \{1, 5\}
+        </div>
+        <p>The billiard flow preserves the invariant measure and illustrates that valid Goldbach pairs correspond to non-ergodic periodic orbits connecting unit residue walls.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <a href="index.html">← Return to 100 Explorations Hub</a> | Goldbach Discovery Labs &copy; 2026
+  </footer>
+
+  <script src="i18n.js"></script>
+  <script src="common.js"></script>
+  <script>
+    const slider = document.getElementById('billiard-n');
+    const nVal = document.getElementById('n-val');
+    const btnShoot = document.getElementById('btn-shoot');
+    const btnNextPair = document.getElementById('btn-next-pair');
+    const shotStatus = document.getElementById('shot-status');
+    const trajectoryText = document.getElementById('trajectory-text');
+    const scoreText = document.getElementById('score-text');
+    const canvas = document.getElementById('billiardCanvas');
+    const ctx = canvas.getContext('2d');
+
+    let pairIndex = 0;
+    let ballPos = { x: 0, y: 0 };
+    let ballProgress = 0;
+    let isMoving = false;
+    let animId = null;
+
+    function getHexVertices(cx, cy, r) {
+      const vertices = [];
+      for (let i = 0; i < 6; i++) {
+        const theta = (i * Math.PI) / 3 - Math.PI / 6;
+        vertices.push({
+          x: cx + Math.cos(theta) * r,
+          y: cy + Math.sin(theta) * r,
+          res: i
+        });
+      }
+      return vertices;
+    }
+
+    function renderBilliards() {
+      const n = parseInt(slider.value);
+      nVal.textContent = n;
+
+      const pairs = GLab.getGoldbachPairs(n);
+      if (pairs.length === 0) return;
+
+      const currentPair = pairs[pairIndex % pairs.length];
+      const p = currentPair[0];
+      const q = currentPair[1];
+
+      trajectoryText.textContent = `Aiming from Prime p = ${p} (mod 6: ${p%6}) to Prime q = ${q} (mod 6: ${q%6})`;
+      scoreText.textContent = `${p} + ${q} = ${n} ✔`;
+
+      const w = canvas.width = canvas.parentElement.clientWidth;
+      const h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      const cx = w / 2;
+      const cy = h / 2;
+      const r = Math.min(cx, cy) - 45;
+
+      const verts = getHexVertices(cx, cy, r);
+
+      // Draw hexagonal table border
+      ctx.strokeStyle = '#d97706';
+      ctx.lineWidth = 10;
+      ctx.beginPath();
+      verts.forEach((v, idx) => {
+        if (idx === 0) ctx.moveTo(v.x, v.y);
+        else ctx.lineTo(v.x, v.y);
+      });
+      ctx.closePath();
+      ctx.stroke();
+
+      // Felt interior
+      ctx.fillStyle = '#064e3b';
+      ctx.fill();
+
+      // Pockets at vertices (Residues 0 to 5)
+      verts.forEach((v, idx) => {
+        const isPrimePocket = (idx === 1 || idx === 5);
+        ctx.fillStyle = isPrimePocket ? '#fbbf24' : '#1e293b';
+        ctx.beginPath();
+        ctx.arc(v.x, v.y, 16, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = isPrimePocket ? '#f59e0b' : '#334155';
+        ctx.lineWidth = 3;
+        ctx.stroke();
+
+        ctx.fillStyle = isPrimePocket ? '#0b1120' : '#94a3b8';
+        ctx.font = 'bold 12px monospace';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(idx, v.x, v.y);
+      });
+
+      // Compute start and end points for the shot
+      const vStart = verts[p % 6];
+      const vEnd = verts[q % 6];
+
+      // Draw trajectory line
+      ctx.strokeStyle = 'rgba(56, 189, 248, 0.4)';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([6, 6]);
+      ctx.beginPath();
+      ctx.moveTo(vStart.x, vStart.y);
+      ctx.lineTo(vEnd.x, vEnd.y);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Draw ball position
+      const bx = vStart.x + (vEnd.x - vStart.x) * ballProgress;
+      const by = vStart.y + (vEnd.y - vStart.y) * ballProgress;
+
+      // Ball shadow
+      ctx.fillStyle = 'rgba(0,0,0,0.5)';
+      ctx.beginPath();
+      ctx.arc(bx + 4, by + 4, 12, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Ball (White cue ball with red ring)
+      ctx.fillStyle = '#f8fafc';
+      ctx.beginPath();
+      ctx.arc(bx, by, 12, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#ef4444';
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+
+      ctx.fillStyle = '#0b1120';
+      ctx.font = 'bold 10px monospace';
+      ctx.fillText(p, bx, by);
+    }
+
+    function shootBall() {
+      if (isMoving) return;
+      isMoving = true;
+      ballProgress = 0;
+      shotStatus.textContent = 'In Motion...';
+      shotStatus.style.color = 'var(--accent)';
+
+      GLab.audio.playTone(500, 0.05, 'triangle', 0.2);
+
+      function step() {
+        ballProgress += 0.025;
+        if (ballProgress >= 1) {
+          ballProgress = 1;
+          isMoving = false;
+          shotStatus.textContent = 'POCKETED! 🎯';
+          shotStatus.style.color = 'var(--green)';
+          renderBilliards();
+          GLab.audio.playSuccess();
+          return;
+        }
+        renderBilliards();
+        animId = requestAnimationFrame(step);
+      }
+      animId = requestAnimationFrame(step);
+    }
+
+    btnShoot.addEventListener('click', shootBall);
+
+    btnNextPair.addEventListener('click', () => {
+      pairIndex++;
+      ballProgress = 0;
+      renderBilliards();
+      GLab.audio.playClick();
+    });
+
+    slider.addEventListener('input', () => {
+      pairIndex = 0;
+      ballProgress = 0;
+      renderBilliards();
+      GLab.audio.playClick();
+    });
+
+    window.addEventListener('resize', renderBilliards);
+
+    GLab.init({
+      labNum: 17,
+      title: "Goldbach Billiard Table",
+      clusterNum: 2,
+      clusterName: "Modular Arithmetic & The Power of 6",
+      prevId: "lab016_sum_of_squares",
+      nextId: "lab018_residue_roulette"
+    });
+
+    renderBilliards();
+  </script>
+</body>
+</html>

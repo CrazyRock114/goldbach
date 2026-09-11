@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 019: The 2·3·7 = 42 Cross-Sieve - Goldbach Discovery Labs</title>
+  <link rel="stylesheet" href="common.css">
+  <style>
+    .cross-stage {
+      height: 380px;
+      position: relative;
+    }
+    .sieve-grid-table {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+      margin: 16px 0;
+      background: #090e17;
+      padding: 14px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--card-border);
+    }
+    .sieve-cell {
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: monospace;
+      font-size: 13px;
+      font-weight: 700;
+      border-radius: 4px;
+      background: var(--card-bg-subtle);
+      border: 1px solid var(--card-border);
+      color: var(--muted);
+    }
+    .sieve-cell.prime {
+      background: rgba(56, 189, 248, 0.2);
+      border-color: var(--primary);
+      color: #7dd3fc;
+    }
+    .sieve-cell.pair {
+      background: rgba(52, 211, 153, 0.35);
+      border-color: var(--green);
+      color: #34d399;
+      box-shadow: 0 0 8px rgba(52, 211, 153, 0.3);
+    }
+  </style>
+</head>
+<body>
+  <div id="lab-nav" class="lab-nav"></div>
+
+  <div class="container">
+    <div class="lab-header">
+      <h1>Lab 019: The 2·3·7 = 42 Cross-Sieve</h1>
+      <p class="hook">Famous in pop culture as the "Answer to the Ultimate Question," $42 = 2 \times 3 \times 7$ holds a profound secret in number theory: how divisibility by 7 creates an extra 1.20× resonance layer in the Goldbach comet!</p>
+    </div>
+
+    <div class="lab-stage">
+      <div class="controls-bar">
+        <div class="control-group">
+          <label for="slider-42">Multiplier of 42 (42k):</label>
+          <input type="range" id="slider-42" min="1" max="5" step="1" value="1">
+          <span style="font-size: 18px; font-weight: 800; color: var(--accent);" id="display-42">42 × 1 = 42</span>
+        </div>
+        <button class="btn btn-sm" id="btn-comp-neighbors">Compare with Neighbors (40 & 44)</button>
+        <div class="stat-pill" style="margin-left: auto;">
+          <span>7-Divisibility Bonus:</span>
+          <span class="num" style="color: var(--green);">+20% (6/5)</span>
+        </div>
+      </div>
+
+      <div style="font-size: 14px; font-weight: 700; color: var(--muted); text-transform: uppercase;">
+        The 7-Column Residue Sieve for <span id="target-title" style="color:var(--primary);">N = 42</span>:
+      </div>
+      <div class="sieve-grid-table" id="sieve-table">
+        <!-- 7 columns of numbers up to N -->
+      </div>
+
+      <div style="display: flex; justify-content: space-around; background: var(--card-bg-subtle); padding: 12px; border-radius: var(--radius-sm); border: 1px solid var(--card-border);">
+        <div style="text-align: center;">
+          <span style="font-size: 11px; color: var(--muted); text-transform: uppercase;">Singular Series Factor</span>
+          <div style="font-size: 20px; font-weight: 800; color: var(--primary);" id="factor-math">2.0 (mod 3) × 1.20 (mod 7) = 2.40×</div>
+        </div>
+        <div style="text-align: center;">
+          <span style="font-size: 11px; color: var(--muted); text-transform: uppercase;">Goldbach Pairs</span>
+          <div style="font-size: 20px; font-weight: 800; color: var(--green);" id="pairs-display">4 pairs</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pedagogy-grid">
+      <div class="pedagogy-card story">
+        <h2>✨ Intuitive Concept: The Seventh Harmonic</h2>
+        <p>You already know that multiples of 6 get a $2.0\times$ boost because they escape divisibility by 3.</p>
+        <p>What happens when a number is ALSO divisible by <b>7</b>? For example, <b>42, 84, 126, 168...</b></p>
+        <p>Because $7 \mid N$, candidate primes do NOT knock out any residue modulo 7 ($N - r \not\equiv 0 \pmod 7$). All 6 coprime residues survive, providing an additional multiplier of:</p>
+        <div class="math-formula">
+          \frac{7 - 1}{7 - 2} = \frac{6}{5} = 1.20 \quad (+20\% \text{ bonus!})
+        </div>
+        <p>Combined with the $2.0\times$ boost from 3, multiples of 42 enjoy a total boost of <b>$2.40\times$</b>!</p>
+      </div>
+
+      <div class="pedagogy-card challenge">
+        <h2>🎯 Try This! (Hands-On Challenges)</h2>
+        <div class="challenge-item">
+          <span class="badge">Challenge 1</span>
+          Examine the 4 Goldbach pairs of $N = 42$. Can you verify all 4?
+          <button class="reveal-btn" data-target="ans-1">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-1">
+            The 4 pairs are: $5 + 37 = 42$, $11 + 31 = 42$, $13 + 29 = 42$, and $19 + 23 = 42$. All 8 numbers are verified primes!
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 2</span>
+          Why does $N = 42$ have MORE pairs than $N = 40$ (which is close in size)?
+          <button class="reveal-btn" data-target="ans-2">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-2">
+            $40 = 2^3 \times 5$. It is NOT divisible by 3 (loses the $2\times$ boost) and NOT divisible by 7 (loses the $1.2\times$ boost). 42 is divisible by both 3 and 7, so it outperforms 40!
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 3</span>
+          Slide to $42 \times 2 = 84$. How many pairs does 84 have?
+          <button class="reveal-btn" data-target="ans-3">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-3">
+            $N = 84$ has <b>8 distinct Goldbach pairs</b>! ($5+79, 11+73, 13+71, 17+67, 23+61, 31+53, 37+47, 41+43$).
+          </div>
+        </div>
+      </div>
+
+      <div class="pedagogy-card rigor">
+        <h2>📐 Mathematical Rigor & Formal Definition</h2>
+        <p>The Euler product for the singular series $\mathfrak{S}(N)$ contains independent factors for each odd prime $p$ dividing $N$:</p>
+        <div class="math-formula">
+          \prod_{p \mid N, p > 2} \frac{p-1}{p-2} = \left(\frac{3-1}{3-2}\right) \times \left(\frac{7-1}{7-2}\right) = 2 \times \frac{6}{5} = \frac{12}{5} = 2.40
+        </div>
+        <p>This strictly dictates the stratification of the Goldbach comet into distinct secondary hyper-dense parabolic layers.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <a href="index.html">← Return to 100 Explorations Hub</a> | Goldbach Discovery Labs &copy; 2026
+  </footer>
+
+  <script src="i18n.js"></script>
+  <script src="common.js"></script>
+  <script>
+    const slider = document.getElementById('slider-42');
+    const display42 = document.getElementById('display-42');
+    const targetTitle = document.getElementById('target-title');
+    const sieveTable = document.getElementById('sieve-table');
+    const pairsDisplay = document.getElementById('pairs-display');
+    const btnComp = document.getElementById('btn-comp-neighbors');
+
+    function renderSieve() {
+      const k = parseInt(slider.value);
+      const n = 42 * k;
+      display42.textContent = `42 × ${k} = ${n}`;
+      targetTitle.textContent = `N = ${n}`;
+
+      const pairs = GLab.getGoldbachPairs(n);
+      const pairNumbers = new Set();
+      pairs.forEach(p => {
+        pairNumbers.add(p[0]);
+        pairNumbers.add(p[1]);
+      });
+
+      pairsDisplay.textContent = `${pairs.length} pair${pairs.length>1?'s':''}: ${pairs.map(p=>p[0]+'+'+p[1]).join(', ')}`;
+
+      sieveTable.innerHTML = '';
+      for (let i = 1; i <= Math.min(n, 70); i++) {
+        const cell = document.createElement('div');
+        cell.className = 'sieve-cell';
+        cell.textContent = i;
+
+        const isP = GLab.isPrime(i);
+        if (pairNumbers.has(i)) {
+          cell.classList.add('pair');
+          cell.title = `Goldbach pair summand for ${n}!`;
+        } else if (isP) {
+          cell.classList.add('prime');
+        }
+        sieveTable.appendChild(cell);
+      }
+    }
+
+    slider.addEventListener('input', () => {
+      renderSieve();
+      GLab.audio.playTone(350 + parseInt(slider.value) * 40, 0.1, 'triangle');
+    });
+
+    btnComp.addEventListener('click', () => {
+      const p40 = GLab.getGoldbachPairs(40).length;
+      const p42 = GLab.getGoldbachPairs(42).length;
+      const p44 = GLab.getGoldbachPairs(44).length;
+      alert(`Comparison:\n• N = 40: ${p40} pairs\n• N = 42 (Divisible by 2, 3, 7): ${p42} pairs (WINNER!)\n• N = 44: ${p44} pairs`);
+    });
+
+    GLab.init({
+      labNum: 19,
+      title: "The 2·3·7 = 42 Cross-Sieve",
+      clusterNum: 2,
+      clusterName: "Modular Arithmetic & The Power of 6",
+      prevId: "lab018_residue_roulette",
+      nextId: "lab020_modulo_clock"
+    });
+
+    renderSieve();
+  </script>
+</body>
+</html>

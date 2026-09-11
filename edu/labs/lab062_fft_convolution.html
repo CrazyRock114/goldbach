@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 062: FFT Prime Convolution Visualizer - Goldbach Discovery Labs</title>
+  <link rel="stylesheet" href="common.css">
+  <style>
+    .dual-pipeline {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin: 20px 0;
+    }
+    @media (max-width: 768px) {
+      .dual-pipeline {
+        grid-template-columns: 1fr;
+      }
+    }
+    .pipe-box {
+      background: var(--card-bg-subtle);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .pipe-box.highlight {
+      border-color: #38bdf8;
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.15);
+    }
+    .step-badge {
+      font-size: 11px;
+      font-weight: 800;
+      color: #38bdf8;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .op-count {
+      font-size: 26px;
+      font-weight: 900;
+      font-family: monospace;
+      margin-top: 4px;
+    }
+    .fft-canvas-wrap {
+      height: 240px;
+      position: relative;
+    }
+  </style>
+</head>
+<body>
+  <div id="lab-nav" class="lab-nav"></div>
+
+  <div class="container">
+    <div class="lab-header">
+      <h1>Lab 062: FFT Prime Convolution Visualizer</h1>
+      <p class="hook">How did supercomputers verify Goldbach up to $4 \times 10^{18}$? They didn't test pairs one-by-one! They used the <b>Fast Fourier Transform (FFT)</b> to multiply prime polynomials in $O(N \log N)$ instead of $O(N^2)$ time!</p>
+    </div>
+
+    <div class="lab-stage">
+      <div class="controls-bar">
+        <div class="control-group">
+          <label for="fft-size">Array Size <i>N</i>:</label>
+          <input type="range" id="fft-size" min="64" max="1024" step="64" value="256">
+          <span style="font-size: 18px; font-weight: 800; color: var(--accent);" id="fft-size-val">256</span>
+        </div>
+        <button class="btn btn-primary btn-sm" id="btn-run-fft">⚡ Run FFT Benchmark</button>
+      </div>
+
+      <div class="dual-pipeline">
+        <div class="pipe-box">
+          <span class="step-badge">Traditional Method</span>
+          <h3 style="margin: 0; color: #f87171;">Direct Convolution (O(N²))</h3>
+          <p style="font-size: 13px; color: var(--muted); margin: 0;">
+            Every prime is individually tested against every other prime in a double loop ($p_i + p_j$).
+          </p>
+          <div>
+            <span style="font-size: 11px; color: var(--muted); text-transform: uppercase;">Operations Required:</span>
+            <div class="op-count" id="ops-direct" style="color: #f87171;">65,536 ops</div>
+          </div>
+          <div style="font-size: 12px; color: #a8a29e;">
+            At $N = 10^7$, this takes <b>100 Trillion Operations</b> (~28 hours on a CPU)!
+          </div>
+        </div>
+
+        <div class="pipe-box highlight">
+          <span class="step-badge">Supercomputer Method</span>
+          <h3 style="margin: 0; color: #34d399;">FFT Frequency Domain (O(N log N))</h3>
+          <p style="font-size: 13px; color: var(--muted); margin: 0;">
+            $\text{Vector} \xrightarrow{\text{FFT}} \text{Spectra} \xrightarrow{\odot} \text{Square} \xrightarrow{\text{IFFT}} \text{All Goldbach Counts!}$
+          </p>
+          <div>
+            <span style="font-size: 11px; color: var(--muted); text-transform: uppercase;">Operations Required:</span>
+            <div class="op-count" id="ops-fft" style="color: #34d399;">2,048 ops</div>
+          </div>
+          <div style="font-size: 12px; color: #38bdf8; font-weight: bold;" id="speedup-label">
+            🚀 32.0x FASTER!
+          </div>
+        </div>
+      </div>
+
+      <div style="font-size: 12px; color: var(--muted); text-transform: uppercase; margin-bottom: 6px;">Fourier Spectral Magnitudes |FFT(Prime Indicator)|²:</div>
+      <div class="canvas-container fft-canvas-wrap">
+        <canvas id="fftCanvas" height="240"></canvas>
+      </div>
+    </div>
+
+    <div class="pedagogy-grid">
+      <div class="pedagogy-card story">
+        <h2>✨ The Convolution Theorem & Modern Verification</h2>
+        <p>In 1998, Tomás Oliveira e Silva began one of the greatest distributed computing campaigns in history: systematically verifying that every even integer up to $4 \times 10^{18}$ satisfies Goldbach's conjecture.</p>
+        <p>Testing numbers one by one via trial division would have taken longer than the age of the universe! Instead, mathematical engines break the number line into intervals and compute prime sums using <b>Discrete Fourier Transform convolutions</b>.</p>
+        <p>Because convolution in the time domain corresponds to simple element-wise multiplication in the frequency domain, the Fast Fourier Transform (Cooley-Tukey algorithm) slashes computational complexity from quadratic $O(N^2)$ to nearly linear $O(N \log N)$!</p>
+      </div>
+
+      <div class="pedagogy-card challenge">
+        <h2>🎯 Try This! (Hands-On Challenges)</h2>
+        <div class="challenge-item">
+          <span class="badge">Challenge 1</span>
+          At array size $N = 1024$, how many times faster is the FFT than direct convolution?
+          <button class="reveal-btn" data-target="ans-1">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-1">
+            Direct convolution: $1024^2 \approx 1,048,576$ ops. FFT: $1024 \times \log_2(1024) = 10,240$ ops. That is more than <b>100x faster</b>!
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 2</span>
+          Why does the frequency spectrum display sharp harmonic spikes at frequencies $\omega = 1/6$ and $5/6$?
+          <button class="reveal-btn" data-target="ans-2">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-2">
+            Because all primes $>3$ are concentrated exclusively in residue classes $6k \pm 1$! This structural periodicity creates prominent Fourier resonant peaks.
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 3</span>
+          If $r(2k) = 0$ for some even $2k$, what would appear in the reconstructed IFFT waveform?
+          <button class="reveal-btn" data-target="ans-3">💡 Counter-Example Detector</button>
+          <div class="answer" id="ans-3">
+            An exact zero amplitude at index $2k$! Supercomputer engines search for zero values in the output array—and have found none up to $4 \times 10^{18}$!
+          </div>
+        </div>
+      </div>
+
+      <div class="pedagogy-card rigor">
+        <h2>📐 The Discrete Convolution Theorem</h2>
+        <p>Let $\mathbf{a} \in \{0, 1\}^N$ be the characteristic vector where $a_k = 1 \iff k \in \mathbb{P}$. The cyclic convolution $(\mathbf{a} * \mathbf{a})_n = \sum_{k=0}^{N-1} a_k a_{n-k}$ satisfies:</p>
+        <div class="math-formula">
+          \mathbf{a} * \mathbf{a} = \mathcal{F}^{-1}\left( \mathcal{F}(\mathbf{a}) \odot \mathcal{F}(\mathbf{a}) \right) = \mathcal{F}^{-1}\left( |\mathcal{F}(\mathbf{a})|^2 \right)
+        </div>
+        <p>Because the Discrete Fourier Transform $\mathcal{F}$ is computed in $\Theta(N \log N)$ complex operations, all representations $r_2(2k)$ across the entire interval $[4, N]$ are generated simultaneously in a single inverse transform pass.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <a href="index.html">← Return to 100 Explorations Hub</a> | Goldbach Discovery Labs &copy; 2026
+  </footer>
+
+  <script src="i18n.js"></script>
+  <script src="common.js"></script>
+  <script>
+    const fftSizeSlider = document.getElementById('fft-size');
+    const fftSizeVal = document.getElementById('fft-size-val');
+    const opsDirect = document.getElementById('ops-direct');
+    const opsFft = document.getElementById('ops-fft');
+    const speedupLabel = document.getElementById('speedup-label');
+    const btnRunFft = document.getElementById('btn-run-fft');
+    const canvas = document.getElementById('fftCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // Discrete Fourier Transform (DFT) helper for visualization
+    function computeDFT(signal) {
+      const N = signal.length;
+      const magnitudes = new Float32Array(N / 2);
+
+      for (let k = 0; k < N / 2; k++) {
+        let real = 0;
+        let imag = 0;
+        const angleFactor = (2 * Math.PI * k) / N;
+
+        for (let n = 0; n < N; n++) {
+          const angle = angleFactor * n;
+          real += signal[n] * Math.cos(angle);
+          imag -= signal[n] * Math.sin(angle);
+        }
+
+        magnitudes[k] = Math.sqrt(real * real + imag * imag);
+      }
+
+      return magnitudes;
+    }
+
+    function update() {
+      const N = parseInt(fftSizeSlider.value);
+      fftSizeVal.textContent = N;
+
+      const directOps = N * N;
+      const fftOps = Math.round(N * Math.log2(N));
+      const ratio = (directOps / fftOps).toFixed(1);
+
+      opsDirect.textContent = `${directOps.toLocaleString()} ops`;
+      opsFft.textContent = `${fftOps.toLocaleString()} ops`;
+      speedupLabel.textContent = `🚀 ${ratio}x FASTER!`;
+
+      // Build prime indicator
+      const signal = new Float32Array(N);
+      for (let i = 2; i < N; i++) {
+        if (GLab.isPrime(i)) signal[i] = 1.0;
+      }
+
+      const mags = computeDFT(signal);
+      renderSpectrum(mags);
+    }
+
+    function renderSpectrum(mags) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const padding = 30;
+      const w = canvas.width - padding * 2;
+      const h = canvas.height - padding * 2;
+      const len = mags.length;
+
+      let maxMag = 0;
+      for (let i = 1; i < len; i++) {
+        if (mags[i] > maxMag) maxMag = mags[i];
+      }
+      if (maxMag === 0) maxMag = 1;
+
+      // Draw baseline
+      ctx.strokeStyle = '#334155';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(padding, canvas.height - padding);
+      ctx.lineTo(canvas.width - padding, canvas.height - padding);
+      ctx.stroke();
+
+      // Draw spectral line
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+
+      for (let i = 1; i < len; i++) {
+        const x = padding + (i / len) * w;
+        const y = canvas.height - padding - (mags[i] / maxMag) * h;
+        if (i === 1) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+
+      // Area fill
+      ctx.lineTo(padding + w, canvas.height - padding);
+      ctx.lineTo(padding, canvas.height - padding);
+      ctx.fillStyle = 'rgba(56, 189, 248, 0.15)';
+      ctx.fill();
+
+      // Axes labels
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = '11px monospace';
+      ctx.textAlign = 'left';
+      ctx.fillText('Frequency 0 (DC)', padding, canvas.height - 10);
+      ctx.textAlign = 'right';
+      ctx.fillText(`Nyquist Frequency π (N/2)`, canvas.width - padding, canvas.height - 10);
+    }
+
+    function resizeCanvas() {
+      canvas.width = canvas.parentElement.clientWidth;
+      update();
+    }
+    window.addEventListener('resize', resizeCanvas);
+
+    fftSizeSlider.addEventListener('input', () => {
+      update();
+      GLab.audio.playClick();
+    });
+
+    btnRunFft.addEventListener('click', () => {
+      GLab.audio.playSuccess();
+      update();
+    });
+
+    GLab.init({
+      labNum: 62,
+      title: "FFT Prime Convolution",
+      clusterNum: 7,
+      clusterName: "Combinatorics, Generating Functions & Probability",
+      prevId: "lab061_prime_polynomial_square",
+      nextId: "lab063_cramer_random_model"
+    });
+
+    resizeCanvas();
+  </script>
+</body>
+</html>

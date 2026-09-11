@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 018: Residue Roulette Wheel - Goldbach Discovery Labs</title>
+  <link rel="stylesheet" href="common.css">
+  <style>
+    .roulette-stage {
+      height: 400px;
+      position: relative;
+    }
+    .roulette-dashboard {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .roulette-box {
+      background: var(--card-bg-subtle);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-sm);
+      padding: 12px;
+      text-align: center;
+    }
+    .roulette-box span {
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      display: block;
+    }
+    .roulette-box strong {
+      font-size: 20px;
+      font-family: monospace;
+      color: var(--primary);
+    }
+  </style>
+</head>
+<body>
+  <div id="lab-nav" class="lab-nav"></div>
+
+  <div class="container">
+    <div class="lab-header">
+      <h1>Lab 018: Residue Roulette Wheel</h1>
+      <p class="hook">Spin the probabilistic prime roulette wheel! When a random prime $p$ is selected, what are the odds that its partner $N - p$ also hits a prime slot? Test the probabilistic heart of Goldbach's conjecture!</p>
+    </div>
+
+    <div class="lab-stage">
+      <div class="controls-bar">
+        <div class="control-group">
+          <label for="roulette-n">Target <i>N</i>:</label>
+          <input type="range" id="roulette-n" min="10" max="100" step="2" value="48">
+          <span style="font-size: 18px; font-weight: 800; color: var(--accent);" id="n-val">48</span>
+        </div>
+        <button class="btn btn-primary btn-sm" id="btn-spin-wheel">🎰 Spin Roulette Wheel</button>
+        <button class="btn btn-sm" id="btn-spin-100">Spin 100 Times</button>
+        <div class="stat-pill" style="margin-left: auto;">
+          <span>Last Outcome:</span>
+          <span class="num" id="spin-outcome" style="color: var(--accent);">Ready to spin</span>
+        </div>
+      </div>
+
+      <div class="canvas-container roulette-stage">
+        <canvas id="rouletteCanvas" height="400"></canvas>
+      </div>
+
+      <div class="roulette-dashboard">
+        <div class="roulette-box">
+          <span>Total Spins</span>
+          <strong id="stat-spins">0</strong>
+        </div>
+        <div class="roulette-box">
+          <span>Goldbach Hits (Both Prime)</span>
+          <strong id="stat-hits" style="color: var(--green);">0</strong>
+        </div>
+        <div class="roulette-box">
+          <span>Empirical Probability</span>
+          <strong id="stat-empirical">0.0%</strong>
+        </div>
+        <div class="roulette-box">
+          <span>Cramér Theoretical Est.</span>
+          <strong id="stat-theoretical" style="color: var(--secondary);">--</strong>
+        </div>
+      </div>
+    </div>
+
+    <div class="pedagogy-grid">
+      <div class="pedagogy-card story">
+        <h2>✨ Intuitive Concept: The Random Prime Casino</h2>
+        <p>By the Prime Number Theorem, a random integer near $x$ has a chance of roughly $1 / \ln x$ of being prime.</p>
+        <p>If whether $p$ and $N - p$ are prime were two completely independent coin flips, the probability of both being prime would be:</p>
+        <div class="math-formula">
+          P(\text{both prime}) \approx \frac{1}{\ln N} \times \frac{1}{\ln N} = \frac{1}{\ln^2 N}
+        </div>
+        <p>Since there are $N/2$ candidate pairs to test, the expected number of Goldbach pairs would be roughly:</p>
+        <div class="math-formula">
+          \mathbb{E}[g(N)] \approx \frac{N}{2 \ln^2 N}
+        </div>
+        <p>Because $N / \ln^2 N \to \infty$ as $N \to \infty$, the probability of an even number having ZERO pairs shrinks exponentially to zero!</p>
+      </div>
+
+      <div class="pedagogy-card challenge">
+        <h2>🎯 Try This! (Hands-On Challenges)</h2>
+        <div class="challenge-item">
+          <span class="badge">Challenge 1</span>
+          Click <b>"Spin 100 Times"</b> for $N = 48$. How many times do both numbers hit primes?
+          <button class="reveal-btn" data-target="ans-1">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-1">
+            $48$ has 5 valid prime pairs ($5+43, 7+41, 11+37, 17+31, 19+29$) out of 11 prime candidates $\le 24$. That gives a true hit rate of $5 / 11 \approx 45.5\%$!
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 2</span>
+          Why does Cramér's pure random model underestimate the true number of pairs for multiples of 6?
+          <button class="reveal-btn" data-target="ans-2">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-2">
+            Because prime events are NOT completely independent! As we learned in Lab 012, modular arithmetic creates strong correlations: multiples of 6 escape divisibility by 3 for both numbers simultaneously, doubling the true probability!
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 3</span>
+          As $N$ grows from 20 to 100, what happens to the total number of expected pairs?
+          <button class="reveal-btn" data-target="ans-3">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-3">
+            Even though the probability of an individual number being prime ($1/\ln N$) slowly decreases, the number of candidate pairs ($N/2$) grows much faster (linearly). So total pairs increase steadily!
+          </div>
+        </div>
+      </div>
+
+      <div class="pedagogy-card rigor">
+        <h2>📐 Mathematical Rigor & Formal Definition</h2>
+        <p>In Cramér's probabilistic model of primes (1936), integers are modeled by independent random variables $X_n \in \{0, 1\}$ with $\mathbb{P}(X_n = 1) = \frac{1}{\ln n}$ for $n \ge 3$. The sum of two random primes has expectation:</p>
+        <div class="math-formula">
+          \mathbb{E}\left[\sum_{3 \le p \le N/2} X_p X_{N-p}\right] \sim \int_3^{N/2} \frac{dt}{\ln t \ln(N - t)} \sim \frac{N}{2 \ln^2 N}
+        </div>
+        <p>Hardy and Littlewood corrected this heuristic by introducing the singular series $\mathfrak{S}(N)$, exactly accounting for modular dependency across all prime moduli.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <a href="index.html">← Return to 100 Explorations Hub</a> | Goldbach Discovery Labs &copy; 2026
+  </footer>
+
+  <script src="i18n.js"></script>
+  <script src="common.js"></script>
+  <script>
+    const slider = document.getElementById('roulette-n');
+    const nVal = document.getElementById('n-val');
+    const btnSpin = document.getElementById('btn-spin-wheel');
+    const btnSpin100 = document.getElementById('btn-spin-100');
+    const spinOutcome = document.getElementById('spin-outcome');
+    const statSpins = document.getElementById('stat-spins');
+    const statHits = document.getElementById('stat-hits');
+    const statEmpirical = document.getElementById('stat-empirical');
+    const statTheoretical = document.getElementById('stat-theoretical');
+    const canvas = document.getElementById('rouletteCanvas');
+    const ctx = canvas.getContext('2d');
+
+    let spins = 0;
+    let hits = 0;
+    let wheelAngle = 0;
+    let ball1Angle = 0;
+    let ball2Angle = 0;
+    let isSpinning = false;
+    let animId = null;
+
+    function resetStats() {
+      spins = 0;
+      hits = 0;
+      statSpins.textContent = '0';
+      statHits.textContent = '0';
+      statEmpirical.textContent = '0.0%';
+      const n = parseInt(slider.value);
+      const est = GLab.hardyLittlewoodEstimate(n);
+      statTheoretical.textContent = `~${est.toFixed(1)} pairs`;
+    }
+
+    function renderWheel() {
+      const n = parseInt(slider.value);
+      nVal.textContent = n;
+
+      const w = canvas.width = canvas.parentElement.clientWidth;
+      const h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      const cx = w / 2;
+      const cy = h / 2;
+      const outerR = Math.min(cx, cy) - 30;
+      const innerR = outerR - 60;
+
+      const primes = GLab.getPrimes(n);
+      const half = n / 2;
+      const candidates = primes.filter(p => p <= half);
+      const totalSlots = Math.max(8, candidates.length);
+
+      // Draw outer rim
+      ctx.strokeStyle = '#d97706';
+      ctx.lineWidth = 12;
+      ctx.beginPath();
+      ctx.arc(cx, cy, outerR, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Draw slots
+      for (let i = 0; i < totalSlots; i++) {
+        const theta = (i / totalSlots) * Math.PI * 2 + wheelAngle;
+        const pVal = candidates[i % candidates.length];
+        const comp = n - pVal;
+        const isPair = GLab.isPrime(comp);
+
+        // Fill slot
+        ctx.fillStyle = isPair ? 'rgba(52, 211, 153, 0.25)' : 'rgba(30, 41, 59, 0.7)';
+        ctx.beginPath();
+        ctx.arc(cx, cy, outerR, theta, theta + (2 * Math.PI) / totalSlots);
+        ctx.lineTo(cx + Math.cos(theta + (2*Math.PI)/totalSlots) * innerR, cy + Math.sin(theta + (2*Math.PI)/totalSlots) * innerR);
+        ctx.arc(cx, cy, innerR, theta + (2 * Math.PI) / totalSlots, theta, true);
+        ctx.closePath();
+        ctx.fill();
+
+        // Divider lines
+        ctx.strokeStyle = '#78350f';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(cx + Math.cos(theta) * innerR, cy + Math.sin(theta) * innerR);
+        ctx.lineTo(cx + Math.cos(theta) * outerR, cy + Math.sin(theta) * outerR);
+        ctx.stroke();
+
+        // Text label
+        const midTheta = theta + Math.PI / totalSlots;
+        const textR = (innerR + outerR) / 2;
+        ctx.fillStyle = isPair ? '#34d399' : '#94a3b8';
+        ctx.font = 'bold 11px monospace';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(pVal, cx + Math.cos(midTheta) * textR, cy + Math.sin(midTheta) * textR);
+      }
+
+      // Ball indicator
+      const bx = cx + Math.cos(ball1Angle) * (innerR + 30);
+      const by = cy + Math.sin(ball1Angle) * (innerR + 30);
+      ctx.fillStyle = '#f8fafc';
+      ctx.beginPath();
+      ctx.arc(bx, by, 7, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Center Hub
+      ctx.fillStyle = '#1e293b';
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.arc(cx, cy, innerR - 10, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = '#f8fafc';
+      ctx.font = 'bold 20px monospace';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(n, cx, cy - 8);
+
+      ctx.fillStyle = 'var(--muted)';
+      ctx.font = '11px sans-serif';
+      ctx.fillText('TARGET N', cx, cy + 14);
+    }
+
+    function spinOnce() {
+      if (isSpinning) return;
+      isSpinning = true;
+
+      const n = parseInt(slider.value);
+      const half = n / 2;
+      const candidates = GLab.getPrimes(half);
+      const chosenP = candidates[Math.floor(Math.random() * candidates.length)];
+      const comp = n - chosenP;
+      const isHit = GLab.isPrime(comp);
+
+      let steps = 0;
+      let speed = 0.4;
+
+      function step() {
+        wheelAngle += speed;
+        ball1Angle -= speed * 1.5;
+        speed *= 0.96;
+        steps++;
+
+        renderWheel();
+
+        if (speed < 0.01) {
+          isSpinning = false;
+          spins++;
+          if (isHit) hits++;
+
+          statSpins.textContent = spins;
+          statHits.textContent = hits;
+          statEmpirical.textContent = ((hits / spins) * 100).toFixed(1) + '%';
+
+          if (isHit) {
+            spinOutcome.style.color = 'var(--green)';
+            spinOutcome.textContent = `🎯 JACKPOT: ${chosenP} + ${comp} = ${n} (Both Prime!)`;
+            GLab.audio.playSuccess();
+          } else {
+            spinOutcome.style.color = 'var(--danger)';
+            spinOutcome.textContent = `❌ Miss: ${chosenP} + ${comp} = ${n} (${comp} is composite)`;
+            GLab.audio.playTone(220, 0.15, 'sawtooth');
+          }
+          return;
+        }
+
+        animId = requestAnimationFrame(step);
+      }
+      animId = requestAnimationFrame(step);
+    }
+
+    btnSpin.addEventListener('click', spinOnce);
+
+    btnSpin100.addEventListener('click', () => {
+      const n = parseInt(slider.value);
+      const half = n / 2;
+      const candidates = GLab.getPrimes(half);
+
+      for (let i = 0; i < 100; i++) {
+        const p = candidates[Math.floor(Math.random() * candidates.length)];
+        const comp = n - p;
+        spins++;
+        if (GLab.isPrime(comp)) hits++;
+      }
+
+      statSpins.textContent = spins;
+      statHits.textContent = hits;
+      statEmpirical.textContent = ((hits / spins) * 100).toFixed(1) + '%';
+      spinOutcome.textContent = `Completed batch of 100 spins!`;
+      spinOutcome.style.color = 'var(--accent)';
+      renderWheel();
+      GLab.audio.playSuccess();
+    });
+
+    slider.addEventListener('input', () => {
+      resetStats();
+      renderWheel();
+    });
+
+    window.addEventListener('resize', renderWheel);
+
+    GLab.init({
+      labNum: 18,
+      title: "Residue Roulette Wheel",
+      clusterNum: 2,
+      clusterName: "Modular Arithmetic & The Power of 6",
+      prevId: "lab017_billiard_table",
+      nextId: "lab019_cross_sieve_42"
+    });
+
+    resetStats();
+    renderWheel();
+  </script>
+</body>
+</html>

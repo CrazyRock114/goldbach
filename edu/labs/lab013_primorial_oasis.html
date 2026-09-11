@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 013: The Primorial Oasis (N mod 30) - Goldbach Discovery Labs</title>
+  <link rel="stylesheet" href="common.css">
+  <style>
+    .oasis-stage {
+      height: 420px;
+      position: relative;
+    }
+    .oasis-stats {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      background: var(--card-bg-subtle);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-sm);
+      padding: 14px 20px;
+      margin-top: 14px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div id="lab-nav" class="lab-nav"></div>
+
+  <div class="container">
+    <div class="lab-header">
+      <h1>Lab 013: The Primorial Oasis ($N \pmod{30}$)</h1>
+      <p class="hook">The primorial $30 = 2 \times 3 \times 5$ acts as an ultra-rich oasis in number theory. Spin the concentric mod-30 wheel to see how divisibility by 2, 3, and 5 produces an astonishing 2.67× pair boost!</p>
+    </div>
+
+    <div class="lab-stage">
+      <div class="controls-bar">
+        <div class="control-group">
+          <label for="oasis-slider">Even Integer <i>N</i>:</label>
+          <input type="range" id="oasis-slider" min="6" max="120" step="2" value="30">
+          <span style="font-size: 18px; font-weight: 800; color: var(--accent);" id="oasis-val">30</span>
+        </div>
+        <button class="btn btn-sm" id="btn-next-30">Next Primorial Multiplier (30k) ▶</button>
+        <div class="stat-pill" style="margin-left: auto;">
+          <span>N mod 30:</span>
+          <span class="num" id="mod30-badge" style="color: var(--primary);">0 (Oasis Peak!)</span>
+        </div>
+      </div>
+
+      <div class="canvas-container oasis-stage">
+        <canvas id="oasisCanvas" height="420"></canvas>
+      </div>
+
+      <div class="oasis-stats">
+        <div style="text-align: center;">
+          <div style="font-size: 11px; color: var(--muted); text-transform: uppercase;">Divisibility</div>
+          <div style="font-size: 17px; font-weight: 700; color: var(--primary);" id="div-text">Divisible by 2, 3, and 5</div>
+        </div>
+        <div style="text-align: center;">
+          <div style="font-size: 11px; color: var(--muted); text-transform: uppercase;">Theoretical Boost Factor</div>
+          <div style="font-size: 24px; font-weight: 800; color: var(--green);" id="boost-factor">2.67×</div>
+        </div>
+        <div style="text-align: center;">
+          <div style="font-size: 11px; color: var(--muted); text-transform: uppercase;">Actual Goldbach Pairs</div>
+          <div style="font-size: 24px; font-weight: 800; color: var(--accent);" id="actual-pairs">3 pairs</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pedagogy-grid">
+      <div class="pedagogy-card story">
+        <h2>✨ Intuitive Concept: The 3-Filter Oasis</h2>
+        <p>A <b>primorial</b> is the product of the first few primes: $2 \times 3 = 6$, $2 \times 3 \times 5 = 30$, $2 \times 3 \times 5 \times 7 = 210$.</p>
+        <p>Think of 2, 3, and 5 as three security guards standing at the door:</p>
+        <ul>
+          <li>Guard 2 rejects all numbers with even remainders (15 out of 30).</li>
+          <li>Guard 3 rejects remaining multiples of 3 (5 out of 30).</li>
+          <li>Guard 5 rejects remaining multiples of 5 (2 out of 30).</li>
+        </ul>
+        <p>Only <b>8 survivors</b> remain: $\{1, 7, 11, 13, 17, 19, 23, 29\}$.</p>
+        <p>When $N$ is a multiple of 30 ($30k$), <b>all 8 survivors pair up with each other</b> without being knocked out by any of the 3 guards! This makes multiples of 30 absolute high-altitude peaks in the Goldbach comet landscape!</p>
+      </div>
+
+      <div class="pedagogy-card challenge">
+        <h2>🎯 Try This! (Hands-On Challenges)</h2>
+        <div class="challenge-item">
+          <span class="badge">Challenge 1</span>
+          Notice the 4 complementary pairs in the 8 survivors: $1+29=30$, $7+23=30$, $11+19=30$, $13+17=30$. Are all of them prime?
+          <button class="reveal-btn" data-target="ans-1">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-1">
+            Except for 1 (which is neither prime nor composite), all 7 numbers $\{7, 11, 13, 17, 19, 23, 29\}$ are <b>genuine prime numbers</b>! This is why $N=30$ yields 3 instant prime pairs ($7+23, 11+19, 13+17$).
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 2</span>
+          Set $N=90$ and $N=92$. Why does 90 have so many more pairs than 92?
+          <button class="reveal-btn" data-target="ans-2">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-2">
+            $90 = 30 \times 3$ is a multiple of 30, enjoying the 2.67× boost (yielding 9 pairs!). Meanwhile, $92 = 90 + 2 \equiv 2 \pmod{30}$ is knocked out by both 3 and 5, yielding only 4 pairs.
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 3</span>
+          What is the next primorial oasis after 30?
+          <button class="reveal-btn" data-target="ans-3">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-3">
+            $2 \times 3 \times 5 \times 7 = <b>210</b>$! Multiples of 210 enjoy a bonus factor of $2 \times \frac{4}{3} \times \frac{6}{5} = 3.20\times$!
+          </div>
+        </div>
+      </div>
+
+      <div class="pedagogy-card rigor">
+        <h2>📐 Mathematical Rigor & Formal Definition</h2>
+        <p>Euler's totient function for the primorial $P_3\# = 30$ gives:</p>
+        <div class="math-formula">
+          \phi(30) = 30 \left(1 - \frac{1}{2}\right)\left(1 - \frac{1}{3}\right)\left(1 - \frac{1}{5}\right) = 30 \cdot \frac{1}{2} \cdot \frac{2}{3} \cdot \frac{4}{5} = 8
+        </div>
+        <p>For $N \equiv 0 \pmod{30}$, the singular series $\mathfrak{S}(N)$ contains the prime factors 3 and 5, multiplying the baseline constant $2 C_2$ by:</p>
+        <div class="math-formula">
+          \left(\frac{3-1}{3-2}\right) \times \left(\frac{5-1}{5-2}\right) = 2 \times \frac{4}{3} = \frac{8}{3} \approx 2.667
+        </div>
+        <p>producing the highest asymptotic density for integers under 210.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <a href="index.html">← Return to 100 Explorations Hub</a> | Goldbach Discovery Labs &copy; 2026
+  </footer>
+
+  <script src="i18n.js"></script>
+  <script src="common.js"></script>
+  <script>
+    const slider = document.getElementById('oasis-slider');
+    const oasisVal = document.getElementById('oasis-val');
+    const mod30Badge = document.getElementById('mod30-badge');
+    const divText = document.getElementById('div-text');
+    const boostFactor = document.getElementById('boost-factor');
+    const actualPairs = document.getElementById('actual-pairs');
+    const btnNext30 = document.getElementById('btn-next-30');
+    const canvas = document.getElementById('oasisCanvas');
+    const ctx = canvas.getContext('2d');
+
+    const coprimes30 = [1, 7, 11, 13, 17, 19, 23, 29];
+
+    function renderOasis() {
+      const n = parseInt(slider.value);
+      oasisVal.textContent = n;
+      const mod = n % 30;
+
+      if (mod === 0) {
+        mod30Badge.style.color = 'var(--green)';
+        mod30Badge.textContent = '0 (Oasis Peak!)';
+        divText.textContent = 'Divisible by 2, 3, and 5 ✔';
+        boostFactor.textContent = '2.67×';
+      } else {
+        mod30Badge.style.color = 'var(--accent)';
+        mod30Badge.textContent = `${mod}`;
+        const has3 = (n % 3 === 0);
+        const has5 = (n % 5 === 0);
+        if (has3) {
+          divText.textContent = 'Divisible by 2 and 3';
+          boostFactor.textContent = '2.00×';
+        } else if (has5) {
+          divText.textContent = 'Divisible by 2 and 5';
+          boostFactor.textContent = '1.33×';
+        } else {
+          divText.textContent = 'Divisible by 2 only';
+          boostFactor.textContent = '1.00× (Baseline)';
+        }
+      }
+
+      const pairs = GLab.getGoldbachPairs(n);
+      actualPairs.textContent = `${pairs.length} pair${pairs.length > 1 ? 's' : ''}`;
+
+      const w = canvas.width = canvas.parentElement.clientWidth;
+      const h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      const centerX = w / 2;
+      const centerY = h / 2;
+      const radius = Math.min(centerX, centerY) - 40;
+
+      // Draw 30 clock positions
+      for (let r = 0; r < 30; r++) {
+        const theta = (r / 30) * Math.PI * 2 - Math.PI / 2;
+        const isCoprime = coprimes30.includes(r);
+        const isEvenR = (r % 2 === 0);
+        const isMul3 = (r % 3 === 0);
+        const isMul5 = (r % 5 === 0);
+
+        const x = centerX + Math.cos(theta) * radius;
+        const y = centerY + Math.sin(theta) * radius;
+
+        if (isCoprime) {
+          ctx.fillStyle = '#38bdf8';
+          ctx.beginPath();
+          ctx.arc(x, y, 9, 0, Math.PI * 2);
+          ctx.fill();
+
+          ctx.fillStyle = '#0b1120';
+          ctx.font = 'bold 11px monospace';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(r, x, y);
+        } else {
+          ctx.fillStyle = isEvenR ? '#334155' : (isMul3 ? '#475569' : '#64748b');
+          ctx.beginPath();
+          ctx.arc(x, y, 4, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+
+      // Draw chords connecting residue pairs if mod === 0
+      if (mod === 0) {
+        // Pairs: 1-29, 7-23, 11-19, 13-17
+        const pairs30 = [[1, 29], [7, 23], [11, 19], [13, 17]];
+        ctx.lineWidth = 3;
+        pairs30.forEach((p, idx) => {
+          const t1 = (p[0] / 30) * Math.PI * 2 - Math.PI / 2;
+          const t2 = (p[1] / 30) * Math.PI * 2 - Math.PI / 2;
+
+          ctx.strokeStyle = idx === 0 ? 'rgba(251, 191, 36, 0.4)' : '#34d399';
+          ctx.beginPath();
+          ctx.moveTo(centerX + Math.cos(t1) * radius, centerY + Math.sin(t1) * radius);
+          ctx.lineTo(centerX + Math.cos(t2) * radius, centerY + Math.sin(t2) * radius);
+          ctx.stroke();
+        });
+      }
+
+      // Center Hub
+      ctx.fillStyle = mod === 0 ? 'rgba(52, 211, 153, 0.15)' : 'rgba(30, 41, 59, 0.8)';
+      ctx.strokeStyle = mod === 0 ? '#34d399' : '#475569';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, 50, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = '#f8fafc';
+      ctx.font = 'bold 22px monospace';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(n, centerX, centerY - 8);
+
+      ctx.fillStyle = mod === 0 ? '#34d399' : 'var(--muted)';
+      ctx.font = '11px sans-serif';
+      ctx.fillText(mod === 0 ? 'OASIS PEAK' : `MOD 30 = ${mod}`, centerX, centerY + 16);
+    }
+
+    slider.addEventListener('input', () => {
+      renderOasis();
+      GLab.audio.playTone(300 + (parseInt(slider.value) % 30) * 10, 0.08, 'triangle');
+    });
+
+    btnNext30.addEventListener('click', () => {
+      let n = parseInt(slider.value) + 2;
+      while (n <= 180 && n % 30 !== 0) n += 2;
+      if (n <= 180) {
+        slider.max = Math.max(slider.max, n);
+        slider.value = n;
+        renderOasis();
+        GLab.audio.playSuccess();
+      }
+    });
+
+    window.addEventListener('resize', renderOasis);
+
+    GLab.init({
+      labNum: 13,
+      title: "The Primorial Oasis (N mod 30)",
+      clusterNum: 2,
+      clusterName: "Modular Arithmetic & The Power of 6",
+      prevId: "lab012_multiple_of_6_bonus",
+      nextId: "lab014_forbidden_residues"
+    });
+
+    renderOasis();
+  </script>
+</body>
+</html>

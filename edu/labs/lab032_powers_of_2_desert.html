@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 032: The Desert of Powers of 2 (2^k) - Goldbach Discovery Labs</title>
+  <link rel="stylesheet" href="common.css">
+  <style>
+    .desert-stage {
+      height: 400px;
+      position: relative;
+    }
+    .power-chips {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding: 10px 0;
+    }
+    .power-chip {
+      background: var(--card-bg-subtle);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-sm);
+      padding: 8px 14px;
+      cursor: pointer;
+      white-space: nowrap;
+      font-size: 13.5px;
+      font-family: monospace;
+      font-weight: 700;
+    }
+    .power-chip.active {
+      border-color: var(--accent);
+      background: rgba(251, 191, 36, 0.15);
+      color: var(--accent);
+    }
+  </style>
+</head>
+<body>
+  <div id="lab-nav" class="lab-nav"></div>
+
+  <div class="container">
+    <div class="lab-header">
+      <h1>Lab 032: The Desert of Powers of 2 ($2^k$)</h1>
+      <p class="hook">Powers of 2 ($16, 32, 64, 128, 256, 512...$) are the arid deserts of number theory. Why do they form the strict bottom floor of the Goldbach comet?</p>
+    </div>
+
+    <div class="lab-stage">
+      <div class="controls-bar">
+        <span style="font-size: 13px; font-weight: 600; color: var(--muted); text-transform: uppercase;">Select Power of 2:</span>
+        <div class="power-chips" id="power-chips">
+          <button class="power-chip active" data-p="4">2⁴ = 16</button>
+          <button class="power-chip" data-p="5">2⁵ = 32</button>
+          <button class="power-chip" data-p="6">2⁶ = 64</button>
+          <button class="power-chip" data-p="7">2⁷ = 128</button>
+          <button class="power-chip" data-p="8">2⁸ = 256</button>
+          <button class="power-chip" data-p="9">2⁹ = 512</button>
+          <button class="power-chip" data-p="10">2¹⁰ = 1024</button>
+        </div>
+        <div class="stat-pill" style="margin-left: auto;">
+          <span>Bonus Factor:</span>
+          <span class="num" style="color: var(--danger);">1.00× (Zero Bonus)</span>
+        </div>
+      </div>
+
+      <div class="canvas-container desert-stage">
+        <canvas id="desertCanvas" height="400"></canvas>
+      </div>
+
+      <div style="margin-top: 14px; background: var(--card-bg-subtle); padding: 12px 18px; border-radius: var(--radius-sm); border: 1px solid var(--card-border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+        <div>
+          <span style="font-size: 11px; color: var(--muted); text-transform: uppercase;">Current Power of 2:</span>
+          <div style="font-size: 18px; font-weight: 800; color: var(--accent);" id="power-title">N = 16 (2⁴)</div>
+        </div>
+        <div class="stat-pill">
+          <span>Actual Pairs:</span>
+          <span class="num" id="pairs-count">2 pairs (3+13, 5+11)</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pedagogy-grid">
+      <div class="pedagogy-card story">
+        <h2>✨ Intuitive Concept: The Bare Floor</h2>
+        <p>Every number that contains an odd prime factor (like 3, 5, or 7) gets an extra boost of Goldbach pairs because candidate primes avoid that prime divisor.</p>
+        <p>Powers of 2 ($2^k$) have <b>NO odd prime factors whatsoever</b> ($16 = 2 \times 2 \times 2 \times 2$). They get zero boost multipliers! Because of this, powers of 2 sit at the absolute <b>minimum bottom baseline</b> of the Goldbach comet.</p>
+        <p>Yet even in this desolate desert with zero multipliers, the number of pairs steadily grows! As $k$ increases, $g(2^k)$ climbs: $g(16)=2$, $g(32)=2$, $g(64)=5$, $g(128)=3$, $g(256)=9$, $g(512)=11$, $g(1024)=24$!</p>
+      </div>
+
+      <div class="pedagogy-card challenge">
+        <h2>🎯 Try This! (Hands-On Challenges)</h2>
+        <div class="challenge-item">
+          <span class="badge">Challenge 1</span>
+          Compare $N = 64$ ($2^6$, 5 pairs) with its neighbor $N = 66$ ($2 \times 3 \times 11$).
+          <button class="reveal-btn" data-target="ans-1">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-1">
+            $N = 66$ has <b>6 pairs</b> (more than 64) because 66 is divisible by 3 and 11, giving it a singular series multiplier of $2 \times \frac{10}{9} = 2.22\times$!
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 2</span>
+          Inspect $N = 1024$ ($2^{10}$). How many pairs survive in the desert?
+          <button class="reveal-btn" data-target="ans-2">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-2">
+            Even without any prime bonuses, $N = 1024$ has <b>24 distinct Goldbach pairs</b>! This proves that raw size alone guarantees abundance as $N \to \infty$.
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 3</span>
+          Why can a power of 2 never be divisible by 3?
+          <button class="reveal-btn" data-target="ans-3">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-3">
+            Because $2 \equiv -1 \pmod 3$, so $2^k \equiv (-1)^k \equiv 1$ or $2 \pmod 3$. The remainder is never 0, guaranteeing that powers of 2 never get the 2.0× multiple-of-6 bonus!
+          </div>
+        </div>
+      </div>
+
+      <div class="pedagogy-card rigor">
+        <h2>📐 Mathematical Rigor & Formal Definition</h2>
+        <p>For $N = 2^k$ ($k \ge 2$), the prime factor set is $\{2\}$. The singular series product reduces to the empty product:</p>
+        <div class="math-formula">
+          \prod_{p \mid 2^k, p > 2} \frac{p-1}{p-2} = 1 \implies \mathfrak{S}(2^k) = 2 C_2 \approx 1.3203
+        </div>
+        <p>This is the absolute infimum of $\mathfrak{S}(N)$ over all even integers $N \ge 4$, formally establishing that powers of 2 define the asymptotic lower envelope $g(N) \ge C_2 \frac{N}{\ln^2 N}$.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <a href="index.html">← Return to 100 Explorations Hub</a> | Goldbach Discovery Labs &copy; 2026
+  </footer>
+
+  <script src="i18n.js"></script>
+  <script src="common.js"></script>
+  <script>
+    const powerChips = document.querySelectorAll('.power-chip');
+    const powerTitle = document.getElementById('power-title');
+    const pairsCount = document.getElementById('pairs-count');
+    const canvas = document.getElementById('desertCanvas');
+    const ctx = canvas.getContext('2d');
+
+    let currentExp = 4;
+
+    function renderDesert() {
+      const n = Math.pow(2, currentExp);
+      powerTitle.textContent = `N = ${n} (2^${currentExp})`;
+
+      const pairs = GLab.getGoldbachPairs(n);
+      pairsCount.textContent = `${pairs.length} pairs: ` + (pairs.slice(0, 3).map(p=>p[0]+'+'+p[1]).join(', ')) + (pairs.length > 3 ? '...' : '');
+
+      const w = canvas.width = canvas.parentElement.clientWidth;
+      const h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      // Plot all powers of 2 from 2^2=4 up to 2^10=1024
+      const powers = [4, 8, 16, 32, 64, 128, 256, 512, 1024];
+      const data = powers.map(p => ({
+        n: p,
+        pairs: GLab.getGoldbachPairs(p).length
+      }));
+
+      const margin = 50;
+      const plotW = w - margin * 2;
+      const plotH = h - margin * 2;
+
+      // Draw baseline axes
+      ctx.strokeStyle = '#334155';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(margin, h - margin);
+      ctx.lineTo(w - margin, h - margin);
+      ctx.moveTo(margin, h - margin);
+      ctx.lineTo(margin, margin);
+      ctx.stroke();
+
+      // Plot desert curve
+      ctx.strokeStyle = '#f43f5e';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+
+      data.forEach((d, idx) => {
+        const x = margin + (idx / (data.length - 1)) * plotW;
+        const y = h - margin - (d.pairs / 28) * plotH;
+        if (idx === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      });
+      ctx.stroke();
+
+      // Draw node points
+      data.forEach((d, idx) => {
+        const x = margin + (idx / (data.length - 1)) * plotW;
+        const y = h - margin - (d.pairs / 28) * plotH;
+        const isCurrent = d.n === n;
+
+        ctx.fillStyle = isCurrent ? '#fbbf24' : '#38bdf8';
+        ctx.beginPath();
+        ctx.arc(x, y, isCurrent ? 8 : 5, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = '#94a3b8';
+        ctx.font = '10px monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText(d.n, x, h - margin + 18);
+        ctx.fillText(d.pairs, x, y - 10);
+      });
+    }
+
+    powerChips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        powerChips.forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        currentExp = parseInt(chip.dataset.p);
+        renderDesert();
+        GLab.audio.playTone(300 + currentExp * 25, 0.1, 'triangle');
+      });
+    });
+
+    window.addEventListener('resize', renderDesert);
+
+    GLab.init({
+      labNum: 32,
+      title: "The Desert of Powers of 2",
+      clusterNum: 4,
+      clusterName: "The Goldbach Comet & Asymptotic Landscape",
+      prevId: "lab031_infinite_zoom_comet",
+      nextId: "lab033_primorial_peaks"
+    });
+
+    renderDesert();
+  </script>
+</body>
+</html>

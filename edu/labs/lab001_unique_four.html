@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 001: The Solo Four Mystery {4, 6, 8, 12} - Goldbach Discovery Labs</title>
+  <link rel="stylesheet" href="common.css">
+  <style>
+    .solo-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .solo-card {
+      background: var(--card-bg-subtle);
+      border: 2px solid var(--card-border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+    .solo-card:hover, .solo-card.active {
+      border-color: var(--primary);
+      transform: translateY(-3px);
+      box-shadow: 0 6px 16px rgba(56, 189, 248, 0.2);
+    }
+    .solo-card.active {
+      background: rgba(56, 189, 248, 0.1);
+    }
+    .solo-card .big-num {
+      font-size: 36px;
+      font-weight: 800;
+      color: var(--primary);
+      margin-bottom: 4px;
+    }
+    .solo-card .pair-formula {
+      font-family: monospace;
+      font-size: 16px;
+      color: var(--accent);
+      background: rgba(0,0,0,0.3);
+      padding: 4px 8px;
+      border-radius: var(--radius-sm);
+      display: inline-block;
+    }
+    .solo-card .tag {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .counter-explorer {
+      background: var(--card-bg-subtle);
+      border-radius: var(--radius-md);
+      padding: 18px;
+      border: 1px solid var(--card-border);
+      margin-top: 16px;
+    }
+    .pairs-flow {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .pair-badge {
+      background: rgba(52, 211, 153, 0.15);
+      border: 1px solid var(--green);
+      color: #a7f3d0;
+      padding: 8px 14px;
+      border-radius: var(--radius-sm);
+      font-family: monospace;
+      font-size: 15px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .even-slider-val {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--accent);
+      min-width: 40px;
+      display: inline-block;
+    }
+  </style>
+</head>
+<body>
+  <div id="lab-nav" class="lab-nav"></div>
+
+  <div class="container">
+    <div class="lab-header">
+      <h1>Lab 001: The Solo Four Mystery {4, 6, 8, 12}</h1>
+      <p class="hook">Across the entire infinite universe of even integers, only FOUR numbers possess exactly ONE prime pair decomposition. Why does every other even number have two or more?</p>
+    </div>
+
+    <div class="lab-stage">
+      <div class="controls-bar">
+        <div class="control-group">
+          <label for="num-slider">Select Even Number <i>N</i>:</label>
+          <input type="range" id="num-slider" min="4" max="100" step="2" value="4">
+          <span class="even-slider-val" id="val-display">4</span>
+        </div>
+        <button class="btn btn-sm" id="btn-prev">◀ Previous Even</button>
+        <button class="btn btn-sm" id="btn-next">Next Even ▶</button>
+        <div class="stat-pill" style="margin-left: auto;">
+          <span>Number of Goldbach Pairs:</span>
+          <span class="num" id="pair-count-badge">1</span>
+        </div>
+      </div>
+
+      <div class="solo-cards">
+        <div class="solo-card active" data-n="4">
+          <div class="big-num">4</div>
+          <div class="pair-formula">2 + 2</div>
+          <div class="tag">The Only Even Prime Pair</div>
+        </div>
+        <div class="solo-card" data-n="6">
+          <div class="big-num">6</div>
+          <div class="pair-formula">3 + 3</div>
+          <div class="tag">Smallest Odd Prime Pair</div>
+        </div>
+        <div class="solo-card" data-n="8">
+          <div class="big-num">8</div>
+          <div class="pair-formula">3 + 5</div>
+          <div class="tag">Twin Prime Sum</div>
+        </div>
+        <div class="solo-card" data-n="12">
+          <div class="big-num">12</div>
+          <div class="pair-formula">5 + 7</div>
+          <div class="tag">The Last Solo Standing</div>
+        </div>
+      </div>
+
+      <div class="counter-explorer">
+        <h3 id="explorer-title" style="color: var(--primary); margin-bottom: 8px;">Decompositions of N = 4:</h3>
+        <p id="explorer-desc" style="color: var(--muted); font-size: 14px;">4 is unique: its only decomposition uses the only even prime, 2.</p>
+        <div class="pairs-flow" id="pairs-container">
+          <span class="pair-badge">2 + 2 = 4</span>
+        </div>
+      </div>
+
+      <div class="canvas-container" style="margin-top: 18px; height: 160px;">
+        <canvas id="balanceCanvas" height="160"></canvas>
+      </div>
+    </div>
+
+    <div class="pedagogy-grid">
+      <div class="pedagogy-card story">
+        <h2>✨ Intuitive Concept: The Solo Four</h2>
+        <p>Imagine numbers as puzzle boxes. For almost every even number, there are multiple different keys (pairs of prime numbers) that can unlock it. For example, 10 can be unlocked by <b>3 + 7</b> or <b>5 + 5</b>!</p>
+        <p>However, the ancient integers <b>4, 6, 8, and 12</b> are special: each has exactly <b>ONE unique Goldbach key</b>. Once you pass 12, prime density and modular options expand rapidly, guaranteeing that every even integer $N > 12$ has at least 2 pairs.</p>
+        <p>Notice 10 was skipped from the Solo Four! $10 = 3 + 7 = 5 + 5$, making it the first even number to break free and enjoy multiple representations.</p>
+      </div>
+
+      <div class="pedagogy-card challenge">
+        <h2>🎯 Try This! (Hands-On Challenges)</h2>
+        <div class="challenge-item">
+          <span class="badge">Challenge 1</span>
+          Why is 10 NOT in the Solo Four? Find both of its Goldbach pairs using the slider above.
+          <button class="reveal-btn" data-target="ans-1">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-1">
+            $10 = 3 + 7$ (using twin primes 3 and 7) and $10 = 5 + 5$ (using the midpoint prime 5). Thus, $k(10) = 2$, disqualifying it from the Solo Four!
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 2</span>
+          What is the first even integer that has at least <b>FOUR</b> distinct Goldbach pairs?
+          <button class="reveal-btn" data-target="ans-2">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-2">
+            The answer is <b>24</b>! Its four pairs are: $5+19=24$, $7+17=24$, $11+13=24$, and $13+11$ (counted once as $11+13$). (Notice that $24$ is a multiple of 6, giving it a Goldbach richness bonus!)
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 3</span>
+          Why can't $N=14$ have only one pair? Test 14 on the slider.
+          <button class="reveal-btn" data-target="ans-3">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-3">
+            $14 = 3 + 11 = 7 + 7$. Primes below 14 are $\{2, 3, 5, 7, 11, 13\}$. Testing complements: $14-3=11$ (prime!), $14-7=7$ (prime!). Thus $k(14)=2$.
+          </div>
+        </div>
+      </div>
+
+      <div class="pedagogy-card rigor">
+        <h2>📐 Mathematical Rigor & Formal Definition</h2>
+        <p>Let $g(N)$ be the Goldbach counting function denoting the number of unordered pairs of primes $(p, q)$ such that:</p>
+        <div class="math-formula">
+          g(N) = \#\{(p, q) \in \mathbb{P}^2 \mid p \le q \text{ and } p + q = N\}
+        </div>
+        <p><b>Theorem (Solo Four):</b></p>
+        <div class="math-formula">
+          \{N \in 2\mathbb{N}_{\ge 4} \mid g(N) = 1\} = \{4, 6, 8, 12\}
+        </div>
+        <p>For every even integer $N \ge 14$, extensive computational checks (verified up to $4 \times 10^{18}$) confirm $g(N) \ge 2$, with the asymptotic lower envelope growing as $\Omega(N / \ln^2 N)$.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <a href="index.html">← Return to 100 Explorations Hub</a> | Goldbach Discovery Labs &copy; 2026
+  </footer>
+
+  <script src="i18n.js"></script>
+  <script src="common.js"></script>
+  <script>
+    const slider = document.getElementById('num-slider');
+    const valDisplay = document.getElementById('val-display');
+    const pairCountBadge = document.getElementById('pair-count-badge');
+    const explorerTitle = document.getElementById('explorer-title');
+    const explorerDesc = document.getElementById('explorer-desc');
+    const pairsContainer = document.getElementById('pairs-container');
+    const canvas = document.getElementById('balanceCanvas');
+    const ctx = canvas.getContext('2d');
+
+    const soloCards = document.querySelectorAll('.solo-card');
+
+    function updateView(n, playSound = false) {
+      slider.value = n;
+      valDisplay.textContent = n;
+      const pairs = GLab.getGoldbachPairs(n);
+      pairCountBadge.textContent = pairs.length;
+
+      // Update solo cards active state
+      soloCards.forEach(c => {
+        if (parseInt(c.dataset.n) === n) {
+          c.classList.add('active');
+        } else {
+          c.classList.remove('active');
+        }
+      });
+
+      explorerTitle.textContent = `Decompositions of N = ${n}:`;
+      if ([4, 6, 8, 12].includes(n)) {
+        explorerDesc.innerHTML = `<span style="color:var(--accent); font-weight:700;">★ Member of the Solo Four!</span> Exactly one unique prime pair unlocks this number.`;
+      } else {
+        explorerDesc.innerHTML = `Not a solo number! Has <b style="color:var(--green);">${pairs.length} distinct prime pairs</b>.`;
+      }
+
+      pairsContainer.innerHTML = pairs.map(p => `<span class="pair-badge">${p[0]} + ${p[1]} = ${n}</span>`).join('');
+
+      drawBalance(n, pairs);
+      if (playSound) {
+        if ([4, 6, 8, 12].includes(n)) {
+          GLab.audio.playChord([440, 554.37, 659.25], 0.25);
+        } else {
+          GLab.audio.playTone(300 + pairs.length * 35, 0.12, 'triangle');
+        }
+      }
+    }
+
+    function drawBalance(n, pairs) {
+      const w = canvas.width = canvas.parentElement.clientWidth;
+      const h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      const midX = w / 2;
+      const baseGround = h - 25;
+
+      // Draw fulcrum
+      ctx.fillStyle = '#475569';
+      ctx.beginPath();
+      ctx.moveTo(midX, baseGround - 40);
+      ctx.lineTo(midX - 25, baseGround);
+      ctx.lineTo(midX + 25, baseGround);
+      ctx.closePath();
+      ctx.fill();
+
+      // Draw beam
+      const beamLen = Math.min(w * 0.75, 480);
+      ctx.strokeStyle = '#94a3b8';
+      ctx.lineWidth = 6;
+      ctx.beginPath();
+      ctx.moveTo(midX - beamLen / 2, baseGround - 40);
+      ctx.lineTo(midX + beamLen / 2, baseGround - 40);
+      ctx.stroke();
+
+      // Center pivot
+      ctx.fillStyle = '#fbbf24';
+      ctx.beginPath();
+      ctx.arc(midX, baseGround - 40, 7, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Weights on left and right for first pair if available
+      if (pairs.length > 0) {
+        const [p1, p2] = pairs[0];
+        const leftX = midX - beamLen / 2 + 30;
+        const rightX = midX + beamLen / 2 - 30;
+
+        // Left pan & weight (p1)
+        drawWeight(leftX, baseGround - 40, p1, '#38bdf8');
+        // Right pan & weight (p2)
+        drawWeight(rightX, baseGround - 40, p2, '#34d399');
+
+        // Total sum label
+        ctx.fillStyle = '#f8fafc';
+        ctx.font = 'bold 15px monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText(`${p1} + ${p2} = ${n}`, midX, baseGround - 55);
+      }
+    }
+
+    function drawWeight(x, y, val, color) {
+      const size = 32;
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.roundRect(x - size/2, y - size - 4, size, size, 6);
+      ctx.fill();
+
+      ctx.fillStyle = '#0b1120';
+      ctx.font = 'bold 14px monospace';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(val, x, y - size/2 - 4);
+    }
+
+    slider.addEventListener('input', (e) => {
+      updateView(parseInt(e.target.value), true);
+    });
+
+    document.getElementById('btn-prev').addEventListener('click', () => {
+      let n = parseInt(slider.value) - 2;
+      if (n >= 4) updateView(n, true);
+    });
+
+    document.getElementById('btn-next').addEventListener('click', () => {
+      let n = parseInt(slider.value) + 2;
+      if (n <= 100) updateView(n, true);
+    });
+
+    soloCards.forEach(c => {
+      c.addEventListener('click', () => {
+        updateView(parseInt(c.dataset.n), true);
+      });
+    });
+
+    window.addEventListener('resize', () => {
+      drawBalance(parseInt(slider.value), GLab.getGoldbachPairs(parseInt(slider.value)));
+    });
+
+    // Initialize lab nav
+    GLab.init({
+      labNum: 1,
+      title: "The Solo Four Mystery",
+      clusterNum: 1,
+      clusterName: "Foundations & Small Integers",
+      prevId: null,
+      nextId: "lab002_parity_sandbox"
+    });
+
+    updateView(4, false);
+  </script>
+</body>
+</html>

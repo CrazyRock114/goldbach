@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 089: The Möbius Function & Prime Filtering - Goldbach Discovery Labs</title>
+  <link rel="stylesheet" href="common.css">
+  <style>
+    .mobius-grid {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 6px;
+      margin: 16px 0;
+    }
+    .mobius-tile {
+      aspect-ratio: 1;
+      border-radius: 6px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 800;
+      font-family: monospace;
+      border: 1px solid #334155;
+      background: #0f172a;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.15s;
+    }
+    .mobius-tile:hover {
+      transform: scale(1.1);
+      z-index: 5;
+    }
+    .mobius-tile.pos {
+      border-color: #34d399;
+      color: #34d399;
+      background: rgba(6, 78, 59, 0.2);
+    }
+    .mobius-tile.neg {
+      border-color: #38bdf8;
+      color: #38bdf8;
+      background: rgba(30, 58, 138, 0.2);
+    }
+    .mobius-tile.zero {
+      border-color: #475569;
+      color: #64748b;
+      background: #020617;
+      opacity: 0.6;
+    }
+    .val-tag {
+      font-size: 9px;
+      margin-top: 2px;
+    }
+    .mertens-chart {
+      height: 200px;
+      position: relative;
+      margin-top: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div id="lab-nav" class="lab-nav"></div>
+
+  <div class="container">
+    <div class="lab-header">
+      <h1>Lab 089: The Möbius Function $\mu(n)$ & Prime Filtering</h1>
+      <p class="hook">August Ferdinand Möbius invented a function that takes only three values: $+1, -1, 0$. Yet this humble arithmetic function filters out all composite numbers and powers the modern sieves that attack Goldbach's conjecture!</p>
+    </div>
+
+    <div class="lab-stage">
+      <div class="controls-bar">
+        <div class="control-group">
+          <label for="mobius-inspect">Inspect Number <i>n</i>:</label>
+          <input type="number" id="mobius-inspect" min="1" max="100" value="30" style="width:60px; background:#1e293b; color:#fbbf24; border:1px solid #475569; padding:4px; border-radius:4px; font-weight:bold;">
+        </div>
+        <div class="stat-pill" style="margin-left: auto;">
+          <span>Selected μ(n):</span>
+          <span class="num" style="color: #fbbf24;" id="disp-mu">-1</span>
+        </div>
+      </div>
+
+      <div style="background: var(--card-bg-subtle); border: 1px solid var(--card-border); border-radius: 8px; padding: 12px 18px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+        <div>
+          <span style="font-size: 11px; color: var(--muted); text-transform: uppercase;">Factorization & Square-Free Status:</span>
+          <div style="font-size: 16px; font-weight: bold; color: #f8fafc;" id="disp-factors">30 = 2 × 3 × 5 (3 distinct primes -> μ = -1)</div>
+        </div>
+        <div>
+          <span style="font-size: 11px; color: var(--muted); text-transform: uppercase;">Mertens Function M(n) = ∑ μ(k):</span>
+          <div style="font-size: 20px; font-weight: 800; font-family: monospace; color: #38bdf8;" id="disp-mertens">-3</div>
+        </div>
+      </div>
+
+      <div style="font-size: 12px; color: var(--muted); text-transform: uppercase; margin-top: 16px; margin-bottom: 4px;">Möbius Values for 1 to 100 (+1 Green, -1 Blue, 0 Gray):</div>
+      <div class="mobius-grid" id="grid-container"></div>
+
+      <div style="font-size: 12px; color: var(--muted); text-transform: uppercase; margin-top: 14px; margin-bottom: 4px;">Mertens Random Walk M(x) = ∑_{k=1}^x μ(k):</div>
+      <div class="canvas-container mertens-chart">
+        <canvas id="mertensCanvas" height="200"></canvas>
+      </div>
+    </div>
+
+    <div class="pedagogy-grid">
+      <div class="pedagogy-card story">
+        <h2>✨ The Master Sieve Weight</h2>
+        <p>Why is the Möbius function so vital to prime number theory?</p>
+        <p>Because of its miraculous sum over divisors: for any integer $n > 1$, summing $\mu(d)$ over all divisors of $n$ yields <b>exactly 0</b>! The only integer where the sum does not cancel is $n = 1$, where $\sum_{d \mid 1} \mu(d) = 1$.</p>
+        <div class="math-formula">
+          \sum_{d \mid n} \mu(d) = \begin{cases} 1 & \text{if } n = 1 \\ 0 & \text{if } n > 1 \end{cases}
+        </div>
+        <p>By weighting multiples by $\mu(d)$, we can systematically cancel out all composite numbers, isolating the primes. In modern sieve theory (Brun, Selberg, Chen), truncating the Möbius sum yields the upper and lower bounds used to prove Chen's $1+2$ theorem!</p>
+      </div>
+
+      <div class="pedagogy-card challenge">
+        <h2>🎯 Try This! (Hands-On Challenges)</h2>
+        <div class="challenge-item">
+          <span class="badge">Challenge 1</span>
+          Click on <b>12</b>. Why is $\mu(12) = 0$?
+          <button class="reveal-btn" data-target="ans-1">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-1">
+            $12 = 2^2 \times 3$. Because 12 is divisible by a squared prime ($2^2 = 4$), it is NOT square-free. By definition, $\mu(n) = 0$ for all numbers with squared prime factors!
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 2</span>
+          Why is $\mu(p) = -1$ for EVERY prime number?
+          <button class="reveal-btn" data-target="ans-2">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-2">
+            Every prime $p$ has exactly $k = 1$ prime factor! Thus $\mu(p) = (-1)^1 = -1$.
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 3</span>
+          Look at the Mertens random walk. Why doesn't $M(x)$ wander off to infinity?
+          <button class="reveal-btn" data-target="ans-3">💡 Riemann Hypothesis Connection</button>
+          <div class="answer" id="ans-3">
+            Because $+1$ and $-1$ occur with almost equal frequency! The Riemann Hypothesis is mathematically equivalent to the statement that $|M(x)| = \mathcal{O}(x^{1/2 + \epsilon})$.
+          </div>
+        </div>
+      </div>
+
+      <div class="pedagogy-card rigor">
+        <h2>📐 Möbius Inversion & Sieve Weights</h2>
+        <p>For arithmetic functions $f$ and $g$, the Möbius Inversion Formula asserts:</p>
+        <div class="math-formula">
+          g(n) = \sum_{d \mid n} f(d) \iff f(n) = \sum_{d \mid n} \mu(d) g(n/d)
+        </div>
+        <p>In sieve theory, the prime indicator $\mathbf{1}_{\mathbb{P}}(n)$ is approximated by choosing sieve weights $\lambda_d$ that upper- or lower-bound $\mu(d)$, yielding Selberg's sieve and Chen's theorem.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <a href="index.html">← Return to 100 Explorations Hub</a> | Goldbach Discovery Labs &copy; 2026
+  </footer>
+
+  <script src="i18n.js"></script>
+  <script src="common.js"></script>
+  <script>
+    const inputN = document.getElementById('mobius-inspect');
+    const dispMu = document.getElementById('disp-mu');
+    const dispFactors = document.getElementById('disp-factors');
+    const dispMertens = document.getElementById('disp-mertens');
+    const grid = document.getElementById('grid-container');
+    const canvas = document.getElementById('mertensCanvas');
+    const ctx = canvas.getContext('2d');
+
+    function computeMobius(n) {
+      if (n === 1) return { mu: 1, text: '1 is unit (μ = 1)' };
+      let temp = n;
+      let primeCount = 0;
+      let d = 2;
+      const factors = [];
+
+      while (d * d <= temp) {
+        if (temp % d === 0) {
+          primeCount++;
+          factors.push(d);
+          temp /= d;
+          if (temp % d === 0) {
+            return { mu: 0, text: `${n} divisible by ${d}² (Not square-free -> μ = 0)` };
+          }
+        }
+        d++;
+      }
+      if (temp > 1) {
+        primeCount++;
+        factors.push(temp);
+      }
+
+      const mu = (primeCount % 2 === 0) ? 1 : -1;
+      return { mu, text: `${n} = ${factors.join(' × ')} (${primeCount} distinct primes -> μ = ${mu})` };
+    }
+
+    const muCache = [0];
+    const mertensCache = [0];
+    for (let i = 1; i <= 100; i++) {
+      const res = computeMobius(i);
+      muCache[i] = res.mu;
+      mertensCache[i] = mertensCache[i - 1] + res.mu;
+    }
+
+    function renderGrid() {
+      grid.innerHTML = '';
+      for (let i = 1; i <= 100; i++) {
+        const val = muCache[i];
+        const tile = document.createElement('div');
+        tile.className = 'mobius-tile ' + (val === 1 ? 'pos' : (val === -1 ? 'neg' : 'zero'));
+        tile.innerHTML = `<div>${i}</div><div class="val-tag">${val > 0 ? '+1' : val}</div>`;
+        tile.addEventListener('click', () => {
+          inputN.value = i;
+          updateSelected(i);
+          GLab.audio.playClick();
+        });
+        grid.appendChild(tile);
+      }
+    }
+
+    function updateSelected(n) {
+      const res = computeMobius(n);
+      dispMu.textContent = res.mu > 0 ? `+${res.mu}` : res.mu;
+      dispMu.style.color = res.mu === 1 ? '#34d399' : (res.mu === -1 ? '#38bdf8' : '#64748b');
+      dispFactors.textContent = res.text;
+      dispMertens.textContent = mertensCache[n];
+    }
+
+    function renderMertensChart() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const padding = 30;
+      const w = canvas.width - padding * 2;
+      const h = canvas.height - padding * 2;
+      const midY = canvas.height / 2;
+
+      // Draw zero axis
+      ctx.strokeStyle = '#334155';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(padding, midY);
+      ctx.lineTo(canvas.width - padding, midY);
+      ctx.stroke();
+
+      // Plot M(x)
+      ctx.strokeStyle = '#fbbf24';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+
+      const maxVal = 8; // typical mertens range for 100 is around [-4, 2]
+
+      for (let x = 1; x <= 100; x++) {
+        const px = padding + ((x - 1) / 99) * w;
+        const py = midY - (mertensCache[x] / maxVal) * (h / 2);
+        if (x === 1) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+      }
+      ctx.stroke();
+
+      // Labels
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = '11px monospace';
+      ctx.fillText('0', padding - 16, midY + 4);
+      ctx.fillText('+8', padding - 22, midY - h/2 + 10);
+      ctx.fillText('-8', padding - 22, midY + h/2);
+      ctx.fillText('x = 100', canvas.width - padding - 40, midY + 16);
+    }
+
+    function resizeCanvas() {
+      canvas.width = canvas.parentElement.clientWidth;
+      renderMertensChart();
+    }
+    window.addEventListener('resize', resizeCanvas);
+
+    inputN.addEventListener('input', () => {
+      const n = Math.max(1, Math.min(100, parseInt(inputN.value) || 1));
+      updateSelected(n);
+    });
+
+    GLab.init({
+      labNum: 89,
+      title: "Möbius Function & Sieve",
+      clusterNum: 9,
+      clusterName: "Advanced Number Theory & Modular Forms",
+      prevId: "lab088_p_adic_trees",
+      nextId: "lab090_mersenne_primes"
+    });
+
+    renderGrid();
+    updateSelected(30);
+    resizeCanvas();
+  </script>
+</body>
+</html>

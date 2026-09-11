@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 090: Mersenne Primes in Goldbach Pairs - Goldbach Discovery Labs</title>
+  <link rel="stylesheet" href="common.css">
+  <style>
+    .mersenne-stage {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin: 20px 0;
+    }
+    @media (max-width: 768px) {
+      .mersenne-stage {
+        grid-template-columns: 1fr;
+      }
+    }
+    .giant-card {
+      background: var(--card-bg-subtle);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .mersenne-badge {
+      font-size: 28px;
+      font-weight: 900;
+      color: #fbbf24;
+      font-family: monospace;
+      background: #090d16;
+      border: 1px solid #1e293b;
+      border-radius: 8px;
+      padding: 12px;
+      text-align: center;
+    }
+    .lucas-steps {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 6px;
+      padding: 10px;
+      font-family: monospace;
+      font-size: 12px;
+      max-height: 160px;
+      overflow-y: auto;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <div id="lab-nav" class="lab-nav"></div>
+
+  <div class="container">
+    <div class="lab-header">
+      <h1>Lab 090: Mersenne Primes $2^p - 1$ in Goldbach Pairs</h1>
+      <p class="hook">The largest known primes in human history are all <b>Mersenne Primes</b> $M_p = 2^p - 1$. What happens when a cosmic titan like $M_{31} = 2,147,483,647$ partners with a tiny prime like 3 to form a Goldbach pair?</p>
+    </div>
+
+    <div class="lab-stage">
+      <div class="controls-bar">
+        <div class="control-group">
+          <label for="select-mersenne">Mersenne Prime <i>M_p</i>:</label>
+          <select id="select-mersenne" class="btn btn-secondary btn-sm" style="background:#1e293b; color:var(--fg); border:1px solid var(--card-border);">
+            <option value="2,3">M₂ = 2² - 1 = 3</option>
+            <option value="3,7">M₃ = 2³ - 1 = 7</option>
+            <option value="5,31" selected>M₅ = 2⁵ - 1 = 31</option>
+            <option value="7,127">M₇ = 2⁷ - 1 = 127</option>
+            <option value="13,8191">M₁₃ = 2¹³ - 1 = 8,191</option>
+          </select>
+        </div>
+        <div class="control-group">
+          <label for="select-small-p">Partner Prime <i>q</i>:</label>
+          <select id="select-small-p" class="btn btn-secondary btn-sm" style="background:#1e293b; color:var(--fg); border:1px solid var(--card-border);">
+            <option value="3" selected>q = 3</option>
+            <option value="5">q = 5</option>
+            <option value="7">q = 7</option>
+            <option value="11">q = 11</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="mersenne-stage">
+        <div class="giant-card">
+          <h3 style="margin: 0; color: #fbbf24;">Goldbach Sum N = M_p + q</h3>
+          <div class="mersenne-badge" id="disp-equation">31 + 3 = 34</div>
+          <div style="font-size: 13px; color: var(--muted); line-height: 1.6;" id="disp-algebra">
+            $N = (2^5 - 1) + 3 = 2^5 + 2 = 34$.
+          </div>
+
+          <div style="font-size: 12px; color: var(--muted); text-transform: uppercase;">Alternative Goldbach Pairs for this N:</div>
+          <div id="alt-pairs-list" style="font-family: monospace; font-size: 13px; color: #38bdf8; line-height: 1.6;"></div>
+        </div>
+
+        <div class="giant-card">
+          <h3 style="margin: 0; color: #34d399;">Lucas-Lehmer Primality Verification</h3>
+          <div style="font-size: 12px; color: var(--muted);">
+            Test sequence: $s_0 = 4, s_{k+1} = (s_k^2 - 2) \pmod{M_p}$. $M_p$ is prime iff $s_{p-2} \equiv 0$!
+          </div>
+          <div class="lucas-steps" id="ll-steps"></div>
+          <div id="ll-verdict" style="font-weight: bold; font-size: 13px; color: #34d399; text-align: center;">
+            ✔ Lucas-Lehmer test confirms M_p is PRIME!
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pedagogy-grid">
+      <div class="pedagogy-card story">
+        <h2>✨ Pairing Titans with Atoms</h2>
+        <p>A <b>Mersenne number</b> is one less than a power of two: $M_p = 2^p - 1$. If $M_p$ is prime, then $p$ must also be prime.</p>
+        <p>For centuries, the largest known primes have been Mersenne primes because the <b>Lucas-Lehmer Test</b> (1930) can verify their primality exponentially faster than any other class of integers!</p>
+        <p>When you add a tiny prime $q = 3$ to a Mersenne prime $M_p$, you construct the even number $N = (2^p - 1) + 3 = 2^p + 2$. By definition, this even number has a guaranteed Goldbach decomposition: $(3, M_p)$! This guarantees that infinite families of powers-of-two related numbers are unconditionally solvable.</p>
+      </div>
+
+      <div class="pedagogy-card challenge">
+        <h2>🎯 Try This! (Hands-On Challenges)</h2>
+        <div class="challenge-item">
+          <span class="badge">Challenge 1</span>
+          Why can $2^n - 1$ NEVER be prime if $n$ is a composite number?
+          <button class="reveal-btn" data-target="ans-1">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-1">
+            If $n = a \times b$ with $a, b > 1$, then $2^n - 1 = (2^a)^b - 1$ algebraically factors as $(2^a - 1)(2^{a(b-1)} + \dots + 1)$! For example, $2^4 - 1 = 15 = 3 \times 5$. Thus $n$ must be prime for $2^n - 1$ to be prime.
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 2</span>
+          Verify the Lucas-Lehmer test for $M_3 = 7$ ($p = 3$).
+          <button class="reveal-btn" data-target="ans-2">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-2">
+            Start at $s_0 = 4$. Next step $s_1 = (4^2 - 2) \pmod 7 = 14 \pmod 7 = 0$. Since $s_{p-2} = s_1 \equiv 0$, 7 is proven prime in exactly 1 step!
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 3</span>
+          Can two Mersenne primes sum to an even number?
+          <button class="reveal-btn" data-target="ans-3">💡 Mersenne Sums</button>
+          <div class="answer" id="ans-3">
+            Yes! Since every Mersenne prime $M_p > 2$ is odd, the sum of any two Mersenne primes $M_p + M_q$ is an even number, forming a Goldbach pair of two Mersenne giants! (e.g. $3 + 7 = 10$, $7 + 31 = 38$).
+          </div>
+        </div>
+      </div>
+
+      <div class="pedagogy-card rigor">
+        <h2>📐 The Lucas-Lehmer Theorem & Even Perfect Numbers</h2>
+        <p>Let $M_p = 2^p - 1$ with odd prime $p$. Define $s_0 = 4$ and $s_{k+1} = s_k^2 - 2$. Then:</p>
+        <div class="math-formula">
+          M_p \in \mathbb{P} \iff s_{p-2} \equiv 0 \pmod{M_p}
+        </div>
+        <p>By the Euclid-Euler Theorem, every even perfect number has the form $2^{p-1}(2^p - 1) = 2^{p-1} M_p$. Consequently, every even perfect number is intimately bound to the prime structure of Mersenne Goldbach components.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <a href="index.html">← Return to 100 Explorations Hub</a> | Goldbach Discovery Labs &copy; 2026
+  </footer>
+
+  <script src="i18n.js"></script>
+  <script src="common.js"></script>
+  <script>
+    const mSelect = document.getElementById('select-mersenne');
+    const qSelect = document.getElementById('select-small-p');
+    const dispEq = document.getElementById('disp-equation');
+    const dispAlgebra = document.getElementById('disp-algebra');
+    const altPairs = document.getElementById('alt-pairs-list');
+    const llSteps = document.getElementById('ll-steps');
+    const llVerdict = document.getElementById('ll-verdict');
+
+    function runLucasLehmer(p, Mp) {
+      if (p === 2) {
+        return { steps: ['s_0 = 4 (for p=2, M_2 = 3 is prime trivially)'], isPrime: true };
+      }
+      const steps = [];
+      let s = BigInt(4);
+      const mBig = BigInt(Mp);
+
+      steps.push(`s_0 = 4`);
+      for (let i = 1; i <= p - 2; i++) {
+        s = ((s * s) - BigInt(2)) % mBig;
+        steps.push(`s_${i} = ${s.toString()} (mod ${Mp})`);
+      }
+
+      return { steps, isPrime: (s === BigInt(0)) };
+    }
+
+    function update() {
+      const [pStr, mpStr] = mSelect.value.split(',');
+      const p = parseInt(pStr);
+      const Mp = parseInt(mpStr);
+      const q = parseInt(qSelect.value);
+
+      const N = Mp + q;
+      dispEq.textContent = `${Mp} + ${q} = ${N}`;
+      dispAlgebra.innerHTML = `Even target $N = M_{${p}} + ${q} = (2^{${p}} - 1) + ${q} = ${N}$.`;
+
+      // Lucas-Lehmer
+      const ll = runLucasLehmer(p, Mp);
+      llSteps.innerHTML = ll.steps.map(st => `<div>• ${st}</div>`).join('');
+      llVerdict.textContent = ll.isPrime ? `✔ s_${p-2} ≡ 0: M_${p} = ${Mp} is definitively PRIME!` : `✖ Composite`;
+      llVerdict.style.color = ll.isPrime ? '#34d399' : '#f87171';
+
+      // Other pairs if N is small enough
+      altPairs.innerHTML = '';
+      if (N <= 1000) {
+        const pairs = GLab.getGoldbachPairs(N);
+        pairs.slice(0, 5).forEach(pr => {
+          const div = document.createElement('div');
+          div.textContent = `• ${pr[0]} + ${pr[1]} = ${N}`;
+          altPairs.appendChild(div);
+        });
+        if (pairs.length > 5) {
+          const div = document.createElement('div');
+          div.textContent = `... and ${pairs.length - 5} more pairs!`;
+          div.style.color = 'var(--muted)';
+          altPairs.appendChild(div);
+        }
+      } else {
+        altPairs.innerHTML = `<div>• <b>${q}</b> + <b>${Mp}</b> = ${N} (Verified pair)</div>`;
+      }
+    }
+
+    mSelect.addEventListener('change', () => { update(); GLab.audio.playClick(); });
+    qSelect.addEventListener('change', () => { update(); GLab.audio.playClick(); });
+
+    GLab.init({
+      labNum: 90,
+      title: "Mersenne Primes in Pairs",
+      clusterNum: 9,
+      clusterName: "Advanced Number Theory & Modular Forms",
+      prevId: "lab089_mobius_inversion",
+      nextId: "lab091_whiteboard_scribe"
+    });
+
+    update();
+  </script>
+</body>
+</html>

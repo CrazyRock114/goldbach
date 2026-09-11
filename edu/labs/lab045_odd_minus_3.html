@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 045: Reducing Ternary to Binary (Odd - 3 = Even) - Goldbach Discovery Labs</title>
+  <link rel="stylesheet" href="common.css">
+  <style>
+    .reduction-stage {
+      background: var(--card-bg-subtle);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      min-height: 280px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .strip-flex {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 20px 0;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .prime-block {
+      height: 55px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: monospace;
+      font-size: 18px;
+      font-weight: 800;
+      color: #0b1120;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .block-3 { background: #fbbf24; width: 80px; }
+    .block-p1 { background: #38bdf8; min-width: 100px; }
+    .block-p2 { background: #34d399; min-width: 100px; }
+    .bridge-sign {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <div id="lab-nav" class="lab-nav"></div>
+
+  <div class="container">
+    <div class="lab-header">
+      <h1>Lab 045: Reducing Ternary to Binary ($\text{Odd} - 3 = \text{Even}$)</h1>
+      <p class="hook">Why does solving the Strong (Even) Goldbach Conjecture automatically prove the Weak (Odd) one? Subtract a single block of 3 to watch the ternary problem reduce seamlessly to binary!</p>
+    </div>
+
+    <div class="lab-stage">
+      <div class="controls-bar">
+        <div class="control-group">
+          <label for="odd-input">Target Odd Integer <i>M</i>:</label>
+          <input type="range" id="odd-input" min="7" max="81" step="2" value="31">
+          <span style="font-size: 18px; font-weight: 800; color: var(--accent);" id="m-val">31</span>
+        </div>
+        <button class="btn btn-sm btn-primary" id="btn-cut-3">✂ Subtract 3 & Solve Even Remainder</button>
+        <div class="stat-pill" style="margin-left: auto;">
+          <span>Logical Deduction:</span>
+          <span class="num" style="color: var(--green);">Strong ⇒ Weak</span>
+        </div>
+      </div>
+
+      <div class="reduction-stage">
+        <div style="font-size: 14px; color: var(--muted); text-transform: uppercase;">
+          Step 1: Start with Odd Integer <span id="label-m" style="color:var(--text); font-weight:700;">M = 31</span>
+        </div>
+
+        <div class="strip-flex" id="strip-container">
+          <div class="prime-block block-3" id="blk-3">3</div>
+          <div class="bridge-sign">+</div>
+          <div class="prime-block block-p1" id="blk-p1">p₁ = 11</div>
+          <div class="bridge-sign">+</div>
+          <div class="prime-block block-p2" id="blk-p2">p₂ = 17</div>
+        </div>
+
+        <div style="font-size: 16px; font-weight: 700; color: var(--green);" id="formula-summary">
+          31 = 3 + (11 + 17) = 3 + 28
+        </div>
+      </div>
+    </div>
+
+    <div class="pedagogy-grid">
+      <div class="pedagogy-card story">
+        <h2>✨ Intuitive Concept: The Key of 3</h2>
+        <p>In mathematics, when you want to solve a new problem, you try to <b>reduce it to a problem you already understand</b>.</p>
+        <p>Suppose the Strong Goldbach Conjecture is true (every even number is the sum of two primes). If anyone hands you ANY odd number $M \ge 7$:</p>
+        <ol>
+          <li>You simply subtract 3: $M - 3$.</li>
+          <li>Since $\text{Odd} - \text{Odd} = \text{Even}$, the remainder $M - 3$ is guaranteed to be an even number $\ge 4$!</li>
+          <li>By the Strong Conjecture, this even number splits into two primes: $M - 3 = p_1 + p_2$.</li>
+          <li>Add 3 back to both sides: <b>$M = 3 + p_1 + p_2$</b>!</li>
+        </ol>
+        <p>You have just proven the Weak Goldbach Conjecture for that odd number in four simple steps!</p>
+      </div>
+
+      <div class="pedagogy-card challenge">
+        <h2>🎯 Try This! (Hands-On Challenges)</h2>
+        <div class="challenge-item">
+          <span class="badge">Challenge 1</span>
+          Test $M = 31$. What is the even remainder, and what two primes unlock it?
+          <button class="reveal-btn" data-target="ans-1">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-1">
+            $31 - 3 = 28$ (an even number!). The even number 28 splits into $11 + 17$ (or $5 + 23$). Thus, $31 = 3 + 11 + 17$!
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 2</span>
+          Why can't we subtract 2 instead of 3?
+          <button class="reveal-btn" data-target="ans-2">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-2">
+            Because $\text{Odd} - 2 = \text{Odd}$! The remainder would still be odd, so we couldn't use the Strong (even) Goldbach conjecture on it. We must subtract an ODD prime (like 3) to convert the odd target into an even remainder!
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 3</span>
+          Could we subtract 5 or 7 instead of 3?
+          <button class="reveal-btn" data-target="ans-3">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-3">
+            Yes! For any odd prime $p$, $M - p$ is even. But subtracting 3 works for the widest possible range of odd numbers ($M \ge 7$).
+          </div>
+        </div>
+      </div>
+
+      <div class="pedagogy-card rigor">
+        <h2>📐 Mathematical Rigor & Formal Definition</h2>
+        <p><b>Theorem (Strong $\implies$ Weak):</b> Let $\mathcal{S}$ be the assertion $\forall n \in 2\mathbb{N}_{\ge 4}, \exists p_1, p_2 \in \mathbb{P}: p_1 + p_2 = n$. Then:</p>
+        <div class="math-formula">
+          \mathcal{S} \implies \left(\forall m \in 2\mathbb{N} + 1, m \ge 7: \exists p_1, p_2, p_3 \in \mathbb{P}: p_1 + p_2 + p_3 = m\right)
+        </div>
+        <p><i>Proof:</i> Given odd $m \ge 7$, let $n = m - 3$. Since $m \equiv 1 \pmod 2$, $n \equiv 0 \pmod 2$ and $n \ge 4$. By $\mathcal{S}$, $n = p_1 + p_2$. Thus $m = 3 + p_1 + p_2$, where $3, p_1, p_2 \in \mathbb{P}$. $\blacksquare$</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <a href="index.html">← Return to 100 Explorations Hub</a> | Goldbach Discovery Labs &copy; 2026
+  </footer>
+
+  <script src="i18n.js"></script>
+  <script src="common.js"></script>
+  <script>
+    const slider = document.getElementById('odd-input');
+    const mVal = document.getElementById('m-val');
+    const labelM = document.getElementById('label-m');
+    const blkP1 = document.getElementById('blk-p1');
+    const blkP2 = document.getElementById('blk-p2');
+    const formulaSummary = document.getElementById('formula-summary');
+    const btnCut = document.getElementById('btn-cut-3');
+
+    function updateReduction() {
+      const m = parseInt(slider.value);
+      mVal.textContent = m;
+      labelM.textContent = `M = ${m}`;
+
+      const evenRemainder = m - 3;
+      const pairs = GLab.getGoldbachPairs(evenRemainder);
+      const pair = pairs.length > 0 ? pairs[0] : [2, evenRemainder - 2];
+
+      blkP1.textContent = `p₁ = ${pair[0]}`;
+      blkP2.textContent = `p₂ = ${pair[1]}`;
+
+      formulaSummary.innerHTML = `${m} = <b>3</b> + (${pair[0]} + ${pair[1]}) = 3 + ${evenRemainder}`;
+    }
+
+    slider.addEventListener('input', () => {
+      updateReduction();
+      GLab.audio.playClick();
+    });
+
+    btnCut.addEventListener('click', () => {
+      updateReduction();
+      GLab.audio.playSuccess();
+    });
+
+    GLab.init({
+      labNum: 45,
+      title: "Reducing Ternary to Binary",
+      clusterNum: 5,
+      clusterName: "Weak Goldbach & 3-Prime Partitions",
+      prevId: "lab044_3d_simplex",
+      nextId: "lab046_triad_chords"
+    });
+
+    updateReduction();
+  </script>
+</body>
+</html>

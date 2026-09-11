@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 029: Hexagonal Honeycomb Goldbach Explorer - Goldbach Discovery Labs</title>
+  <link rel="stylesheet" href="common.css">
+  <style>
+    .honeycomb-stage {
+      height: 420px;
+      position: relative;
+    }
+  </style>
+</head>
+<body>
+  <div id="lab-nav" class="lab-nav"></div>
+
+  <div class="container">
+    <div class="lab-header">
+      <h1>Lab 029: Hexagonal Honeycomb Goldbach Explorer</h1>
+      <p class="hook">A bee's honeycomb has 6 natural directions. In modular arithmetic, hexagons provide the perfect geometric coordinate system for $6k \pm 1$ prime pairs!</p>
+    </div>
+
+    <div class="lab-stage">
+      <div class="controls-bar">
+        <div class="control-group">
+          <label for="honey-n">Target <i>N</i>:</label>
+          <input type="range" id="honey-n" min="8" max="50" step="2" value="24">
+          <span style="font-size: 18px; font-weight: 800; color: var(--accent);" id="n-val">24</span>
+        </div>
+        <div class="stat-pill" style="margin-left: auto;">
+          <span>Honeycomb Pair Paths:</span>
+          <span class="num" id="paths-badge">3 paths</span>
+        </div>
+      </div>
+
+      <div class="canvas-container honeycomb-stage">
+        <canvas id="honeyCanvas" height="420"></canvas>
+      </div>
+
+      <div style="margin-top: 14px; background: var(--card-bg-subtle); padding: 12px 18px; border-radius: var(--radius-sm); border: 1px solid var(--card-border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+        <span style="font-size: 11px; color: var(--muted); text-transform: uppercase;">Active Honeycomb Connections:</span>
+        <div style="font-size: 15px; font-weight: 700; color: var(--green);" id="paths-text">5 ↔ 19, 7 ↔ 17, 11 ↔ 13</div>
+      </div>
+    </div>
+
+    <div class="pedagogy-grid">
+      <div class="pedagogy-card story">
+        <h2>✨ Intuitive Concept: The Hexagonal Hive</h2>
+        <p>In nature, bees build hexagonal hives because hexagons tile the plane with the least perimeter. In number theory, hexagons are special because <b>every hexagon has exactly 6 neighbors</b>!</p>
+        <p>This 6-fold geometry mirrors arithmetic modulo 6. As numbers spiral through the hive, prime numbers concentrate exclusively in the $6k-1$ and $6k+1$ radial corridors.</p>
+        <p>Connecting prime pairs that sum to $N$ reveals symmetric honey paths that link opposite honeycomb corridors!</p>
+      </div>
+
+      <div class="pedagogy-card challenge">
+        <h2>🎯 Try This! (Hands-On Challenges)</h2>
+        <div class="challenge-item">
+          <span class="badge">Challenge 1</span>
+          Look at where numbers 5, 7, 11, 13, 17, 19 sit in the hive. Notice their angular alignment.
+          <button class="reveal-btn" data-target="ans-1">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-1">
+            They all sit along two specific radial angles ($60^\circ$ and $300^\circ$) corresponding to remainders 1 and 5 mod 6!
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 2</span>
+          Set $N = 24$. Follow the path connecting 11 and 13. How close are they in the hive?
+          <button class="reveal-btn" data-target="ans-2">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-2">
+            They are twin primes ($11$ and $13$), separated by only 2! In the hive, they sit in neighboring rings directly across the midpoint 12.
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 3</span>
+          Why are multiples of 6 (like 6, 12, 18, 24) always located in the exact same straight line in the hive?
+          <button class="reveal-btn" data-target="ans-3">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-3">
+            Because each full spiral cycle of 6 hexes advances by 6! All multiples of 6 align on the positive horizontal ray.
+          </div>
+        </div>
+      </div>
+
+      <div class="pedagogy-card rigor">
+        <h2>📐 Mathematical Rigor & Formal Definition</h2>
+        <p>The triangular lattice $A_2$ dual to the hexagonal tiling can be parameterized by Eisenstein integers $\mathbb{Z}[\omega]$ with $\omega = e^{2\pi i / 3}$. Primes $p \equiv \pm 1 \pmod 6$ map to units:</p>
+        <div class="math-formula">
+          (\mathbb{Z}[\omega] / 6\mathbb{Z}[\omega])^\times
+        </div>
+        <p>The Goldbach connection vector $v = z_p + z_{N-p}$ exhibits rotational equivariance under the dihedral symmetry group $D_6$.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <a href="index.html">← Return to 100 Explorations Hub</a> | Goldbach Discovery Labs &copy; 2026
+  </footer>
+
+  <script src="i18n.js"></script>
+  <script src="common.js"></script>
+  <script>
+    const slider = document.getElementById('honey-n');
+    const nVal = document.getElementById('n-val');
+    const pathsBadge = document.getElementById('paths-badge');
+    const pathsText = document.getElementById('paths-text');
+    const canvas = document.getElementById('honeyCanvas');
+    const ctx = canvas.getContext('2d');
+
+    function drawHex(x, y, r, fill, stroke, text) {
+      ctx.fillStyle = fill;
+      ctx.strokeStyle = stroke;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      for (let i = 0; i < 6; i++) {
+        const theta = (i * Math.PI) / 3;
+        const hx = x + Math.cos(theta) * r;
+        const hy = y + Math.sin(theta) * r;
+        if (i === 0) ctx.moveTo(hx, hy);
+        else ctx.lineTo(hx, hy);
+      }
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      if (text !== undefined) {
+        ctx.fillStyle = '#f8fafc';
+        ctx.font = 'bold 10px monospace';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(text, x, y);
+      }
+    }
+
+    function renderHoneycomb() {
+      const n = parseInt(slider.value);
+      nVal.textContent = n;
+
+      const pairs = GLab.getGoldbachPairs(n);
+      pathsBadge.textContent = `${pairs.length} path${pairs.length>1?'s':''}`;
+      pathsText.textContent = pairs.map(p => `${p[0]} ↔ ${p[1]}`).join('  •  ');
+
+      const w = canvas.width = canvas.parentElement.clientWidth;
+      const h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      const cx = w / 2;
+      const cy = h / 2;
+      const r = 22; // Hex radius
+
+      // Generate spiral coordinates for numbers 1 to 60
+      const hexCoords = {};
+      hexCoords[0] = { x: cx, y: cy };
+
+      // Concentric rings of hexagons
+      let num = 1;
+      for (let ring = 1; ring <= 4; ring++) {
+        const ringDist = ring * (r * 1.75);
+        for (let side = 0; side < 6; side++) {
+          for (let step = 0; step < ring; step++) {
+            if (num > 60) break;
+            const theta = (side * Math.PI) / 3 + (step / ring) * (Math.PI / 3);
+            const x = cx + Math.cos(theta) * ringDist;
+            const y = cy + Math.sin(theta) * ringDist;
+            hexCoords[num] = { x, y };
+            num++;
+          }
+        }
+      }
+
+      const pairSet = new Set();
+      pairs.forEach(p => {
+        pairSet.add(p[0]);
+        pairSet.add(p[1]);
+      });
+
+      // Draw all Hexes
+      for (let i = 1; i <= Math.min(60, n + 8); i++) {
+        const coord = hexCoords[i];
+        if (!coord) continue;
+
+        const isP = GLab.isPrime(i);
+        const inPair = pairSet.has(i);
+
+        let fill = '#162032';
+        let stroke = '#334155';
+        if (inPair) {
+          fill = 'rgba(52, 211, 153, 0.4)';
+          stroke = '#34d399';
+        } else if (isP) {
+          fill = 'rgba(56, 189, 248, 0.25)';
+          stroke = '#38bdf8';
+        }
+
+        drawHex(coord.x, coord.y, r, fill, stroke, i);
+      }
+
+      // Draw Path connections for Goldbach pairs
+      pairs.forEach(pair => {
+        const c1 = hexCoords[pair[0]];
+        const c2 = hexCoords[pair[1]];
+        if (c1 && c2) {
+          ctx.strokeStyle = '#fbbf24';
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.moveTo(c1.x, c1.y);
+          ctx.lineTo(c2.x, c2.y);
+          ctx.stroke();
+
+          // Midpoint marker
+          const mx = (c1.x + c2.x) / 2;
+          const my = (c1.y + c2.y) / 2;
+          ctx.fillStyle = '#fbbf24';
+          ctx.beginPath();
+          ctx.arc(mx, my, 5, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      });
+    }
+
+    slider.addEventListener('input', () => {
+      renderHoneycomb();
+      GLab.audio.playTone(320 + parseInt(slider.value) * 6, 0.08, 'triangle');
+    });
+
+    window.addEventListener('resize', renderHoneycomb);
+
+    GLab.init({
+      labNum: 29,
+      title: "Hexagonal Honeycomb Explorer",
+      clusterNum: 3,
+      clusterName: "Geometric, Lattice & Visual Representations",
+      prevId: "lab028_voronoi_cells",
+      nextId: "lab030_poincare_disk"
+    });
+
+    renderHoneycomb();
+  </script>
+</body>
+</html>

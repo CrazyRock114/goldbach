@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 021: The Prime Grid Lattice (p, q Plane) - Goldbach Discovery Labs</title>
+  <link rel="stylesheet" href="common.css">
+  <style>
+    .lattice-stage {
+      height: 420px;
+      position: relative;
+    }
+    .lattice-stats {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      background: var(--card-bg-subtle);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-sm);
+      padding: 12px 18px;
+      margin-top: 14px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div id="lab-nav" class="lab-nav"></div>
+
+  <div class="container">
+    <div class="lab-header">
+      <h1>Lab 021: The Prime Grid Lattice ($p, q$ Coordinate Plane)</h1>
+      <p class="hook">Plot every pair of primes $(p, q)$ as points of light in a 2D coordinate plane. Watch the diagonal line $x + y = N$ slice through the starfield, illuminating Goldbach solutions at every intersection!</p>
+    </div>
+
+    <div class="lab-stage">
+      <div class="controls-bar">
+        <div class="control-group">
+          <label for="lattice-n">Target <i>N</i>:</label>
+          <input type="range" id="lattice-n" min="6" max="50" step="2" value="28">
+          <span style="font-size: 18px; font-weight: 800; color: var(--accent);" id="n-val">28</span>
+        </div>
+        <div class="control-group">
+          <input type="checkbox" id="check-diagonal" checked>
+          <label for="check-diagonal">Show Symmetry Line (y = x)</label>
+        </div>
+        <div class="stat-pill" style="margin-left: auto;">
+          <span>Lattice Intersections:</span>
+          <span class="num" id="intersections-badge">4 points</span>
+        </div>
+      </div>
+
+      <div class="canvas-container lattice-stage">
+        <canvas id="latticeCanvas" height="420"></canvas>
+      </div>
+
+      <div class="lattice-stats">
+        <div style="text-align: center;">
+          <span style="font-size: 11px; color: var(--muted); text-transform: uppercase;">Intersection Coordinates</span>
+          <div style="font-size: 16px; font-weight: 700; color: var(--green);" id="coords-text">(5, 23), (11, 17), (17, 11), (23, 5)</div>
+        </div>
+        <div class="stat-pill">
+          <span>Unordered Pairs:</span>
+          <span class="num" id="pairs-count">2 pairs</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pedagogy-grid">
+      <div class="pedagogy-card story">
+        <h2>✨ Intuitive Concept: A Starry Night Plane</h2>
+        <p>In analytical geometry, points have two coordinates: $(x, y)$. If we light up every point where <i>both</i> $x$ and $y$ are prime numbers, we get the <b>Prime Grid Lattice $\mathbb{P}^2$</b>.</p>
+        <p>The equation $x + y = N$ defines a straight line sloping downwards at a 45° angle. Goldbach's conjecture says: <b>this downward line NEVER misses the prime stars! For every even number $N \ge 4$, the line is guaranteed to hit at least one prime lattice point</b>!</p>
+      </div>
+
+      <div class="pedagogy-card challenge">
+        <h2>🎯 Try This! (Hands-On Challenges)</h2>
+        <div class="challenge-item">
+          <span class="badge">Challenge 1</span>
+          Set $N = 20$. Notice that the line hits $(3, 17)$, $(7, 13)$, $(13, 7)$, and $(17, 3)$. Why are there 4 points on the graph for 2 Goldbach pairs?
+          <button class="reveal-btn" data-target="ans-1">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-1">
+            Because in the coordinate plane, the order matters: $(3, 17)$ has $x=3, y=17$, while $(17, 3)$ has $x=17, y=3$. In unordered Goldbach counting, $(3, 17)$ and $(17, 3)$ represent the <b>same prime pair</b> reflected across $y=x$!
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 2</span>
+          When does the line hit exactly on the symmetry line $y = x$?
+          <button class="reveal-btn" data-target="ans-2">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-2">
+            When $x = y = N/2$, which requires $N/2$ to be a prime number! For example, $N = 10 \implies (5, 5)$, $N = 14 \implies (7, 7)$, $N = 22 \implies (11, 11)$. On the graph, this point sits directly on the yellow dashed line!
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 3</span>
+          Why are all lattice points strictly outside the bands $x=0, 1$ and $y=0, 1$?
+          <button class="reveal-btn" data-target="ans-3">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-3">
+            Because 0 and 1 are not prime! The smallest prime is 2, so the prime grid only begins at $(2, 2)$.
+          </div>
+        </div>
+      </div>
+
+      <div class="pedagogy-card rigor">
+        <h2>📐 Mathematical Rigor & Formal Definition</h2>
+        <p>Let $\mathbb{P} \subset \mathbb{N}$ be the set of primes. The Cartesian product $\mathbb{P} \times \mathbb{P} \subset \mathbb{R}^2$ defines the prime point lattice. The affine hyperplane:</p>
+        <div class="math-formula">
+          H_N = \{(x, y) \in \mathbb{R}^2 \mid x + y = N\}
+        </div>
+        <p>intersects $\mathbb{P}^2$ at the set of ordered representations $R(N) = H_N \cap \mathbb{P}^2$. The reflection map $\tau(x, y) = (y, x)$ fixes the point $(N/2, N/2)$ and acts as an automorphism on $R(N)$.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <a href="index.html">← Return to 100 Explorations Hub</a> | Goldbach Discovery Labs &copy; 2026
+  </footer>
+
+  <script src="i18n.js"></script>
+  <script src="common.js"></script>
+  <script>
+    const slider = document.getElementById('lattice-n');
+    const nVal = document.getElementById('n-val');
+    const checkDiag = document.getElementById('check-diagonal');
+    const intersectionsBadge = document.getElementById('intersections-badge');
+    const coordsText = document.getElementById('coords-text');
+    const pairsCount = document.getElementById('pairs-count');
+    const canvas = document.getElementById('latticeCanvas');
+    const ctx = canvas.getContext('2d');
+
+    function renderLattice() {
+      const n = parseInt(slider.value);
+      nVal.textContent = n;
+
+      const w = canvas.width = canvas.parentElement.clientWidth;
+      const h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      const margin = 45;
+      const plotW = w - margin * 2;
+      const plotH = h - margin * 2;
+      const maxCoord = Math.max(n + 4, 30);
+
+      const toX = (val) => margin + (val / maxCoord) * plotW;
+      const toY = (val) => h - margin - (val / maxCoord) * plotH;
+
+      // Draw Grid axes
+      ctx.strokeStyle = '#475569';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(margin, h - margin);
+      ctx.lineTo(w - margin, h - margin);
+      ctx.moveTo(margin, h - margin);
+      ctx.lineTo(margin, margin);
+      ctx.stroke();
+
+      // Axis labels
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = '11px sans-serif';
+      ctx.textAlign = 'right';
+      ctx.fillText('0', margin - 8, h - margin + 4);
+      ctx.fillText('p (x)', w - margin + 15, h - margin + 15);
+      ctx.fillText('q (y)', margin - 10, margin - 10);
+
+      // Symmetry line y = x
+      if (checkDiag.checked) {
+        ctx.strokeStyle = 'rgba(251, 191, 36, 0.35)';
+        ctx.setLineDash([4, 4]);
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(toX(0), toY(0));
+        ctx.lineTo(toX(maxCoord), toY(maxCoord));
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
+
+      // Draw all Prime Lattice dots up to maxCoord
+      const primes = GLab.getPrimes(maxCoord);
+      ctx.fillStyle = 'rgba(56, 189, 248, 0.25)';
+      primes.forEach(p => {
+        primes.forEach(q => {
+          ctx.beginPath();
+          ctx.arc(toX(p), toY(q), 2, 0, Math.PI * 2);
+          ctx.fill();
+        });
+      });
+
+      // Draw Goldbach diagonal line x + y = N
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.moveTo(toX(0), toY(n));
+      ctx.lineTo(toX(n), toY(0));
+      ctx.stroke();
+
+      // Find all intersection points
+      const hitPoints = [];
+      primes.forEach(p => {
+        const q = n - p;
+        if (q >= 2 && GLab.isPrime(q)) {
+          hitPoints.push([p, q]);
+        }
+      });
+
+      intersectionsBadge.textContent = `${hitPoints.length} points`;
+      const pairs = GLab.getGoldbachPairs(n);
+      pairsCount.textContent = `${pairs.length} pair${pairs.length>1?'s':''}`;
+      coordsText.textContent = hitPoints.map(pt => `(${pt[0]}, ${pt[1]})`).join(', ');
+
+      // Highlight hit points
+      hitPoints.forEach(pt => {
+        const px = toX(pt[0]);
+        const py = toY(pt[1]);
+
+        ctx.fillStyle = '#34d399';
+        ctx.beginPath();
+        ctx.arc(px, py, 6, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = '#f8fafc';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+
+        ctx.fillStyle = '#f8fafc';
+        ctx.font = 'bold 11px monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText(`(${pt[0]}, ${pt[1]})`, px, py - 10);
+      });
+    }
+
+    slider.addEventListener('input', () => {
+      renderLattice();
+      GLab.audio.playTone(320 + parseInt(slider.value) * 6, 0.08, 'triangle');
+    });
+
+    checkDiag.addEventListener('change', renderLattice);
+    window.addEventListener('resize', renderLattice);
+
+    GLab.init({
+      labNum: 21,
+      title: "The Prime Grid Lattice",
+      clusterNum: 3,
+      clusterName: "Geometric, Lattice & Visual Representations",
+      prevId: "lab020_modulo_clock",
+      nextId: "lab022_paper_folding"
+    });
+
+    renderLattice();
+  </script>
+</body>
+</html>

@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 039: Audio-Visual Fourier Spectrogram - Goldbach Discovery Labs</title>
+  <link rel="stylesheet" href="common.css">
+  <style>
+    .spectro-stage {
+      height: 400px;
+      position: relative;
+    }
+  </style>
+</head>
+<body>
+  <div id="lab-nav" class="lab-nav"></div>
+
+  <div class="container">
+    <div class="lab-header">
+      <h1>Lab 039: Audio-Visual Fourier Spectrogram</h1>
+      <p class="hook">Listen to the hidden music of the Goldbach Comet! Decompose the sequence of Goldbach pairs into Fourier frequencies to hear the resounding harmonic peaks of 3, 5, and 7.</p>
+    </div>
+
+    <div class="lab-stage">
+      <div class="controls-bar">
+        <div class="control-group">
+          <label for="spectro-samples">Signal Length (N):</label>
+          <input type="range" id="spectro-samples" min="100" max="800" step="50" value="400">
+          <span style="font-size: 16px; font-weight: 700; color: var(--accent);" id="sample-val">N = 400</span>
+        </div>
+        <button class="btn btn-primary btn-sm" id="btn-play-spectrum">🎵 Play Comet Harmonic Chord</button>
+        <div class="stat-pill" style="margin-left: auto;">
+          <span>Dominant Peak:</span>
+          <span class="num" style="color: var(--green);">Period 3 (Mod 6)</span>
+        </div>
+      </div>
+
+      <div class="canvas-container spectro-stage">
+        <canvas id="spectroCanvas" height="400"></canvas>
+      </div>
+
+      <div style="margin-top: 14px; background: var(--card-bg-subtle); padding: 12px 18px; border-radius: var(--radius-sm); border: 1px solid var(--card-border); display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap; gap: 12px;">
+        <div style="text-align: center;">
+          <span style="font-size: 11px; color: #94a3b8; text-transform: uppercase;">Harmonic 1</span>
+          <div style="font-size: 17px; font-weight: 800; color: #38bdf8;">Period 3 (f = 1/3) — Multiple of 6</div>
+        </div>
+        <div style="text-align: center;">
+          <span style="font-size: 11px; color: #94a3b8; text-transform: uppercase;">Harmonic 2</span>
+          <div style="font-size: 17px; font-weight: 800; color: #34d399;">Period 5 (f = 1/5) — Multiple of 30</div>
+        </div>
+        <div style="text-align: center;">
+          <span style="font-size: 11px; color: #94a3b8; text-transform: uppercase;">Harmonic 3</span>
+          <div style="font-size: 17px; font-weight: 800; color: #fbbf24;">Period 7 (f = 1/7) — Multiple of 42</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pedagogy-grid">
+      <div class="pedagogy-card story">
+        <h2>✨ Intuitive Concept: The Sound of the Primes</h2>
+        <p>If you play the numbers of the Goldbach Comet like notes on a synthesizer keyboard, what chords would you hear?</p>
+        <p>Because multiples of 6 get a $2.0\times$ boost every 3 even steps ($6, 12, 18, 24...$), the signal has a roaring <b>period 3 fundamental bass note</b>!</p>
+        <p>Superimposed on top of that is a softer <b>period 5 overtone</b> (from multiples of 30) and a subtle <b>period 7 overtone</b> (from multiples of 42). The comet is literally a Fourier musical chord constructed by prime numbers!</p>
+      </div>
+
+      <div class="pedagogy-card challenge">
+        <h2>🎯 Try This! (Hands-On Challenges)</h2>
+        <div class="challenge-item">
+          <span class="badge">Challenge 1</span>
+          Click <b>"Play Comet Harmonic Chord"</b>. What three notes make up the sound?
+          <button class="reveal-btn" data-target="ans-1">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-1">
+            The chord synthesizes frequencies proportional to the three major prime harmonics: $220\text{ Hz}$ (fundamental period 3), $366\text{ Hz}$ (period 5), and $513\text{ Hz}$ (period 7), producing a rich natural triad!
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 2</span>
+          Why is Period 3 so much taller than Period 5 or Period 7 on the spectrum?
+          <button class="reveal-btn" data-target="ans-2">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-2">
+            Because the bonus factor for 3 is $(3-1)/(3-2) = 2.0$ (a 100% boost!), whereas for 5 it is $(5-1)/(5-2) = 4/3$ (a 33% boost), and for 7 it is $6/5$ (a 20% boost). The factor of 3 dominates the power spectrum!
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 3</span>
+          What does the flat background noise floor represent?
+          <button class="reveal-btn" data-target="ans-3">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-3">
+            The background noise floor represents pseudo-random fluctuations in prime gaps (the "stochastic white noise" of the primes).
+          </div>
+        </div>
+      </div>
+
+      <div class="pedagogy-card rigor">
+        <h2>📐 Mathematical Rigor & Formal Definition</h2>
+        <p>The discrete Fourier transform of the normalized signal $x[n] = g(2n) / (2n / \ln^2(2n))$ is:</p>
+        <div class="math-formula">
+          X[k] = \sum_{n=1}^N x[n] e^{-2\pi i k n / N}
+        </div>
+        <p>The power spectral density $|X[k]|^2$ exhibits discrete delta spikes at frequencies $\omega_p = 1/p$ for odd primes $p$, proving that the singular series $\mathfrak{S}(N)$ is an almost periodic function with Bohr spectrum $\mathbb{Q} / \mathbb{Z}$.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <a href="index.html">← Return to 100 Explorations Hub</a> | Goldbach Discovery Labs &copy; 2026
+  </footer>
+
+  <script src="i18n.js"></script>
+  <script src="common.js"></script>
+  <script>
+    const slider = document.getElementById('spectro-samples');
+    const sampleVal = document.getElementById('sample-val');
+    const btnPlay = document.getElementById('btn-play-spectrum');
+    const canvas = document.getElementById('spectroCanvas');
+    const ctx = canvas.getContext('2d');
+
+    function computeDFT(maxN) {
+      GLab.sieve(maxN);
+      const evens = [];
+      for (let n = 4; n <= maxN; n += 2) {
+        const pairs = GLab.getGoldbachPairs(n).length;
+        const baseline = n / Math.pow(Math.log(n), 2);
+        evens.push(pairs / baseline);
+      }
+
+      const N = evens.length;
+      const spectrum = [];
+      const numFreqs = Math.min(180, Math.floor(N / 2));
+
+      for (let k = 1; k < numFreqs; k++) {
+        let real = 0;
+        let imag = 0;
+        for (let n = 0; n < N; n++) {
+          const theta = (2 * Math.PI * k * n) / N;
+          real += evens[n] * Math.cos(theta);
+          imag -= evens[n] * Math.sin(theta);
+        }
+        const mag = Math.sqrt(real * real + imag * imag) / N;
+        const period = N / k;
+        spectrum.push({ k, period, mag });
+      }
+      return spectrum;
+    }
+
+    function renderSpectrogram() {
+      const maxN = parseInt(slider.value);
+      sampleVal.textContent = `N = ${maxN}`;
+
+      const spectrum = computeDFT(maxN);
+      const maxMag = Math.max(...spectrum.map(s => s.mag), 0.01);
+
+      const w = canvas.width = canvas.parentElement.clientWidth;
+      const h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      const margin = 45;
+      const plotW = w - margin * 2;
+      const plotH = h - margin * 2;
+
+      // Draw Axes
+      ctx.strokeStyle = '#334155';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(margin, h - margin);
+      ctx.lineTo(w - margin, h - margin);
+      ctx.moveTo(margin, h - margin);
+      ctx.lineTo(margin, margin);
+      ctx.stroke();
+
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = '11px sans-serif';
+      ctx.fillText('Frequency k / N', w - margin - 80, h - margin + 25);
+      ctx.fillText('Power Spectral Density |X(f)|²', margin - 10, margin - 12);
+
+      // Draw Spectral Bars / Curve
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+
+      spectrum.forEach((s, idx) => {
+        const x = margin + (idx / spectrum.length) * plotW;
+        const y = h - margin - (s.mag / maxMag) * plotH;
+        if (idx === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      });
+      ctx.stroke();
+
+      // Highlight key harmonic periods (Period 3, 5, 7)
+      spectrum.forEach((s, idx) => {
+        const x = margin + (idx / spectrum.length) * plotW;
+        const y = h - margin - (s.mag / maxMag) * plotH;
+
+        if (Math.abs(s.period - 3) < 0.25) {
+          ctx.fillStyle = '#38bdf8';
+          ctx.beginPath();
+          ctx.arc(x, y, 6, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.font = 'bold 11px monospace';
+          ctx.fillText('T=3 (Mod 6)', x, y - 10);
+        } else if (Math.abs(s.period - 5) < 0.25) {
+          ctx.fillStyle = '#34d399';
+          ctx.beginPath();
+          ctx.arc(x, y, 6, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.font = 'bold 11px monospace';
+          ctx.fillText('T=5 (Mod 30)', x, y - 10);
+        } else if (Math.abs(s.period - 7) < 0.25) {
+          ctx.fillStyle = '#fbbf24';
+          ctx.beginPath();
+          ctx.arc(x, y, 6, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.font = 'bold 11px monospace';
+          ctx.fillText('T=7 (Mod 42)', x, y - 10);
+        }
+      });
+    }
+
+    slider.addEventListener('input', () => {
+      renderSpectrogram();
+      GLab.audio.playTone(300 + (parseInt(slider.value) / 4), 0.05, 'sine', 0.05);
+    });
+
+    btnPlay.addEventListener('click', () => {
+      GLab.audio.playChord([220, 366.6, 513.3], 0.8);
+    });
+
+    window.addEventListener('resize', renderSpectrogram);
+
+    GLab.init({
+      labNum: 39,
+      title: "Audio-Visual Fourier Spectrogram",
+      clusterNum: 4,
+      clusterName: "The Goldbach Comet & Asymptotic Landscape",
+      prevId: "lab038_champion_integers",
+      nextId: "lab040_envelope_bounds"
+    });
+
+    renderSpectrogram();
+  </script>
+</body>
+</html>

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 040: Logarithmic Upper & Lower Envelope Bounds - Goldbach Discovery Labs</title>
+  <link rel="stylesheet" href="common.css">
+  <style>
+    .bounds-stage {
+      height: 420px;
+      position: relative;
+    }
+  </style>
+</head>
+<body>
+  <div id="lab-nav" class="lab-nav"></div>
+
+  <div class="container">
+    <div class="lab-header">
+      <h1>Lab 040: Logarithmic Upper & Lower Envelope Bounds</h1>
+      <p class="hook">Between what two mathematical curves is the Goldbach Comet trapped? Discover the logarithmic envelope corridor that guarantees the comet never drops to zero or flies away to infinity!</p>
+    </div>
+
+    <div class="lab-stage">
+      <div class="controls-bar">
+        <div class="control-group">
+          <label for="bounds-n">Range (N up to):</label>
+          <input type="range" id="bounds-n" min="200" max="1500" step="100" value="800">
+          <span style="font-size: 16px; font-weight: 700; color: var(--accent);" id="bounds-n-val">N = 800</span>
+        </div>
+        <div class="control-group">
+          <label for="slider-c1">Lower Bound c₁:</label>
+          <input type="range" id="slider-c1" min="0.5" max="1.5" step="0.05" value="1.0" style="width: 100px;">
+          <span style="font-size: 13px; font-weight: 700; color: #f43f5e;" id="c1-val">1.00</span>
+        </div>
+        <div class="control-group">
+          <label for="slider-c2">Upper Bound c₂:</label>
+          <input type="range" id="slider-c2" min="3.0" max="6.0" step="0.1" value="4.5" style="width: 100px;">
+          <span style="font-size: 13px; font-weight: 700; color: #38bdf8;" id="c2-val">4.50</span>
+        </div>
+        <div class="stat-pill" style="margin-left: auto;">
+          <span>Contained Stars:</span>
+          <span class="num" id="contained-badge" style="color: var(--green);">100.0%</span>
+        </div>
+      </div>
+
+      <div class="canvas-container bounds-stage">
+        <canvas id="boundsCanvas" height="420"></canvas>
+      </div>
+
+      <div style="margin-top: 14px; background: var(--card-bg-subtle); padding: 12px 18px; border-radius: var(--radius-sm); border: 1px solid var(--card-border); display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap; gap: 12px;">
+        <div style="text-align: center;">
+          <span style="font-size: 11px; color: #f43f5e; text-transform: uppercase;">Lower Bound Curve</span>
+          <div style="font-size: 16px; font-weight: 800; color: #f43f5e;">L(N) = c₁ · N / ln² N</div>
+        </div>
+        <div style="text-align: center;">
+          <span style="font-size: 11px; color: var(--green); text-transform: uppercase;">Comet Points</span>
+          <div style="font-size: 16px; font-weight: 800; color: var(--green);">g(N) Trapped Inside</div>
+        </div>
+        <div style="text-align: center;">
+          <span style="font-size: 11px; color: #38bdf8; text-transform: uppercase;">Upper Bound Curve</span>
+          <div style="font-size: 16px; font-weight: 800; color: #38bdf8;">U(N) = c₂ · N ln(ln N) / ln² N</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pedagogy-grid">
+      <div class="pedagogy-card story">
+        <h2>✨ Intuitive Concept: The Golden Highway</h2>
+        <p>Imagine the Goldbach Comet traveling down a cosmic highway. It never crashes into the ditch below ($y = 0$), and it never shoots off to outer space.</p>
+        <p>The <b>Lower Highway Rail (Red)</b> is set by the powers of 2 ($c_1 N / \ln^2 N$), establishing a firm floor beneath the stars.</p>
+        <p>The <b>Upper Highway Rail (Blue)</b> is set by the primorials ($c_2 N \ln \ln N / \ln^2 N$), keeping the highest peaks safely enclosed.</p>
+        <p>As you adjust the boundary sliders, you can prove that <b>100% of all even numbers ride safely inside this golden logarithmic corridor</b>!</p>
+      </div>
+
+      <div class="pedagogy-card challenge">
+        <h2>🎯 Try This! (Hands-On Challenges)</h2>
+        <div class="challenge-item">
+          <span class="badge">Challenge 1</span>
+          Lower $c_1$ down to 0.6. How does the lower boundary behave?
+          <button class="reveal-btn" data-target="ans-1">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-1">
+            Setting $c_1 = 0.6$ creates a generous safety cushion below every single star, proving that all numbers stay comfortably above zero!
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 2</span>
+          Why does the gap between the upper and lower rails widen as $N$ grows?
+          <button class="reveal-btn" data-target="ans-2">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-2">
+            Because the upper bound grows with an extra factor of $\ln \ln N$ (from prime factors accumulation), while the lower bound has no extra factor. So the corridor expands gently!
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 3</span>
+          If someone proved that $g(N) > 0.5 N / \ln^2 N$ for all $N > 4$, what would that prove?
+          <button class="reveal-btn" data-target="ans-3">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-3">
+            It would immediately constitute a <b>complete, unconditional proof of Goldbach's Conjecture</b>, because $0.5 N / \ln^2 N > 0$ for all $N \ge 4$!
+          </div>
+        </div>
+      </div>
+
+      <div class="pedagogy-card rigor">
+        <h2>📐 Mathematical Rigor & Formal Definition</h2>
+        <p>Under the Hardy-Littlewood Conjecture A, the asymptotic envelope of $g(N)$ is determined by the extreme values of $\mathfrak{S}(N)$:</p>
+        <div class="math-formula">
+          \liminf_{N \to \infty} \frac{g(N)}{N / \ln^2 N} = 2 C_2 \approx 1.3203
+        </div>
+        <div class="math-formula">
+          \limsup_{N \to \infty} \frac{g(N)}{(N \ln \ln N) / \ln^2 N} = 2 C_2 e^\gamma \approx 2.3516
+        </div>
+        <p>confirming the logarithmic corridor bounds observed in the lab.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <a href="index.html">← Return to 100 Explorations Hub</a> | Goldbach Discovery Labs &copy; 2026
+  </footer>
+
+  <script src="i18n.js"></script>
+  <script src="common.js"></script>
+  <script>
+    const sliderN = document.getElementById('bounds-n');
+    const nVal = document.getElementById('bounds-n-val');
+    const sliderC1 = document.getElementById('slider-c1');
+    const sliderC2 = document.getElementById('slider-c2');
+    const c1Val = document.getElementById('c1-val');
+    const c2Val = document.getElementById('c2-val');
+    const containedBadge = document.getElementById('contained-badge');
+    const canvas = document.getElementById('boundsCanvas');
+    const ctx = canvas.getContext('2d');
+
+    function renderBounds() {
+      const maxN = parseInt(sliderN.value);
+      const c1 = parseFloat(sliderC1.value);
+      const c2 = parseFloat(sliderC2.value);
+
+      nVal.textContent = `N = ${maxN}`;
+      c1Val.textContent = c1.toFixed(2);
+      c2Val.textContent = c2.toFixed(2);
+
+      GLab.sieve(maxN);
+
+      const evens = [];
+      let maxPairs = 1;
+      for (let n = 4; n <= maxN; n += 2) {
+        const pairs = GLab.getGoldbachPairs(n).length;
+        if (pairs > maxPairs) maxPairs = pairs;
+        evens.push({ n, pairs });
+      }
+
+      // Check containment
+      let contained = 0;
+      evens.forEach(d => {
+        const logN = Math.log(d.n);
+        const loglogN = Math.log(Math.max(1.1, logN));
+        const lower = (c1 * d.n) / (logN * logN);
+        const upper = (c2 * d.n * loglogN) / (logN * logN);
+        if (d.pairs >= lower && d.pairs <= upper + 1) contained++;
+      });
+
+      const pct = ((contained / evens.length) * 100).toFixed(1);
+      containedBadge.textContent = `${pct}%`;
+
+      const w = canvas.width = canvas.parentElement.clientWidth;
+      const h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      const margin = 45;
+      const plotW = w - margin * 2;
+      const plotH = h - margin * 2;
+      const yMax = maxPairs * 1.25;
+
+      const toScreen = (n, val) => ({
+        x: margin + (n / maxN) * plotW,
+        y: h - margin - (val / yMax) * plotH
+      });
+
+      // Draw Axes
+      ctx.strokeStyle = '#334155';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(margin, h - margin);
+      ctx.lineTo(w - margin, h - margin);
+      ctx.moveTo(margin, h - margin);
+      ctx.lineTo(margin, margin);
+      ctx.stroke();
+
+      // Draw Upper Bound Curve (Blue)
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      for (let n = 10; n <= maxN; n += 10) {
+        const logN = Math.log(n);
+        const loglogN = Math.log(Math.max(1.1, logN));
+        const upper = (c2 * n * loglogN) / (logN * logN);
+        const pt = toScreen(n, upper);
+        if (n === 10) ctx.moveTo(pt.x, pt.y);
+        else ctx.lineTo(pt.x, pt.y);
+      }
+      ctx.stroke();
+
+      // Draw Lower Bound Curve (Red)
+      ctx.strokeStyle = '#f43f5e';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      for (let n = 10; n <= maxN; n += 10) {
+        const logN = Math.log(n);
+        const lower = (c1 * n) / (logN * logN);
+        const pt = toScreen(n, lower);
+        if (n === 10) ctx.moveTo(pt.x, pt.y);
+        else ctx.lineTo(pt.x, pt.y);
+      }
+      ctx.stroke();
+
+      // Draw Comet Stars
+      ctx.fillStyle = '#34d399';
+      evens.forEach(d => {
+        const pt = toScreen(d.n, d.pairs);
+        ctx.fillRect(pt.x - 1, pt.y - 1, 2.5, 2.5);
+      });
+    }
+
+    sliderN.addEventListener('input', () => { renderBounds(); GLab.audio.playClick(); });
+    sliderC1.addEventListener('input', renderBounds);
+    sliderC2.addEventListener('input', renderBounds);
+
+    window.addEventListener('resize', renderBounds);
+
+    GLab.init({
+      labNum: 40,
+      title: "Logarithmic Envelope Bounds",
+      clusterNum: 4,
+      clusterName: "The Goldbach Comet & Asymptotic Landscape",
+      prevId: "lab039_fourier_spectrogram",
+      nextId: "lab041_ternary_scale"
+    });
+
+    renderBounds();
+  </script>
+</body>
+</html>

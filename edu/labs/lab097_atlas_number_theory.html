@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 097: Interactive Atlas of Number Theory - Goldbach Discovery Labs</title>
+  <link rel="stylesheet" href="common.css">
+  <style>
+    .atlas-layout {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 16px;
+      margin-top: 16px;
+    }
+    @media (max-width: 900px) {
+      .atlas-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+    .canvas-card {
+      background: #090d16;
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-md);
+      position: relative;
+      height: 480px;
+      overflow: hidden;
+    }
+    .atlas-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      cursor: grab;
+    }
+    .atlas-canvas:active {
+      cursor: grabbing;
+    }
+    .node-detail-panel {
+      background: var(--card-bg-subtle);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-md);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+    }
+    .detail-tag {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      align-self: flex-start;
+      margin-bottom: 8px;
+    }
+    .detail-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+    .detail-author {
+      font-size: 13px;
+      color: var(--accent);
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    .detail-desc {
+      font-size: 13px;
+      color: #cbd5e1;
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+    .detail-formula {
+      background: #0f172a;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 10px;
+      border-radius: var(--radius-sm);
+      font-family: monospace;
+      font-size: 13px;
+      color: #38bdf8;
+      margin-bottom: 12px;
+      text-align: center;
+    }
+    .detail-goldbach-link {
+      background: rgba(56, 189, 248, 0.08);
+      border-left: 3px solid var(--accent);
+      padding: 10px;
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      font-size: 12px;
+      color: #e2e8f0;
+      line-height: 1.4;
+    }
+    .filter-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+    .pill-btn {
+      background: #1e293b;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #94a3b8;
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .pill-btn.active {
+      background: var(--accent);
+      color: #0f172a;
+      font-weight: 700;
+      border-color: var(--accent);
+    }
+  </style>
+</head>
+<body>
+  <div id="lab-nav" class="lab-nav"></div>
+
+  <div class="container">
+    <div class="lab-header">
+      <h1>Lab 097: Interactive Atlas of Number Theory</h1>
+      <p class="hook">Explore the constellation of mathematical ideas surrounding <b>Goldbach's Conjecture</b>! Discover how Sieve Theory, Circle Method, Riemann Zeta, and Elliptic Curves interweave across 300 years of history.</p>
+    </div>
+
+    <div class="lab-stage">
+      <div class="controls-bar">
+        <div class="filter-pills">
+          <span style="font-size: 12px; color: var(--muted); align-self: center; margin-right: 4px;">Era Filter:</span>
+          <button class="pill-btn active" data-era="all">All Eras (1742–Present)</button>
+          <button class="pill-btn" data-era="18th">18th Century</button>
+          <button class="pill-btn" data-era="19th">19th Century</button>
+          <button class="pill-btn" data-era="20th">20th Century</button>
+          <button class="pill-btn" data-era="21st">21st Century</button>
+        </div>
+        <div style="font-size: 12px; color: var(--muted); align-self: center;">Click any node to inspect connections!</div>
+      </div>
+
+      <div class="atlas-layout">
+        <div class="canvas-card">
+          <canvas id="atlas-canvas" class="atlas-canvas"></canvas>
+        </div>
+
+        <div class="node-detail-panel" id="detail-panel">
+          <span class="detail-tag" id="panel-tag" style="background: rgba(56, 189, 248, 0.2); color: #38bdf8;">Core Conjecture</span>
+          <div class="detail-title" id="panel-title">Goldbach's Conjecture</div>
+          <div class="detail-author" id="panel-author">Christian Goldbach & Leonhard Euler (1742)</div>
+          <div class="detail-formula" id="panel-formula">2N = p + q \quad (\forall N \ge 2)</div>
+          <div class="detail-desc" id="panel-desc">Every even integer greater than 2 is the sum of two prime numbers. Formulated in Goldbach's letter to Euler on June 7, 1742.</div>
+          <div class="detail-goldbach-link" id="panel-link">
+            <strong>Direct Goldbach Connection:</strong> The central unsolved jewel of additive number theory that drove the invention of the Circle Method, Large Sieve, and modular methods.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pedagogy Section -->
+    <div class="pedagogy-grid">
+      <div class="pedagogy-card story">
+        <h3>Classroom Story: The 300-Year Constellation</h3>
+        <p>Mathematics is not a collection of isolated islands—it is an interconnected web of breakthroughs.</p>
+        <p>When Euler received Goldbach's letter in 1742, modern analysis barely existed. To tackle Goldbach, mathematicians had to invent <b>Generating Functions</b>, the <b>Riemann Zeta Function</b>, the <b>Hardy-Littlewood Circle Method</b>, and <b>Selberg's Sieve Theory</b>.</p>
+        <p>Even though the binary conjecture remains unproven, its gravity pulled forward almost every major field of modern number theory!</p>
+      </div>
+
+      <div class="pedagogy-card challenge">
+        <h3>Atlas Discovery Challenge</h3>
+        <div class="challenge-item">
+          <p><strong>Challenge 1:</strong> Trace the path from Hardy & Littlewood (1923) to Harald Helfgott (2013). Which intermediate breakthrough proved that every large odd number is the sum of 3 primes?</p>
+          <button class="reveal-btn" onclick="GLab.toggleSolution(this)">Reveal Answer</button>
+          <div class="challenge-answer">
+            Ivan Vinogradov (1937) invented novel trigonometric sum estimates to prove unconditionally that all sufficiently large odd numbers are sums of 3 primes. Helfgott completed the journey in 2013 by reducing the threshold and verifying the remainder with computers.
+          </div>
+        </div>
+        <div class="challenge-item">
+          <p><strong>Challenge 2:</strong> What crucial bridge connects Chen's Theorem ($p + P_2$) with Yitang Zhang's bounded prime gaps?</p>
+          <button class="reveal-btn" onclick="GLab.toggleSolution(this)">Reveal Answer</button>
+          <div class="challenge-answer">
+            Both rely fundamentally on the <b>Bombieri-Vinogradov Theorem</b> and advanced sieve methods (Selberg sieve & linear sieve) that overcome the parity barrier in distribution of primes in arithmetic progressions.
+          </div>
+        </div>
+      </div>
+
+      <div class="pedagogy-card rigor">
+        <h3>Taxonomy of Additive Number Theory</h3>
+        <p>Number theory approaches to Goldbach divide into three primary strategic pillars:</p>
+        <div class="math-formula">
+          $$\text{Analytic: } \int_0^1 \left(\sum p e^{2\pi i p \alpha}\right)^2 e^{-2\pi i (2N) \alpha} d\alpha > 0$$
+          $$\text{Sieve Theory: } S(A, \mathcal{P}, z) = \sum_{a \in A, (a, P(z))=1} 1$$
+          $$\text{Density / Bases: } \sigma(A) > 0 \implies kA = \mathbb{N}$$
+        </div>
+        <p>Whenever one pillar encountered an obstruction (e.g., the parity barrier or generalized Riemann hypothesis), researchers switched pillars to advance the frontier.</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="i18n.js"></script>
+  <script src="common.js"></script>
+  <script>
+    const canvas = document.getElementById('atlas-canvas');
+    const ctx = canvas.getContext('2d');
+
+    // Data Nodes
+    const NODES = [
+      { id: 'goldbach', name: "Goldbach's Conjecture", author: "C. Goldbach & L. Euler (1742)", era: '18th', formula: "2N = p + q", x: 0.5, y: 0.5, color: '#f59e0b', tag: 'Core Conjecture', desc: "Every even number > 2 is the sum of two primes.", link: "The central nexus of additive number theory." },
+      { id: 'euler_zeta', name: "Euler Product & Basel", author: "Leonhard Euler (1737)", era: '18th', formula: "\\sum n^{-s} = \\prod (1-p^{-s})^{-1}", x: 0.32, y: 0.3, color: '#38bdf8', tag: 'Analytic Seed', desc: "First connection linking all primes to continuous analysis.", link: "Lays foundation for analytic prime counting and zeta functions." },
+      { id: 'riemann', name: "Riemann Zeta Function", author: "Bernhard Riemann (1859)", era: '19th', formula: "\\zeta(s) = 0 \\implies \\text{Re}(s) = 1/2", x: 0.22, y: 0.48, color: '#a855f7', tag: 'Distribution of Primes', desc: "Complex zeros govern the exact oscillation of prime counting function pi(x).", link: "Explicit formulas allow bounding the error terms in prime distribution." },
+      { id: 'pnt', name: "Prime Number Theorem", author: "Hadamard & de la Vallée Poussin (1896)", era: '19th', formula: "\\pi(x) \\sim x / \\ln x", x: 0.38, y: 0.68, color: '#ec4899', tag: 'Asymptotics', desc: "Proved that prime density drops smoothly as 1/ln(x).", link: "Guarantees that the expected Goldbach representations grow as ~ 2 C_2 N / ln^2 N." },
+      { id: 'circle_method', name: "Circle Method", author: "Hardy, Littlewood & Ramanujan (1920s)", era: '20th', formula: "\\int_0^1 f(\\alpha)^2 e(-2N\\alpha) d\\alpha", x: 0.68, y: 0.32, color: '#10b981', tag: 'Analytic Engine', desc: "Transforms additive integer partitions into complex contour integrals over Major and Minor arcs.", link: "The primary engine used to analyze asymptotic Goldbach and Waring problems." },
+      { id: 'schnirelmann', name: "Schnirelmann Density", author: "Lev Schnirelmann (1930)", era: '20th', formula: "d(A) > 0 \\implies kA = \\mathbb{N}", x: 0.38, y: 0.18, color: '#3b82f6', tag: 'Additive Bases', desc: "Proved primes plus 1 form an additive basis of finite order for all integers.", link: "First general proof that ANY even number is a sum of at most C primes." },
+      { id: 'vinogradov', name: "Vinogradov 3-Primes", author: "Ivan Vinogradov (1937)", era: '20th', formula: "2N+1 = p_1 + p_2 + p_3 \\quad (N > N_0)", x: 0.78, y: 0.48, color: '#f97316', tag: 'Weak Goldbach', desc: "Unconditionally solved the ternary Goldbach problem for sufficiently large odd numbers.", link: "Direct ternary counterpart to the binary Goldbach problem." },
+      { id: 'chen', name: "Chen's Theorem (p + P2)", author: "Chen Jingrun (1973)", era: '20th', formula: "2N = p + P_2", x: 0.65, y: 0.72, color: '#06b6d4', tag: 'Sieve Breakthrough', desc: "Every sufficiently large even number is the sum of a prime and an almost-prime with <= 2 factors.", link: "Closest proven approximation to binary Goldbach to date." },
+      { id: 'tao', name: "Tao 5-Primes Theorem", author: "Terence Tao (2012)", era: '21st', formula: "N = p_1 + \\dots + p_5", x: 0.5, y: 0.86, color: '#84cc16', tag: 'Odd Unification', desc: "Proved every odd number is the sum of at most 5 primes unconditionally.", link: "Stepping stone directly paving the way for Helfgott's complete ternary solution." },
+      { id: 'helfgott', name: "Weak Goldbach Proven", author: "Harald Helfgott (2013)", era: '21st', formula: "2N+1 = p_1 + p_2 + p_3 \\quad (\\forall N \\ge 3)", x: 0.82, y: 0.68, color: '#22c55e', tag: 'Full Proof', desc: "Proved Weak Goldbach conjecture for all odd numbers > 5 without exception.", link: "Completely closed the odd Goldbach problem after 271 years!" }
+    ];
+
+    const EDGES = [
+      { from: 'euler_zeta', to: 'riemann' },
+      { from: 'riemann', to: 'pnt' },
+      { from: 'euler_zeta', to: 'goldbach' },
+      { from: 'pnt', to: 'goldbach' },
+      { from: 'circle_method', to: 'goldbach' },
+      { from: 'circle_method', to: 'vinogradov' },
+      { from: 'vinogradov', to: 'helfgott' },
+      { from: 'schnirelmann', to: 'goldbach' },
+      { from: 'schnirelmann', to: 'chen' },
+      { from: 'chen', to: 'goldbach' },
+      { from: 'vinogradov', to: 'tao' },
+      { from: 'tao', to: 'helfgott' },
+      { from: 'circle_method', to: 'chen' }
+    ];
+
+    let selectedNode = NODES[0];
+    let currentEra = 'all';
+    let animFrame = 0;
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const w = canvas.width;
+      const h = canvas.height;
+
+      // Draw starry background particles
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.05)';
+      for (let i = 0; i < 30; i++) {
+        const sx = (Math.sin(i * 99 + animFrame * 0.005) * 0.5 + 0.5) * w;
+        const sy = (Math.cos(i * 33 + animFrame * 0.005) * 0.5 + 0.5) * h;
+        ctx.fillRect(sx, sy, 1.5, 1.5);
+      }
+
+      // Draw Edges
+      EDGES.forEach(edge => {
+        const n1 = NODES.find(n => n.id === edge.from);
+        const n2 = NODES.find(n => n.id === edge.to);
+
+        const x1 = n1.x * w;
+        const y1 = n1.y * h;
+        const x2 = n2.x * w;
+        const y2 = n2.y * h;
+
+        const isHighlighted = (selectedNode.id === n1.id || selectedNode.id === n2.id);
+
+        ctx.strokeStyle = isHighlighted ? 'rgba(56, 189, 248, 0.7)' : 'rgba(255, 255, 255, 0.12)';
+        ctx.lineWidth = isHighlighted ? 2.5 : 1;
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.stroke();
+
+        // Energy pulse along highlighted edges
+        if (isHighlighted) {
+          const t = ((animFrame * 0.02) % 1);
+          const px = x1 + (x2 - x1) * t;
+          const py = y1 + (y2 - y1) * t;
+          ctx.fillStyle = '#38bdf8';
+          ctx.beginPath();
+          ctx.arc(px, py, 3, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      });
+
+      // Draw Nodes
+      NODES.forEach(n => {
+        const isDimmed = (currentEra !== 'all' && n.era !== currentEra);
+        const isSelected = (selectedNode.id === n.id);
+
+        const nx = n.x * w;
+        const ny = n.y * h;
+        const radius = isSelected ? 16 : 12;
+
+        ctx.save();
+        ctx.globalAlpha = isDimmed ? 0.25 : 1.0;
+
+        // Outer Glow for Selected
+        if (isSelected) {
+          ctx.fillStyle = n.color;
+          ctx.globalAlpha = 0.25;
+          ctx.beginPath();
+          ctx.arc(nx, ny, radius + 10, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.globalAlpha = 1.0;
+        }
+
+        // Node Circle
+        ctx.fillStyle = n.color;
+        ctx.beginPath();
+        ctx.arc(nx, ny, radius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = isSelected ? 2.5 : 1;
+        ctx.stroke();
+
+        // Label
+        ctx.fillStyle = isSelected ? '#fff' : '#cbd5e1';
+        ctx.font = isSelected ? 'bold 12px sans-serif' : '11px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(n.name, nx, ny + radius + 14);
+
+        ctx.restore();
+      });
+
+      animFrame++;
+      requestAnimationFrame(draw);
+    }
+
+    function selectNode(node) {
+      selectedNode = node;
+      document.getElementById('panel-tag').textContent = node.tag;
+      document.getElementById('panel-tag').style.background = node.color + '33';
+      document.getElementById('panel-tag').style.color = node.color;
+      document.getElementById('panel-title').textContent = node.name;
+      document.getElementById('panel-author').textContent = node.author;
+      document.getElementById('panel-formula').textContent = node.formula;
+      document.getElementById('panel-desc').textContent = node.desc;
+      document.getElementById('panel-link').innerHTML = `<strong>Direct Goldbach Connection:</strong> ${node.link}`;
+
+      GLab.audio.playTone(520, 'sine', 0.12);
+    }
+
+    // Canvas click detection
+    canvas.addEventListener('click', e => {
+      const rect = canvas.getBoundingClientRect();
+      const clickX = (e.clientX - rect.left) / canvas.width;
+      const clickY = (e.clientY - rect.top) / canvas.height;
+
+      let found = null;
+      let minDst = 0.06;
+
+      NODES.forEach(n => {
+        const dx = n.x - clickX;
+        const dy = n.y - clickY;
+        const dst = Math.sqrt(dx * dx + dy * dy);
+        if (dst < minDst) {
+          minDst = dst;
+          found = n;
+        }
+      });
+
+      if (found) {
+        selectNode(found);
+      }
+    });
+
+    // Era buttons
+    document.querySelectorAll('.pill-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.pill-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentEra = btn.dataset.era;
+        GLab.audio.playClick();
+      });
+    });
+
+    function resizeCanvas() {
+      canvas.width = canvas.parentElement.clientWidth;
+      canvas.height = canvas.parentElement.clientHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+
+    GLab.init({
+      labNum: 97,
+      title: "Interactive Atlas of Number Theory",
+      clusterNum: 10,
+      clusterName: "Classroom Tools & Grand Unification",
+      prevId: "lab096_algorithm_benchmark",
+      nextId: "lab098_student_journal"
+    });
+
+    resizeCanvas();
+    draw();
+  </script>
+</body>
+</html>

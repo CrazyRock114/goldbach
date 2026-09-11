@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 081: Elliptic Curves over Finite Fields - Goldbach Discovery Labs</title>
+  <link rel="stylesheet" href="common.css">
+  <style>
+    .curve-stage {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin: 20px 0;
+    }
+    @media (max-width: 768px) {
+      .curve-stage {
+        grid-template-columns: 1fr;
+      }
+    }
+    .field-card {
+      background: var(--card-bg-subtle);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .canvas-wrap {
+      height: 280px;
+      position: relative;
+    }
+    .point-stats {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      background: #090d16;
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: 1px solid #1e293b;
+    }
+  </style>
+</head>
+<body>
+  <div id="lab-nav" class="lab-nav"></div>
+
+  <div class="container">
+    <div class="lab-header">
+      <h1>Lab 081: Elliptic Curves over Finite Fields $E(\mathbb{F}_p)$</h1>
+      <p class="hook">Elliptic curves power modern cryptography and solved Fermat's Last Theorem! Decompose even number $N$ into a Goldbach pair $(p, q)$, and compare the elliptic curves $y^2 \equiv x^3 + ax + b$ defined over the finite fields $\mathbb{F}_p$ and $\mathbb{F}_q$.</p>
+    </div>
+
+    <div class="lab-stage">
+      <div class="controls-bar">
+        <div class="control-group">
+          <label for="select-even">Even <i>N</i>:</label>
+          <select id="select-even" class="btn btn-secondary btn-sm" style="background:#1e293b; color:var(--fg); border:1px solid var(--card-border);">
+            <option value="24" selected>N = 24 (Pair: 7 + 17)</option>
+            <option value="30">N = 30 (Pair: 11 + 19)</option>
+            <option value="36">N = 36 (Pair: 13 + 23)</option>
+          </select>
+        </div>
+        <div class="control-group">
+          <label for="curve-a">Curve Parameter <i>a</i>:</label>
+          <input type="number" id="curve-a" value="2" style="width:50px; background:#1e293b; color:#38bdf8; border:1px solid #475569; padding:3px; border-radius:4px; font-weight:bold;">
+        </div>
+        <div class="control-group">
+          <label for="curve-b">Curve Parameter <i>b</i>:</label>
+          <input type="number" id="curve-b" value="3" style="width:50px; background:#1e293b; color:#fbbf24; border:1px solid #475569; padding:3px; border-radius:4px; font-weight:bold;">
+        </div>
+      </div>
+
+      <div class="curve-stage">
+        <!-- Field 1: F_p -->
+        <div class="field-card" style="border-top: 4px solid #38bdf8;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h3 style="margin: 0; color: #38bdf8;" id="title-p">E(F₇): y² ≡ x³ + ax + b (mod 7)</h3>
+            <span class="badge" style="background: rgba(56, 189, 248, 0.2); color: #38bdf8;" id="badge-p">Prime p = 7</span>
+          </div>
+          <div class="canvas-container canvas-wrap">
+            <canvas id="canvasP" height="280"></canvas>
+          </div>
+          <div class="point-stats">
+            <span>Points on Curve: <b style="color: #38bdf8;" id="cnt-p">9 points</b></span>
+            <span style="color: var(--muted);" id="hasse-p">Hasse Bound: [3, 13]</span>
+          </div>
+        </div>
+
+        <!-- Field 2: F_q -->
+        <div class="field-card" style="border-top: 4px solid #fbbf24;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h3 style="margin: 0; color: #fbbf24;" id="title-q">E(F₁₇): y² ≡ x³ + ax + b (mod 17)</h3>
+            <span class="badge" style="background: rgba(251, 191, 36, 0.2); color: #fbbf24;" id="badge-q">Prime q = 17</span>
+          </div>
+          <div class="canvas-container canvas-wrap">
+            <canvas id="canvasQ" height="280"></canvas>
+          </div>
+          <div class="point-stats">
+            <span>Points on Curve: <b style="color: #fbbf24;" id="cnt-q">18 points</b></span>
+            <span style="color: var(--muted);" id="hasse-q">Hasse Bound: [10, 26]</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pedagogy-grid">
+      <div class="pedagogy-card story">
+        <h2>✨ From Continuous Curves to Modular Constellations</h2>
+        <p>Over real numbers $\mathbb{R}$, an elliptic curve $y^2 = x^3 + ax + b$ is a smooth looping line. But over a finite field $\mathbb{F}_p$, it becomes a <b>scattered constellation of discrete grid points</b>!</p>
+        <p>Because $p$ and $q$ are the twin prime components of a Goldbach sum $p + q = N$, we can define the identical algebraic curve over both fields.</p>
+        <p>Notice how each field exhibits vertical reflection symmetry across the line $y = p/2$ (since $(-y)^2 \equiv y^2 \pmod p$). Points on these modular curves form an abelian group, providing the foundational algebra for modern ECC encryption and the Wiles-Taylor proof of Fermat's Last Theorem!</p>
+      </div>
+
+      <div class="pedagogy-card challenge">
+        <h2>🎯 Try This! (Hands-On Challenges)</h2>
+        <div class="challenge-item">
+          <span class="badge">Challenge 1</span>
+          Verify that every point $(x, y)$ in the left panel satisfies $y^2 \equiv x^3 + 2x + 3 \pmod 7$.
+          <button class="reveal-btn" data-target="ans-1">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-1">
+            Take $x = 2$: $x^3 + 2x + 3 = 8 + 4 + 3 = 15 \equiv 1 \pmod 7$. The quadratic residues of 1 mod 7 are $y = 1$ and $y = 6$ ($1^2 \equiv 1, 6^2 \equiv 36 \equiv 1$). Thus $(2, 1)$ and $(2, 6)$ are valid points!
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 2</span>
+          Why does the number of points on $E(\mathbb{F}_p)$ always respect Hasse's Theorem?
+          <button class="reveal-btn" data-target="ans-2">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-2">
+            Helmut Hasse proved in 1934 that the number of points satisfies $|\#E(\mathbb{F}_p) - (p + 1)| \le 2\sqrt{p}$. This is the finite-field analogue of the Riemann Hypothesis!
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 3</span>
+          Switch $N$ to 30 (primes 11 and 19). Does the larger prime always produce more curve points?
+          <button class="reveal-btn" data-target="ans-3">💡 Observation</button>
+          <div class="answer" id="ans-3">
+            Generally yes! Since $\#E(\mathbb{F}_p) \approx p + 1$, the larger prime $q = 19$ has roughly twice as many points as $p = 11$.
+          </div>
+        </div>
+      </div>
+
+      <div class="pedagogy-card rigor">
+        <h2>📐 Hasse's Theorem & Modularity</h2>
+        <p>For any elliptic curve $E/\mathbb{F}_p$ with discriminant $\Delta = -16(4a^3 + 27b^2) \not\equiv 0 \pmod p$:</p>
+        <div class="math-formula">
+          \#E(\mathbb{F}_p) = p + 1 - a_p, \quad \text{where } |a_p| \le 2\sqrt{p}
+        </div>
+        <p>The trace of Frobenius $a_p$ generates the local factor $L_p(E, s) = (1 - a_p p^{-s} + p^{1-2s})^{-1}$ of the global $L$-function. The Modularity Theorem (Wiles et al.) connects these prime traces directly to Fourier coefficients of weight-2 modular forms.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <a href="index.html">← Return to 100 Explorations Hub</a> | Goldbach Discovery Labs &copy; 2026
+  </footer>
+
+  <script src="i18n.js"></script>
+  <script src="common.js"></script>
+  <script>
+    const selectEven = document.getElementById('select-even');
+    const inputA = document.getElementById('curve-a');
+    const inputB = document.getElementById('curve-b');
+
+    const titleP = document.getElementById('title-p');
+    const badgeP = document.getElementById('badge-p');
+    const cntP = document.getElementById('cnt-p');
+    const hasseP = document.getElementById('hasse-p');
+    const canvasP = document.getElementById('canvasP');
+    const ctxP = canvasP.getContext('2d');
+
+    const titleQ = document.getElementById('title-q');
+    const badgeQ = document.getElementById('badge-q');
+    const cntQ = document.getElementById('cnt-q');
+    const hasseQ = document.getElementById('hasse-q');
+    const canvasQ = document.getElementById('canvasQ');
+    const ctxQ = canvasQ.getContext('2d');
+
+    const pairsMap = {
+      24: [7, 17],
+      30: [11, 19],
+      36: [13, 23]
+    };
+
+    function findCurvePoints(p, a, b) {
+      const points = [];
+      for (let x = 0; x < p; x++) {
+        const rhs = ((x * x * x + a * x + b) % p + p) % p;
+        for (let y = 0; y < p; y++) {
+          if ((y * y) % p === rhs) {
+            points.push([x, y]);
+          }
+        }
+      }
+      return points;
+    }
+
+    function renderField(canvas, ctx, p, a, b, titleEl, badgeEl, cntEl, hasseEl, color) {
+      titleEl.textContent = `E(F_${p}): y² ≡ x³ + ${a}x + ${b} (mod ${p})`;
+      badgeEl.textContent = `Prime = ${p}`;
+
+      const points = findCurvePoints(p, a, b);
+      const totalPts = points.length + 1; // +1 for point at infinity O
+      cntEl.textContent = `${totalPts} points (inc. O)`;
+
+      const boundLow = Math.round(p + 1 - 2 * Math.sqrt(p));
+      const boundHigh = Math.round(p + 1 + 2 * Math.sqrt(p));
+      hasseEl.textContent = `Hasse Bound: [${boundLow}, ${boundHigh}]`;
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const padding = 25;
+      const size = Math.min(canvas.width, canvas.height) - padding * 2;
+      const originX = (canvas.width - size) / 2;
+      const originY = padding;
+
+      // Draw grid
+      ctx.strokeStyle = '#1e293b';
+      ctx.lineWidth = 1;
+      for (let i = 0; i <= p; i++) {
+        const gx = originX + (i / p) * size;
+        const gy = originY + (i / p) * size;
+        ctx.beginPath();
+        ctx.moveTo(gx, originY);
+        ctx.lineTo(gx, originY + size);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(originX, gy);
+        ctx.lineTo(originX + size, gy);
+        ctx.stroke();
+      }
+
+      // Border
+      ctx.strokeStyle = '#334155';
+      ctx.strokeRect(originX, originY, size, size);
+
+      // Plot Points
+      points.forEach(pt => {
+        const x = originX + (pt[0] / p) * size + (size / (2 * p));
+        const y = originY + (1 - (pt[1] / p)) * size - (size / (2 * p));
+
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(x, y, 5, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      });
+    }
+
+    function update() {
+      const n = parseInt(selectEven.value);
+      const pair = pairsMap[n] || [7, 17];
+      const a = parseInt(inputA.value) || 0;
+      const b = parseInt(inputB.value) || 0;
+
+      renderField(canvasP, ctxP, pair[0], a, b, titleP, badgeP, cntP, hasseP, '#38bdf8');
+      renderField(canvasQ, ctxQ, pair[1], a, b, titleQ, badgeQ, cntQ, hasseQ, '#fbbf24');
+    }
+
+    function resizeCanvases() {
+      canvasP.width = canvasP.parentElement.clientWidth;
+      canvasQ.width = canvasQ.parentElement.clientWidth;
+      update();
+    }
+    window.addEventListener('resize', resizeCanvases);
+
+    selectEven.addEventListener('change', () => { update(); GLab.audio.playClick(); });
+    inputA.addEventListener('input', () => { update(); GLab.audio.playClick(); });
+    inputB.addEventListener('input', () => { update(); GLab.audio.playClick(); });
+
+    GLab.init({
+      labNum: 81,
+      title: "Elliptic Curves over F_p",
+      clusterNum: 9,
+      clusterName: "Advanced Number Theory & Modular Forms",
+      prevId: "lab080_hilbert_eighth_problem",
+      nextId: "lab082_modular_forms_q_series"
+    });
+
+    resizeCanvases();
+  </script>
+</body>
+</html>

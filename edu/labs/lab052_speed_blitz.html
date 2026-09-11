@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 052: Speed Math Blitz Duel - Goldbach Discovery Labs</title>
+  <link rel="stylesheet" href="common.css">
+  <style>
+    .blitz-dashboard {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .hud-box {
+      background: var(--card-bg-subtle);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-sm);
+      padding: 12px;
+      text-align: center;
+    }
+    .hud-label {
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .hud-val {
+      font-size: 24px;
+      font-weight: 800;
+      font-family: monospace;
+      margin-top: 4px;
+    }
+    .arena {
+      background: linear-gradient(180deg, rgba(15, 23, 42, 0.9), rgba(30, 41, 59, 0.7));
+      border: 2px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      padding: 30px;
+      text-align: center;
+      position: relative;
+      min-height: 280px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    .target-equation {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      font-size: 38px;
+      font-weight: 900;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+    .given-prime {
+      background: #312e81;
+      border: 2px solid #818cf8;
+      padding: 4px 20px;
+      border-radius: 12px;
+      color: #e0e7ff;
+    }
+    .question-slot {
+      background: rgba(239, 68, 68, 0.15);
+      border: 2px dashed #f87171;
+      padding: 4px 24px;
+      border-radius: 12px;
+      color: #fca5a5;
+      animation: pulse 1.5s infinite;
+    }
+    .target-sum {
+      color: #38bdf8;
+      text-shadow: 0 0 16px rgba(56, 189, 248, 0.5);
+    }
+    .options-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      width: 100%;
+      max-width: 550px;
+    }
+    .option-btn {
+      background: #1e293b;
+      border: 2px solid #475569;
+      border-radius: 12px;
+      padding: 16px 10px;
+      font-size: 26px;
+      font-weight: 800;
+      color: #f8fafc;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      user-select: none;
+    }
+    .option-btn:hover {
+      border-color: #38bdf8;
+      background: #334155;
+      transform: translateY(-2px);
+    }
+    .option-btn:active {
+      transform: scale(0.95);
+    }
+    .option-btn.correct {
+      background: #065f46 !important;
+      border-color: #34d399 !important;
+      color: #d1fae5 !important;
+      box-shadow: 0 0 20px rgba(52, 211, 153, 0.6);
+    }
+    .option-btn.wrong {
+      background: #881337 !important;
+      border-color: #f43f5e !important;
+      color: #ffe4e6 !important;
+    }
+    .time-bar-wrap {
+      width: 100%;
+      height: 8px;
+      background: #1e293b;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 15px;
+    }
+    .time-bar-fill {
+      height: 100%;
+      width: 100%;
+      background: linear-gradient(90deg, #10b981, #f59e0b, #ef4444);
+      transition: width 0.1s linear;
+    }
+    .overlay-start {
+      position: absolute;
+      inset: 0;
+      background: rgba(11, 17, 32, 0.92);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      border-radius: var(--radius-lg);
+      z-index: 10;
+    }
+  </style>
+</head>
+<body>
+  <div id="lab-nav" class="lab-nav"></div>
+
+  <div class="container">
+    <div class="lab-header">
+      <h1>Lab 052: Speed Math: Goldbach Blitz Duel</h1>
+      <p class="hook">Race against the countdown clock! Given target even <i>N</i> and prime $p$, instantly deduce the missing partner prime $q = N - p$. Chain streaks together for massive combo multipliers!</p>
+    </div>
+
+    <div class="lab-stage">
+      <div class="blitz-dashboard">
+        <div class="hud-box">
+          <div class="hud-label">Time Remaining</div>
+          <div class="hud-val" id="hud-time" style="color: #f87171;">45s</div>
+        </div>
+        <div class="hud-box">
+          <div class="hud-label">Score</div>
+          <div class="hud-val" id="hud-score" style="color: #38bdf8;">0</div>
+        </div>
+        <div class="hud-box">
+          <div class="hud-label">Streak Combo</div>
+          <div class="hud-val" id="hud-combo" style="color: #fbbf24;">0x</div>
+        </div>
+        <div class="hud-box">
+          <div class="hud-label">High Score</div>
+          <div class="hud-val" id="hud-highscore" style="color: #34d399;">0</div>
+        </div>
+      </div>
+
+      <div class="arena">
+        <div class="overlay-start" id="start-overlay">
+          <h2 style="font-size: 28px; margin-bottom: 10px; color: #f8fafc;">Ready for the Blitz?</h2>
+          <p style="color: var(--muted); max-width: 420px; margin-bottom: 20px;">
+            Identify the missing Goldbach partner prime before the timer runs out. Each correct response extends your combo!
+          </p>
+          <div style="display: flex; gap: 12px;">
+            <button class="btn btn-primary" id="btn-start" style="padding: 12px 28px; font-size: 16px;">⚡ Start 45s Blitz</button>
+          </div>
+        </div>
+
+        <div class="target-equation">
+          <span class="given-prime" id="disp-p">13</span>
+          <span style="color: var(--muted);">+</span>
+          <span class="question-slot" id="disp-slot">?</span>
+          <span style="color: var(--muted);">=</span>
+          <span class="target-sum" id="disp-n">40</span>
+        </div>
+
+        <div class="options-grid" id="opts-container">
+          <button class="option-btn">23</button>
+          <button class="option-btn">27</button>
+          <button class="option-btn">29</button>
+          <button class="option-btn">31</button>
+        </div>
+
+        <div class="time-bar-wrap">
+          <div class="time-bar-fill" id="time-bar"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pedagogy-grid">
+      <div class="pedagogy-card story">
+        <h2>✨ Mental Math & Prime Reflexes</h2>
+        <p>Why do number theorists and students alike find speed Goldbach practice so powerful? Because it trains two critical mathematical instincts at once:</p>
+        <ul>
+          <li><b>Subtraction to complement:</b> Rapidly calculating $q = N - p$.</li>
+          <li><b>Instant Primality Sieve:</b> Distinguishing true primes from tricky composites (e.g. knowing 27 is $3 \times 9$, 51 is $3 \times 17$, 91 is $7 \times 13$).</li>
+        </ul>
+        <p>Under time pressure, you will notice that if $p$ and $q$ are odd primes, their units digits must sum to the units digit of $N$! For instance, if $N$ ends in 4 and $p$ ends in 7, $q$ must end in 7 ($7 + 7 = 14$).</p>
+      </div>
+
+      <div class="pedagogy-card challenge">
+        <h2>🎯 Try This! (Hands-On Challenges)</h2>
+        <div class="challenge-item">
+          <span class="badge">Challenge 1</span>
+          Target is 50 and $p = 19$. Distinguish between options 31 and 33. Why is 31 the only Goldbach partner?
+          <button class="reveal-btn" data-target="ans-1">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-1">
+            $50 - 19 = 31$. While 31 is prime, 33 is composite ($3 \times 11$). Thus $(19, 31)$ is the only valid decomposition.
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 2</span>
+          What units digit can $q$ have if $N = 40$ and $p = 17$?
+          <button class="reveal-btn" data-target="ans-2">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-2">
+            Since $7 + x \equiv 0 \pmod{10}$, $x$ must end in 3! Looking at candidates ending in 3: $40 - 17 = \mathbf{23}$ (prime!).
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 3</span>
+          Score over 1,500 points in a single 45s run to earn the "Lightning Sieve" title!
+          <button class="reveal-btn" data-target="ans-3">💡 Scoring Tip</button>
+          <div class="answer" id="ans-3">
+            Each consecutive correct answer increases your combo multiplier up to 5x. An unbroken streak of 10+ answers will rocket your score above 2,000 points!
+          </div>
+        </div>
+      </div>
+
+      <div class="pedagogy-card rigor">
+        <h2>📐 Units Digit Congruence & Filtering</h2>
+        <p>In base 10, prime units digits for $p > 5$ belong exclusively to the set $\{1, 3, 7, 9\}$. The congruence:</p>
+        <div class="math-formula">
+          p \equiv a \pmod{10}, \quad q \equiv b \pmod{10} \implies a + b \equiv N \pmod{10}
+        </div>
+        <p>This restricts the candidate set of units digits for $q$ to a single residue $b \equiv N - a \pmod{10}$. Modular filtering dramatically speeds up algorithmic candidate elimination in high-speed Goldbach verification engines.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <a href="index.html">← Return to 100 Explorations Hub</a> | Goldbach Discovery Labs &copy; 2026
+  </footer>
+
+  <script src="i18n.js"></script>
+  <script src="common.js"></script>
+  <script>
+    const TIME_LIMIT = 45;
+    let timeLeft = TIME_LIMIT;
+    let score = 0;
+    let combo = 0;
+    let highScore = 0;
+    let timerId = null;
+    let isPlaying = false;
+    let currentQuestion = null;
+
+    const hudTime = document.getElementById('hud-time');
+    const hudScore = document.getElementById('hud-score');
+    const hudCombo = document.getElementById('hud-combo');
+    const hudHigh = document.getElementById('hud-highscore');
+    const timeBar = document.getElementById('time-bar');
+    const startOverlay = document.getElementById('start-overlay');
+    const btnStart = document.getElementById('btn-start');
+    const dispP = document.getElementById('disp-p');
+    const dispSlot = document.getElementById('disp-slot');
+    const dispN = document.getElementById('disp-n');
+    const optsContainer = document.getElementById('opts-container');
+
+    function generateQuestion() {
+      // Pick random even N between 16 and 90
+      const evenOptions = [16, 18, 20, 24, 28, 30, 34, 36, 40, 42, 48, 50, 54, 60, 64, 70, 78, 84];
+      const N = evenOptions[Math.floor(Math.random() * evenOptions.length)];
+      const pairs = GLab.getGoldbachPairs(N);
+      const chosenPair = pairs[Math.floor(Math.random() * pairs.length)];
+      
+      const p = Math.random() < 0.5 ? chosenPair[0] : chosenPair[1];
+      const correctQ = N - p;
+
+      // Distractors: wrong numbers near correctQ
+      const distractors = new Set();
+      while (distractors.size < 3) {
+        const offset = (Math.floor(Math.random() * 5) + 1) * 2 * (Math.random() < 0.5 ? 1 : -1);
+        const cand = correctQ + offset;
+        if (cand > 1 && cand < N && cand !== correctQ) {
+          distractors.add(cand);
+        }
+      }
+
+      const options = [correctQ, ...Array.from(distractors)];
+      options.sort(() => Math.random() - 0.5);
+
+      return { N, p, correctQ, options };
+    }
+
+    function renderQuestion() {
+      currentQuestion = generateQuestion();
+      dispP.textContent = currentQuestion.p;
+      dispN.textContent = currentQuestion.N;
+      dispSlot.textContent = '?';
+
+      optsContainer.innerHTML = '';
+      currentQuestion.options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.textContent = opt;
+        btn.addEventListener('click', () => handleAnswer(opt, btn));
+        optsContainer.appendChild(btn);
+      });
+    }
+
+    function handleAnswer(selectedVal, btnEl) {
+      if (!isPlaying) return;
+
+      const buttons = optsContainer.querySelectorAll('.option-btn');
+      buttons.forEach(b => b.disabled = true);
+
+      if (selectedVal === currentQuestion.correctQ) {
+        btnEl.classList.add('correct');
+        dispSlot.textContent = selectedVal;
+        combo++;
+        const multiplier = Math.min(Math.floor(combo / 3) + 1, 5);
+        score += 100 * multiplier;
+        hudScore.textContent = score;
+        hudCombo.textContent = `${combo}x (x${multiplier})`;
+        GLab.audio.playSuccess();
+
+        setTimeout(() => {
+          if (isPlaying) renderQuestion();
+        }, 300);
+      } else {
+        btnEl.classList.add('wrong');
+        buttons.forEach(b => {
+          if (parseInt(b.textContent) === currentQuestion.correctQ) {
+            b.classList.add('correct');
+          }
+        });
+        combo = 0;
+        hudCombo.textContent = '0x';
+        GLab.audio.playTone(180, 0.2, 'sawtooth');
+
+        setTimeout(() => {
+          if (isPlaying) renderQuestion();
+        }, 800);
+      }
+    }
+
+    function startGame() {
+      score = 0;
+      combo = 0;
+      timeLeft = TIME_LIMIT;
+      isPlaying = true;
+      startOverlay.style.display = 'none';
+
+      hudScore.textContent = '0';
+      hudCombo.textContent = '0x';
+      hudTime.textContent = `${timeLeft}s`;
+      timeBar.style.width = '100%';
+
+      renderQuestion();
+
+      clearInterval(timerId);
+      timerId = setInterval(() => {
+        timeLeft--;
+        hudTime.textContent = `${timeLeft}s`;
+        timeBar.style.width = `${(timeLeft / TIME_LIMIT) * 100}%`;
+
+        if (timeLeft <= 0) {
+          endGame();
+        }
+      }, 1000);
+    }
+
+    function endGame() {
+      isPlaying = false;
+      clearInterval(timerId);
+      if (score > highScore) {
+        highScore = score;
+        hudHigh.textContent = highScore;
+      }
+      GLab.audio.playFanfare();
+      startOverlay.style.display = 'flex';
+      startOverlay.innerHTML = `
+        <h2 style="font-size: 28px; margin-bottom: 8px; color: #34d399;">Time's Up!</h2>
+        <p style="font-size: 20px; font-weight: 800; color: #f8fafc; margin-bottom: 6px;">Final Score: <span style="color: #38bdf8;">${score}</span></p>
+        <p style="color: var(--muted); margin-bottom: 20px;">Max Combo Streak: ${combo}</p>
+        <button class="btn btn-primary" id="btn-replay" style="padding: 12px 28px; font-size: 16px;">⚡ Play Again</button>
+      `;
+      document.getElementById('btn-replay').addEventListener('click', startGame);
+    }
+
+    btnStart.addEventListener('click', startGame);
+
+    GLab.init({
+      labNum: 52,
+      title: "Speed Math Blitz Duel",
+      clusterNum: 6,
+      clusterName: "Gamified Puzzles & Detective Cases",
+      prevId: "lab051_memory_match",
+      nextId: "lab053_composite_maze"
+    });
+  </script>
+</body>
+</html>

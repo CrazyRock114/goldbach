@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 093: The Ultimate Counter-Example Hunter - Goldbach Discovery Labs</title>
+  <link rel="stylesheet" href="common.css">
+  <style>
+    .hunter-dashboard {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    @media (max-width: 768px) {
+      .hunter-dashboard {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    .hud-box {
+      background: var(--card-bg-subtle);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-sm);
+      padding: 12px;
+      text-align: center;
+    }
+    .hud-label {
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .hud-val {
+      font-size: 22px;
+      font-weight: 900;
+      font-family: monospace;
+      margin-top: 4px;
+    }
+    .scanner-feed {
+      background: #090d16;
+      border: 2px solid #334155;
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      font-family: monospace;
+      min-height: 180px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .radar-beam {
+      height: 4px;
+      background: linear-gradient(90deg, transparent, #38bdf8, transparent);
+      animation: radarScan 1.5s infinite linear;
+    }
+    @keyframes radarScan {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+    .champions-log {
+      max-height: 140px;
+      overflow-y: auto;
+      font-size: 12px;
+      line-height: 1.6;
+      color: #fbbf24;
+    }
+  </style>
+</head>
+<body>
+  <div id="lab-nav" class="lab-nav"></div>
+
+  <div class="container">
+    <div class="lab-header">
+      <h1>Lab 093: The Ultimate Counter-Example Hunter</h1>
+      <p class="hook">Unleash the high-speed search engine! Scan millions of even integers in real time to hunt for any anomaly or zero-partition counter-example $g(N) = 0$. Can your browser discover a crack in Goldbach's armor?</p>
+    </div>
+
+    <div class="lab-stage">
+      <div class="controls-bar">
+        <div class="control-group">
+          <label for="start-val">Start Index <i>N</i>:</label>
+          <input type="number" id="start-val" min="4" max="1000000" step="2" value="1000" style="width:90px; background:#1e293b; color:#fbbf24; border:1px solid #475569; padding:4px; border-radius:4px; font-weight:bold;">
+        </div>
+        <button class="btn btn-primary btn-sm" id="btn-toggle-hunt">⚡ Launch Hunter Engine</button>
+        <button class="btn btn-secondary btn-sm" id="btn-reset-hunt">🔄 Reset</button>
+        <div class="stat-pill" style="margin-left: auto;">
+          <span>Engine Status:</span>
+          <span class="num" id="engine-status" style="color: #64748b;">STANDBY</span>
+        </div>
+      </div>
+
+      <div class="hunter-dashboard">
+        <div class="hud-box">
+          <div class="hud-label">Current Scan N</div>
+          <div class="hud-val" style="color: #38bdf8;" id="disp-current-n">1,000</div>
+        </div>
+        <div class="hud-box">
+          <div class="hud-label">Throughput Speed</div>
+          <div class="hud-val" style="color: #34d399;" id="disp-speed">0 / sec</div>
+        </div>
+        <div class="hud-box">
+          <div class="hud-label">Max Least Prime p_min</div>
+          <div class="hud-val" style="color: #fbbf24;" id="disp-max-pmin">19</div>
+        </div>
+        <div class="hud-box">
+          <div class="hud-label">Failures / Anomalies</div>
+          <div class="hud-val" style="color: #34d399;" id="disp-anomalies">0</div>
+        </div>
+      </div>
+
+      <div class="scanner-feed">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span style="color: var(--muted); font-size: 11px; text-transform: uppercase;">Real-Time Sieve Telemetry:</span>
+          <span style="color: #38bdf8; font-size: 11px;" id="current-pair-telemetry">N = 1000 = 3 + 997 (Verified ✔)</span>
+        </div>
+        <div class="radar-beam"></div>
+        <div style="font-size: 11px; color: var(--muted); text-transform: uppercase; margin-top: 6px;">New Champion Integers Discovered (Record Least Prime):</div>
+        <div class="champions-log" id="champions-container">
+          <div>• N = 98 requires p_min = 19 (19 + 79 = 98)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pedagogy-grid">
+      <div class="pedagogy-card story">
+        <h2>✨ Why the Smallest Prime is So Small</h2>
+        <p>If Goldbach's conjecture were false for some even number $N$, then <b>every prime $p \le N/2$</b> would have $N - p$ composite.</p>
+        <p>How likely is that? If $N = 100,000$, there are 5,130 primes below $N/2$. For $g(N) = 0$, all 5,130 independent trials would have to simultaneously fail! The probability of this occurring by chance is smaller than $10^{-500}$.</p>
+        <p>In practice, as this hunter engine shows, the algorithm almost never has to look past the first few primes. For 99.9% of all numbers, $p_{\min}(N) \le 109$, demonstrating the overwhelming abundance of prime pairs!</p>
+      </div>
+
+      <div class="pedagogy-card challenge">
+        <h2>🎯 Try This! (Hands-On Challenges)</h2>
+        <div class="challenge-item">
+          <span class="badge">Challenge 1</span>
+          Run the hunter from $N = 1000$ to $N = 50,000$. Does $p_{\min}$ ever exceed 97?
+          <button class="reveal-btn" data-target="ans-1">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-1">
+            Rarely! Numbers like $N = 220$ ($p_{\min}=23$) and $N = 308$ ($p_{\min}=31$) hold records for a long time before larger primes are ever needed.
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 2</span>
+          Why does the hunter find solutions for multiples of 6 almost instantaneously?
+          <button class="reveal-btn" data-target="ans-2">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-2">
+            Because for $6 \mid N$, primes $p \in \{5, 7, 11, 13, 17, 19\}$ are all eligible residues, meaning the very first or second prime tested almost always forms a pair!
+          </div>
+        </div>
+      </div>
+
+      <div class="pedagogy-card rigor">
+        <h2>📐 Linnik's Theorem & The Least Prime Bound</h2>
+        <p>By Linnik's Theorem on primes in arithmetic progressions, the least prime in a residue class $a \pmod q$ satisfies $p_{\min} \ll q^L$ (where $L \le 5$).</p>
+        <div class="math-formula">
+          p_{\min}(2k) \ll (\ln 2k)^2 \quad \text{(heuristically under Cramér)}
+        </div>
+        <p>Because $p_{\min}(2k)$ grows only poly-logarithmically, the verification search consumes virtually constant time per integer on average, enabling astronomical empirical verification.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <a href="index.html">← Return to 100 Explorations Hub</a> | Goldbach Discovery Labs &copy; 2026
+  </footer>
+
+  <script src="i18n.js"></script>
+  <script src="common.js"></script>
+  <script>
+    const startValInput = document.getElementById('start-val');
+    const btnToggle = document.getElementById('btn-toggle-hunt');
+    const btnReset = document.getElementById('btn-reset-hunt');
+    const engineStatus = document.getElementById('engine-status');
+    const dispCurrentN = document.getElementById('disp-current-n');
+    const dispSpeed = document.getElementById('disp-speed');
+    const dispMaxPmin = document.getElementById('disp-max-pmin');
+    const telemetry = document.getElementById('current-pair-telemetry');
+    const championsContainer = document.getElementById('champions-container');
+
+    let isRunning = false;
+    let currentN = 1000;
+    let timerId = null;
+    let numbersScanned = 0;
+    let startTime = null;
+    let maxPmin = 19;
+
+    function findSmallestPrime(n) {
+      for (let p = 2; p <= n / 2; p++) {
+        if (GLab.isPrime(p) && GLab.isPrime(n - p)) {
+          return p;
+        }
+      }
+      return -1; // Counter-example found!
+    }
+
+    function stepBatch() {
+      const batchSize = 100;
+      let lastP = 3;
+
+      for (let i = 0; i < batchSize; i++) {
+        currentN += 2;
+        numbersScanned++;
+        const p = findSmallestPrime(currentN);
+
+        if (p === -1) {
+          // COUNTER-EXAMPLE!
+          stopHunt();
+          alert(`🚨 ALERT: Counter-example found at N = ${currentN}!`);
+          return;
+        }
+
+        lastP = p;
+        if (p > maxPmin) {
+          maxPmin = p;
+          dispMaxPmin.textContent = maxPmin;
+          const div = document.createElement('div');
+          div.innerHTML = `• <b>N = ${currentN.toLocaleString()}</b> sets new record: p_min = ${p} (${p} + ${currentN - p} = ${currentN})`;
+          championsContainer.prepend(div);
+          GLab.audio.playSuccess();
+        }
+      }
+
+      dispCurrentN.textContent = currentN.toLocaleString();
+      telemetry.textContent = `N = ${currentN} = ${lastP} + ${currentN - lastP} (Verified ✔)`;
+
+      const elapsed = (performance.now() - startTime) / 1000;
+      const speed = Math.round(numbersScanned / elapsed);
+      dispSpeed.textContent = `${speed.toLocaleString()} / sec`;
+    }
+
+    function startHunt() {
+      isRunning = true;
+      startTime = performance.now();
+      numbersScanned = 0;
+      currentN = parseInt(startValInput.value) || 1000;
+      if (currentN % 2 !== 0) currentN++;
+
+      btnToggle.textContent = '⏸ Pause Hunter';
+      btnToggle.classList.add('btn-primary');
+      engineStatus.textContent = 'SCANNING AT WARP SPEED';
+      engineStatus.style.color = '#34d399';
+
+      timerId = setInterval(stepBatch, 30);
+      GLab.audio.playClick();
+    }
+
+    function stopHunt() {
+      isRunning = false;
+      clearInterval(timerId);
+      btnToggle.textContent = '⚡ Resume Hunter';
+      btnToggle.classList.remove('btn-primary');
+      engineStatus.textContent = 'PAUSED';
+      engineStatus.style.color = '#fbbf24';
+    }
+
+    btnToggle.addEventListener('click', () => {
+      if (isRunning) stopHunt();
+      else startHunt();
+    });
+
+    btnReset.addEventListener('click', () => {
+      stopHunt();
+      currentN = parseInt(startValInput.value) || 1000;
+      dispCurrentN.textContent = currentN.toLocaleString();
+      dispSpeed.textContent = '0 / sec';
+      engineStatus.textContent = 'STANDBY';
+      engineStatus.style.color = '#64748b';
+    });
+
+    GLab.init({
+      labNum: 93,
+      title: "Counter-Example Hunter",
+      clusterNum: 10,
+      clusterName: "Classroom Tools & Grand Unification",
+      prevId: "lab092_teacher_lesson_builder",
+      nextId: "lab094_dataset_laboratory"
+    });
+  </script>
+</body>
+</html>

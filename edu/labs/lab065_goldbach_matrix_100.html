@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 065: The Complete Goldbach Matrix - Goldbach Discovery Labs</title>
+  <link rel="stylesheet" href="common.css">
+  <style>
+    .matrix-layout {
+      display: flex;
+      gap: 20px;
+      margin: 20px 0;
+      flex-wrap: wrap;
+    }
+    .canvas-box {
+      flex: 1;
+      min-width: 320px;
+      height: 480px;
+      position: relative;
+    }
+    .matrix-sidebar {
+      width: 280px;
+      background: var(--card-bg-subtle);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .inspect-card {
+      background: #090d16;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 12px;
+      text-align: center;
+    }
+    .inspect-val {
+      font-size: 28px;
+      font-weight: 900;
+      color: #fbbf24;
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+  <div id="lab-nav" class="lab-nav"></div>
+
+  <div class="container">
+    <div class="lab-header">
+      <h1>Lab 065: The Complete Goldbach Matrix</h1>
+      <p class="hook">Explore the prime addition table $M_{i, j} = p_i + p_j$. Hover across the matrix to inspect anti-diagonal level sets where distinct prime pairs converge to the exact same even sum!</p>
+    </div>
+
+    <div class="lab-stage">
+      <div class="controls-bar">
+        <div class="control-group">
+          <label for="prime-dim">Primes in Matrix:</label>
+          <select id="prime-dim" class="btn btn-secondary btn-sm" style="background:#1e293b; color:var(--fg); border:1px solid var(--card-border);">
+            <option value="15">First 15 Primes (up to 47)</option>
+            <option value="25" selected>First 25 Primes (up to 97)</option>
+            <option value="40">First 40 Primes (up to 173)</option>
+          </select>
+        </div>
+        <div class="control-group">
+          <label for="highlight-even">Highlight Even <i>N</i>:</label>
+          <input type="number" id="highlight-even" min="4" max="200" step="2" value="48" style="width:70px; background:#1e293b; color:#fbbf24; border:1px solid #475569; padding:4px; border-radius:4px; font-weight:bold;">
+        </div>
+      </div>
+
+      <div class="matrix-layout">
+        <div class="canvas-container canvas-box">
+          <canvas id="matrixCanvas" height="480"></canvas>
+        </div>
+
+        <div class="matrix-sidebar">
+          <div class="inspect-card">
+            <span style="font-size: 11px; text-transform: uppercase; color: var(--muted);">Target Even Sum</span>
+            <div class="inspect-val" id="disp-sum">48</div>
+            <div style="font-size: 12px; color: #38bdf8;" id="disp-pairs-count">5 Pairs Found</div>
+          </div>
+
+          <div>
+            <div style="font-size: 12px; color: var(--muted); text-transform: uppercase; margin-bottom: 6px;">Representations for this N:</div>
+            <div id="pairs-list" style="font-size: 13px; color: #f8fafc; line-height: 1.6; max-height: 180px; overflow-y: auto;"></div>
+          </div>
+
+          <div style="background: rgba(15, 23, 42, 0.6); padding: 10px; border-radius: 6px; font-size: 12px; color: var(--muted); border: 1px solid var(--card-border);">
+            💡 <b>Level Sets:</b> Notice that identical sums form curved anti-diagonal contours that sweep across the matrix from top-right to bottom-left!
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pedagogy-grid">
+      <div class="pedagogy-card story">
+        <h2>✨ Symmetry and Anti-Diagonals</h2>
+        <p>Because addition is commutative ($p_i + p_j = p_j + p_i$), the Goldbach matrix is strictly <b>symmetric across the main diagonal</b>: $M = M^T$.</p>
+        <p>The main diagonal contains doubled primes ($2p$). The anti-diagonals connect prime pairs that sum to the same value $N$.</p>
+        <p>When you select an even number like <b>48</b>, you can see all cells with value 48 lighting up across the grid ($5+43, 7+41, 11+37, 17+31, 19+29$). Goldbach's conjecture simply states that <i>every even number $\ge 4$ must appear at least once in this matrix</i>!</p>
+      </div>
+
+      <div class="pedagogy-card challenge">
+        <h2>🎯 Try This! (Hands-On Challenges)</h2>
+        <div class="challenge-item">
+          <span class="badge">Challenge 1</span>
+          Highlight $N = 30$. How many cells light up in the 25×25 matrix?
+          <button class="reveal-btn" data-target="ans-1">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-1">
+            30 has 3 unordered pairs: $(7, 23), (11, 19), (13, 17)$. Since $p \ne q$, each pair appears in 2 symmetric positions, illuminating <b>6 cells</b>!
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 2</span>
+          Why does $N = 14$ only light up 4 cells ($3+11$ and $7+7$)?
+          <button class="reveal-btn" data-target="ans-2">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-2">
+            Because $14 = 3 + 11 = 11 + 3$ (2 cells) and $14 = 7 + 7$ (which sits right on the main diagonal, so it only occupies 1 cell!). Total: 3 cells.
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 3</span>
+          Hover across row 1 (Prime = 2). Why are all entries in this row odd except the very first one?
+          <button class="reveal-btn" data-target="ans-3">💡 Parity Inspection</button>
+          <div class="answer" id="ans-3">
+            $2 + \text{Odd Prime} = \text{Odd Number}$! Row 1 and Column 1 are the only paths to produce odd sums in the entire matrix.
+          </div>
+        </div>
+      </div>
+
+      <div class="pedagogy-card rigor">
+        <h2>📐 Additive Rank & Spectral Trace</h2>
+        <p>Let $P_K = (p_1, \dots, p_K)^T \in \mathbb{R}^K$ and $\mathbf{1} = (1, \dots, 1)^T$. The Goldbach sum matrix can be decomposed as an outer sum:</p>
+        <div class="math-formula">
+          M = P_K \mathbf{1}^T + \mathbf{1} P_K^T
+        </div>
+        <p>Consequently, $M$ has algebraic rank at most 2. Its spectral trace is $\operatorname{Tr}(M) = 2 \sum_{i=1}^K p_i$. The pre-image fiber $M^{-1}(N)$ has cardinality equal to the ordered Goldbach count $r_2(N)$.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <a href="index.html">← Return to 100 Explorations Hub</a> | Goldbach Discovery Labs &copy; 2026
+  </footer>
+
+  <script src="i18n.js"></script>
+  <script src="common.js"></script>
+  <script>
+    const dimSelect = document.getElementById('prime-dim');
+    const highlightInput = document.getElementById('highlight-even');
+    const dispSum = document.getElementById('disp-sum');
+    const dispPairsCount = document.getElementById('disp-pairs-count');
+    const pairsList = document.getElementById('pairs-list');
+    const canvas = document.getElementById('matrixCanvas');
+    const ctx = canvas.getContext('2d');
+
+    let K = 25;
+    let primes = [];
+    let highlightTarget = 48;
+    let hoveredCell = null;
+
+    function initMatrix() {
+      K = parseInt(dimSelect.value);
+      const allPrimes = GLab.getPrimes(500);
+      primes = allPrimes.slice(0, K);
+      highlightTarget = parseInt(highlightInput.value) || 48;
+      updateSidebar();
+      renderMatrix();
+    }
+
+    function updateSidebar() {
+      dispSum.textContent = highlightTarget;
+      const pairs = GLab.getGoldbachPairs(highlightTarget).filter(pr => pr[1] <= primes[primes.length - 1]);
+      dispPairsCount.textContent = `${pairs.length} Pair${pairs.length === 1 ? '' : 's'} in Table`;
+
+      pairsList.innerHTML = '';
+      if (pairs.length === 0) {
+        pairsList.innerHTML = '<div style="color:var(--muted);">No pairs within current matrix range.</div>';
+      } else {
+        pairs.forEach(p => {
+          const div = document.createElement('div');
+          div.innerHTML = `• <b style="color:#38bdf8;">${p[0]}</b> + <b style="color:#a5b4fc;">${p[1]}</b> = ${highlightTarget}`;
+          pairsList.appendChild(div);
+        });
+      }
+    }
+
+    function renderMatrix() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const margin = 28;
+      const size = Math.min(canvas.width - margin, canvas.height - margin);
+      const cellSize = size / K;
+
+      // Draw axis headers
+      ctx.fillStyle = '#64748b';
+      ctx.font = '10px monospace';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+
+      for (let i = 0; i < K; i++) {
+        // Top column labels
+        ctx.fillText(primes[i], margin + i * cellSize + cellSize / 2, margin / 2);
+        // Left row labels
+        ctx.fillText(primes[i], margin / 2, margin + i * cellSize + cellSize / 2);
+      }
+
+      // Draw cells
+      for (let r = 0; r < K; r++) {
+        for (let c = 0; c < K; c++) {
+          const sum = primes[r] + primes[c];
+          const x = margin + c * cellSize;
+          const y = margin + r * cellSize;
+
+          const isHighlight = (sum === highlightTarget);
+          const isHovered = (hoveredCell && hoveredCell.r === r && hoveredCell.c === c);
+
+          if (isHighlight) {
+            ctx.fillStyle = '#fbbf24'; // glowing gold
+          } else if (isHovered) {
+            ctx.fillStyle = '#38bdf8';
+          } else if (r === c) {
+            ctx.fillStyle = '#1e1b4b'; // diagonal
+          } else {
+            // heatmap gradient based on sum
+            const heat = (sum / (primes[K-1] * 2));
+            ctx.fillStyle = `rgb(${Math.floor(15 + heat * 40)}, ${Math.floor(23 + heat * 60)}, ${Math.floor(42 + heat * 100)})`;
+          }
+
+          ctx.fillRect(x + 1, y + 1, cellSize - 2, cellSize - 2);
+
+          if (K <= 25) {
+            ctx.fillStyle = isHighlight ? '#0b1120' : '#e2e8f0';
+            ctx.font = '9px monospace';
+            ctx.fillText(sum, x + cellSize / 2, y + cellSize / 2);
+          }
+        }
+      }
+    }
+
+    canvas.addEventListener('mousemove', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const mx = e.clientX - rect.left;
+      const my = e.clientY - rect.top;
+      const margin = 28;
+      const size = Math.min(canvas.width - margin, canvas.height - margin);
+      const cellSize = size / K;
+
+      if (mx >= margin && my >= margin && mx <= margin + size && my <= margin + size) {
+        const c = Math.floor((mx - margin) / cellSize);
+        const r = Math.floor((my - margin) / cellSize);
+        if (r < K && c < K) {
+          hoveredCell = { r, c };
+          highlightTarget = primes[r] + primes[c];
+          highlightInput.value = highlightTarget;
+          updateSidebar();
+          renderMatrix();
+        }
+      }
+    });
+
+    dimSelect.addEventListener('change', initMatrix);
+    highlightInput.addEventListener('input', () => {
+      highlightTarget = parseInt(highlightInput.value) || 4;
+      updateSidebar();
+      renderMatrix();
+      GLab.audio.playClick();
+    });
+
+    function resizeCanvas() {
+      canvas.width = canvas.parentElement.clientWidth;
+      renderMatrix();
+    }
+    window.addEventListener('resize', resizeCanvas);
+
+    GLab.init({
+      labNum: 65,
+      title: "The Complete Goldbach Matrix",
+      clusterNum: 7,
+      clusterName: "Combinatorics, Generating Functions & Probability",
+      prevId: "lab064_monte_carlo_darts",
+      nextId: "lab066_coin_change_machine"
+    });
+
+    resizeCanvas();
+    initMatrix();
+  </script>
+</body>
+</html>

@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 074: Landau's Four Unsolved Prime Problems - Goldbach Discovery Labs</title>
+  <link rel="stylesheet" href="common.css">
+  <style>
+    .quadrant-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin: 20px 0;
+    }
+    @media (max-width: 768px) {
+      .quadrant-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .quadrant-card {
+      background: var(--card-bg-subtle);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      position: relative;
+    }
+    .quadrant-card.active {
+      border-color: #38bdf8;
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.15);
+    }
+    .quad-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .quad-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: #f8fafc;
+    }
+    .quad-status {
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: rgba(239, 68, 68, 0.2);
+      color: #f87171;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+    .mini-tester {
+      background: #090d16;
+      border: 1px solid #1e293b;
+      border-radius: 6px;
+      padding: 10px;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div id="lab-nav" class="lab-nav"></div>
+
+  <div class="container">
+    <div class="lab-header">
+      <h1>Lab 074: Landau's Four Unsolved Prime Problems</h1>
+      <p class="hook">At the 1912 International Congress of Mathematicians in Cambridge, Edmund Landau highlighted four foundational prime conjectures that he declared "unattackable in the present state of science". Over a century later, all four remain open!</p>
+    </div>
+
+    <div class="lab-stage">
+      <div class="quadrant-grid">
+        <!-- Problem 1: Goldbach -->
+        <div class="quadrant-card active" style="border-top: 4px solid #38bdf8;">
+          <div class="quad-header">
+            <span class="quad-title">1. Goldbach's Conjecture</span>
+            <span class="quad-status">UNSOLVED</span>
+          </div>
+          <p style="font-size: 12px; color: var(--muted); margin: 0;">
+            Can every even integer $N > 2$ be written as the sum of two primes?
+          </p>
+          <div class="mini-tester">
+            <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 6px;">
+              <label for="q1-n">Even N:</label>
+              <input type="number" id="q1-n" value="38" min="4" max="500" step="2" style="width:60px; background:#1e293b; color:#38bdf8; border:1px solid #475569; padding:2px; border-radius:4px;">
+            </div>
+            <div id="q1-result" style="color: #34d399; font-weight: bold; font-family: monospace;">38 = 7 + 31 (2 pairs)</div>
+          </div>
+        </div>
+
+        <!-- Problem 2: Twin Primes -->
+        <div class="quadrant-card" style="border-top: 4px solid #fbbf24;">
+          <div class="quad-header">
+            <span class="quad-title">2. Twin Prime Conjecture</span>
+            <span class="quad-status">UNSOLVED</span>
+          </div>
+          <p style="font-size: 12px; color: var(--muted); margin: 0;">
+            Are there infinitely many primes $p$ such that $p + 2$ is also prime?
+          </p>
+          <div class="mini-tester">
+            <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 6px;">
+              <label for="q2-idx">Twin Pair Index:</label>
+              <input type="number" id="q2-idx" value="5" min="1" max="50" style="width:60px; background:#1e293b; color:#fbbf24; border:1px solid #475569; padding:2px; border-radius:4px;">
+            </div>
+            <div id="q2-result" style="color: #fbbf24; font-weight: bold; font-family: monospace;">#5: (29, 31)</div>
+          </div>
+        </div>
+
+        <!-- Problem 3: Legendre's Conjecture -->
+        <div class="quadrant-card" style="border-top: 4px solid #a855f7;">
+          <div class="quad-header">
+            <span class="quad-title">3. Legendre's Conjecture</span>
+            <span class="quad-status">UNSOLVED</span>
+          </div>
+          <p style="font-size: 12px; color: var(--muted); margin: 0;">
+            Does there always exist a prime between $n^2$ and $(n+1)^2$?
+          </p>
+          <div class="mini-tester">
+            <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 6px;">
+              <label for="q3-n">Integer n:</label>
+              <input type="number" id="q3-n" value="6" min="1" max="40" style="width:60px; background:#1e293b; color:#c084fc; border:1px solid #475569; padding:2px; border-radius:4px;">
+            </div>
+            <div id="q3-result" style="color: #c084fc; font-weight: bold; font-family: monospace;">Between 36 and 49: Primes {37, 41, 43, 47}</div>
+          </div>
+        </div>
+
+        <!-- Problem 4: n^2 + 1 Primes -->
+        <div class="quadrant-card" style="border-top: 4px solid #10b981;">
+          <div class="quad-header">
+            <span class="quad-title">4. Landau's n² + 1 Problem</span>
+            <span class="quad-status">UNSOLVED</span>
+          </div>
+          <p style="font-size: 12px; color: var(--muted); margin: 0;">
+            Are there infinitely many primes of the polynomial form $n^2 + 1$?
+          </p>
+          <div class="mini-tester">
+            <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 6px;">
+              <label for="q4-n">Evaluate n:</label>
+              <input type="number" id="q4-n" value="10" min="1" max="60" style="width:60px; background:#1e293b; color:#34d399; border:1px solid #475569; padding:2px; border-radius:4px;">
+            </div>
+            <div id="q4-result" style="color: #34d399; font-weight: bold; font-family: monospace;">10² + 1 = 101 (PRIME!)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pedagogy-grid">
+      <div class="pedagogy-card story">
+        <h2>✨ The Four Pillars of Prime Mystery</h2>
+        <p>In 1912, German mathematician <b>Edmund Landau</b> stood before the Fifth International Congress of Mathematicians in Cambridge and listed these four questions, stating that contemporary mathematics lacked the tools to solve any of them.</p>
+        <p>More than 110 years later, despite the development of modern sieve theory, the circle method, and arithmetic geometry, <b>all four problems remain officially open</b>!</p>
+        <p>Notice what they share: each asks about the existence or infinity of primes under simple polynomial operations (addition $p+q=2k$, shifts $p+2$, squares $n^2 < p < (n+1)^2$, and quadratic polynomials $n^2 + 1$).</p>
+      </div>
+
+      <div class="pedagogy-card challenge">
+        <h2>🎯 Try This! (Hands-On Challenges)</h2>
+        <div class="challenge-item">
+          <span class="badge">Challenge 1</span>
+          Test Legendre's conjecture for $n = 1$ up to $n = 10$. Did every single square interval contain at least one prime?
+          <button class="reveal-btn" data-target="ans-1">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-1">
+            Yes! In fact, the number of primes in $[n^2, (n+1)^2]$ grows as $n$ grows (for $n=6$, there are 4 primes: 37, 41, 43, 47). Yet no one can prove it never drops to zero!
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 2</span>
+          In Problem 4, find 5 values of $n$ where $n^2 + 1$ is prime.
+          <button class="reveal-btn" data-target="ans-2">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-2">
+            $n=1$ ($1^2+1=2$), $n=2$ ($2^2+1=5$), $n=4$ ($4^2+1=17$), $n=6$ ($6^2+1=37$), $n=10$ ($10^2+1=101$), $n=14$ ($14^2+1=197$), $n=16$ ($16^2+1=257$).
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 3</span>
+          Which of the four problems was closest to being solved?
+          <button class="reveal-btn" data-target="ans-3">💡 Near Breakthroughs</button>
+          <div class="answer" id="ans-3">
+            Twin Primes and Goldbach: Yitang Zhang proved bounded gaps ($p_{n+1} - p_n \le 7 \times 10^7$) in 2013, and Chen Jingrun proved $N = p + P_2$ for Goldbach!
+          </div>
+        </div>
+      </div>
+
+      <div class="pedagogy-card rigor">
+        <h2>📐 The Sieve Obstruction Across All Four Problems</h2>
+        <p>All four of Landau's problems suffer from the same deep technical barrier:</p>
+        <div class="math-formula">
+          \text{Parity Obstruction: } \mu(n) = (-1)^{\Omega(n)} \text{ cannot be detected by linear sieve weights } \lambda_d
+        </div>
+        <p>Because classical sieve theory can only bound numbers having at most $r$ prime factors (almost primes), crossing the threshold from $r=2$ to $r=1$ requires non-sieve arithmetic input (such as bilinear forms or modular curve geometry).</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <a href="index.html">← Return to 100 Explorations Hub</a> | Goldbach Discovery Labs &copy; 2026
+  </footer>
+
+  <script src="i18n.js"></script>
+  <script src="common.js"></script>
+  <script>
+    const q1Input = document.getElementById('q1-n');
+    const q1Res = document.getElementById('q1-result');
+
+    const q2Input = document.getElementById('q2-idx');
+    const q2Res = document.getElementById('q2-result');
+
+    const q3Input = document.getElementById('q3-n');
+    const q3Res = document.getElementById('q3-result');
+
+    const q4Input = document.getElementById('q4-n');
+    const q4Res = document.getElementById('q4-result');
+
+    function updateQ1() {
+      const n = parseInt(q1Input.value) || 4;
+      const pairs = GLab.getGoldbachPairs(n);
+      if (pairs.length > 0) {
+        q1Res.textContent = `${n} = ${pairs[0][0]} + ${pairs[0][1]} (${pairs.length} pairs)`;
+      } else {
+        q1Res.textContent = `${n} has no pairs!`;
+      }
+    }
+
+    function updateQ2() {
+      const idx = parseInt(q2Input.value) || 1;
+      const twins = [];
+      const primes = GLab.getPrimes(1500);
+      for (let i = 0; i < primes.length - 1; i++) {
+        if (primes[i+1] - primes[i] === 2) {
+          twins.push([primes[i], primes[i+1]]);
+          if (twins.length >= idx) break;
+        }
+      }
+      if (twins.length >= idx) {
+        const pair = twins[idx - 1];
+        q2Res.textContent = `#${idx}: (${pair[0]}, ${pair[1]})`;
+      }
+    }
+
+    function updateQ3() {
+      const n = parseInt(q3Input.value) || 1;
+      const low = n * n;
+      const high = (n + 1) * (n + 1);
+      const found = [];
+      for (let x = low + 1; x < high; x++) {
+        if (GLab.isPrime(x)) found.push(x);
+      }
+      q3Res.textContent = `Between ${low} and ${high}: {${found.join(', ')}} (${found.length} primes)`;
+    }
+
+    function updateQ4() {
+      const n = parseInt(q4Input.value) || 1;
+      const val = n * n + 1;
+      const isP = GLab.isPrime(val);
+      q4Res.textContent = `${n}² + 1 = ${val} (${isP ? 'PRIME! ✔' : 'Composite ✖'})`;
+      q4Res.style.color = isP ? '#34d399' : '#f87171';
+    }
+
+    q1Input.addEventListener('input', () => { updateQ1(); GLab.audio.playClick(); });
+    q2Input.addEventListener('input', () => { updateQ2(); GLab.audio.playClick(); });
+    q3Input.addEventListener('input', () => { updateQ3(); GLab.audio.playClick(); });
+    q4Input.addEventListener('input', () => { updateQ4(); GLab.audio.playClick(); });
+
+    GLab.init({
+      labNum: 74,
+      title: "Landau's Four Problems",
+      clusterNum: 8,
+      clusterName: "Historical Perspectives & Conjectures",
+      prevId: "lab073_schnirelmann_constant",
+      nextId: "lab075_gauss_pi_li"
+    });
+
+    updateQ1();
+    updateQ2();
+    updateQ3();
+    updateQ4();
+  </script>
+</body>
+</html>

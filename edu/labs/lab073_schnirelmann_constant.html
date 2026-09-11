@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 073: Schnirelmann's Constant (300,000 to 3) - Goldbach Discovery Labs</title>
+  <link rel="stylesheet" href="common.css">
+  <style>
+    .timeline-container {
+      margin: 20px 0;
+      position: relative;
+    }
+    .timeline-slider-wrap {
+      margin-bottom: 20px;
+    }
+    .scientist-card {
+      background: var(--card-bg-subtle);
+      border: 2px solid var(--card-border);
+      border-radius: var(--radius-sm);
+      padding: 20px;
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 20px;
+      align-items: center;
+    }
+    @media (max-width: 600px) {
+      .scientist-card {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+    }
+    .portrait-circle {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: #1e1b4b;
+      border: 3px solid #818cf8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+      margin: 0 auto;
+    }
+    .bound-stat {
+      font-size: 38px;
+      font-weight: 900;
+      font-family: monospace;
+      color: #38bdf8;
+    }
+    .plummet-chart {
+      height: 220px;
+      position: relative;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div id="lab-nav" class="lab-nav"></div>
+
+  <div class="container">
+    <div class="lab-header">
+      <h1>Lab 073: Schnirelmann's Constant: The 300,000 to 3 Plummet</h1>
+      <p class="hook">How many primes does it take to build ANY integer? In 1930, Lev Schnirelmann proved at most 300,000. Over 83 years, mathematicians drove this cosmic ceiling down to 3! Step through the timeline of discoveries.</p>
+    </div>
+
+    <div class="lab-stage">
+      <div class="controls-bar">
+        <button class="btn btn-secondary btn-sm" id="btn-prev-step">◀ Previous Step</button>
+        <button class="btn btn-primary btn-sm" id="btn-next-step">Next Breakthrough ▶</button>
+        <div class="stat-pill" style="margin-left: auto;">
+          <span>Year:</span>
+          <span class="num" style="color: #fbbf24;" id="disp-year">1930</span>
+        </div>
+      </div>
+
+      <div class="scientist-card" id="card-display">
+        <div class="portrait-circle" id="portrait-icon">🏛️</div>
+        <div>
+          <div style="font-size: 11px; text-transform: uppercase; color: var(--muted);" id="step-index">Milestone 1 of 6</div>
+          <h2 style="margin: 4px 0 6px 0; color: #f8fafc;" id="author-name">Lev Schnirelmann</h2>
+          <div style="display: flex; align-items: baseline; gap: 10px; margin-bottom: 8px;">
+            <span style="font-size: 13px; color: var(--muted);">Schnirelmann Constant C ≤</span>
+            <span class="bound-stat" id="bound-val">300,000</span>
+          </div>
+          <p style="font-size: 13px; color: #cbd5e1; line-height: 1.6; margin: 0;" id="milestone-desc">
+            Invented Schnirelmann density and proved that primes form an additive basis of finite order. For the first time in human history, every integer was proven to be the sum of at most a finite number of primes!
+          </p>
+        </div>
+      </div>
+
+      <div style="font-size: 12px; color: var(--muted); text-transform: uppercase; margin-top: 20px; margin-bottom: 4px;">Logarithmic Plummet of Schnirelmann's Bound C (1930–2013):</div>
+      <div class="canvas-container plummet-chart">
+        <canvas id="plummetCanvas" height="220"></canvas>
+      </div>
+    </div>
+
+    <div class="pedagogy-grid">
+      <div class="pedagogy-card story">
+        <h2>✨ From 300,000 to the Final Frontier</h2>
+        <p>Why was Schnirelmann's initial bound of <b>300,000</b> celebrated as a world-shaking triumph even though 300,000 is enormous?</p>
+        <p>Because before 1930, humanity had <i>no proof that the number of primes was bounded at all</i>! It was conceivable that as numbers grew to $10^{100}$, they might require millions or billions of primes to assemble.</p>
+        <p>Once a finite ceiling was established, mathematicians attacked the constant using increasingly sophisticated sieves and the circle method. Over 83 years, the bound collapsed from $300,000 \to 26 \to 7 \to 6 \to \mathbf{3}$!</p>
+      </div>
+
+      <div class="pedagogy-card challenge">
+        <h2>🎯 Try This! (Hands-On Challenges)</h2>
+        <div class="challenge-item">
+          <span class="badge">Challenge 1</span>
+          Why was Olivier Ramaré's 1995 result ($C \le 7$) considered a landmark?
+          <button class="reveal-btn" data-target="ans-1">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-1">
+            Ramaré proved that every even number is the sum of at most <b>6 primes</b>! Adding one more prime (or 1) immediately proved every integer is the sum of at most 7 primes for all numbers down to 2.
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 2</span>
+          What was Terence Tao's contribution in 2012?
+          <button class="reveal-btn" data-target="ans-2">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-2">
+            Terence Tao proved that every odd integer $>1$ is the sum of at most <b>5 primes</b>, setting the stage for Helfgott's final closure just one year later!
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 3</span>
+          If Strong Goldbach is eventually proven, what will Schnirelmann's constant become for all numbers $\ge 2$?
+          <button class="reveal-btn" data-target="ans-3">💡 Final Bound</button>
+          <div class="answer" id="ans-3">
+            Since every even is $\le 2$ primes and every odd is $\le 3$ primes (odd $- 3 =$ even), the ultimate universal constant for all integers $\ge 2$ will be permanently fixed at <b>3</b>.
+          </div>
+        </div>
+      </div>
+
+      <div class="pedagogy-card rigor">
+        <h2>📐 Mathematical Convergence of Additive Order</h2>
+        <p>Let $C_{\text{Sch}} = \min \{h \in \mathbb{N} \mid h(\mathbb{P} \cup \{0, 1\}) = \mathbb{N}_0\}$.</p>
+        <div class="math-formula">
+          300000 \xrightarrow[\text{1930}]{\text{Schnirelmann}} 6\times 10^{10} \xrightarrow[\text{1976}]{\text{Vaughan}} 26 \xrightarrow[\text{1995}]{\text{Ramaré}} 7 \xrightarrow[\text{2012}]{\text{Tao}} 6 \xrightarrow[\text{2013}]{\text{Helfgott}} 3
+        </div>
+        <p>Helfgott's theorem establishes that $3(\mathbb{P} \cup \{0, 1\}) = \mathbb{N}_0$ holds unconditionally, completely closing the weak Schnirelmann basis problem.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <a href="index.html">← Return to 100 Explorations Hub</a> | Goldbach Discovery Labs &copy; 2026
+  </footer>
+
+  <script src="i18n.js"></script>
+  <script src="common.js"></script>
+  <script>
+    const milestones = [
+      {
+        year: 1930,
+        author: 'Lev Schnirelmann',
+        bound: '300,000',
+        logBound: 5.48,
+        icon: '🏛️',
+        desc: 'Invented Schnirelmann density. Proved the primes form an additive basis of finite order C ≤ 300,000, breaking the psychological barrier that had stood since 1742.'
+      },
+      {
+        year: 1976,
+        author: 'Bob Vaughan',
+        bound: '26',
+        logBound: 1.41,
+        icon: '📜',
+        desc: 'Using Montgomery\'s large sieve and refined exponential sum estimates, Vaughan slashed the constant from millions down to just 26!'
+      },
+      {
+        year: 1995,
+        author: 'Olivier Ramaré',
+        bound: '7',
+        logBound: 0.85,
+        icon: '🔬',
+        desc: 'Proved every even integer is the sum of at most 6 primes, establishing that every positive integer is the sum of at most 7 primes unconditionally.'
+      },
+      {
+        year: 2012,
+        author: 'Terence Tao',
+        bound: '6',
+        logBound: 0.78,
+        icon: '🌟',
+        desc: 'Fields Medalist Terence Tao proved that every odd integer is the sum of at most 5 primes, bringing Schnirelmann\'s constant for all integers down to 6.'
+      },
+      {
+        year: 2013,
+        author: 'Harald Helfgott',
+        bound: '3',
+        logBound: 0.48,
+        icon: '🏆',
+        desc: 'Harald Helfgott solved the 271-year-old Weak Goldbach Conjecture unconditionally! Every odd integer ≥ 7 is the sum of 3 primes; thus C = 3 for all integers ≥ 2!'
+      }
+    ];
+
+    let currentIdx = 0;
+
+    const dispYear = document.getElementById('disp-year');
+    const stepIndex = document.getElementById('step-index');
+    const authorName = document.getElementById('author-name');
+    const boundVal = document.getElementById('bound-val');
+    const milestoneDesc = document.getElementById('milestone-desc');
+    const portraitIcon = document.getElementById('portrait-icon');
+    const btnPrev = document.getElementById('btn-prev-step');
+    const btnNext = document.getElementById('btn-next-step');
+    const canvas = document.getElementById('plummetCanvas');
+    const ctx = canvas.getContext('2d');
+
+    function render() {
+      const m = milestones[currentIdx];
+      dispYear.textContent = m.year;
+      stepIndex.textContent = `Milestone ${currentIdx + 1} of ${milestones.length}`;
+      authorName.textContent = m.author;
+      boundVal.textContent = m.bound;
+      milestoneDesc.textContent = m.desc;
+      portraitIcon.textContent = m.icon;
+
+      btnPrev.disabled = (currentIdx === 0);
+      btnNext.disabled = (currentIdx === milestones.length - 1);
+
+      renderPlummetChart();
+    }
+
+    function renderPlummetChart() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const padding = 40;
+      const w = canvas.width - padding * 2;
+      const h = canvas.height - padding * 2;
+
+      // Draw horizontal axis
+      ctx.strokeStyle = '#334155';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(padding, canvas.height - padding);
+      ctx.lineTo(canvas.width - padding, canvas.height - padding);
+      ctx.stroke();
+
+      const maxLog = 6.0;
+
+      // Draw descending staircase line
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+
+      milestones.forEach((m, idx) => {
+        const x = padding + (idx / (milestones.length - 1)) * w;
+        const y = canvas.height - padding - (m.logBound / maxLog) * h;
+        if (idx === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      });
+      ctx.stroke();
+
+      // Draw nodes
+      milestones.forEach((m, idx) => {
+        const x = padding + (idx / (milestones.length - 1)) * w;
+        const y = canvas.height - padding - (m.logBound / maxLog) * h;
+
+        const isCurrent = (idx === currentIdx);
+        ctx.fillStyle = isCurrent ? '#fbbf24' : '#38bdf8';
+        ctx.beginPath();
+        ctx.arc(x, y, isCurrent ? 8 : 4, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Label year
+        ctx.fillStyle = isCurrent ? '#fbbf24' : '#94a3b8';
+        ctx.font = isCurrent ? 'bold 12px monospace' : '10px monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText(m.year, x, canvas.height - padding + 16);
+        ctx.fillText(`C ≤ ${m.bound}`, x, y - 12);
+      });
+    }
+
+    btnPrev.addEventListener('click', () => {
+      if (currentIdx > 0) {
+        currentIdx--;
+        render();
+        GLab.audio.playClick();
+      }
+    });
+
+    btnNext.addEventListener('click', () => {
+      if (currentIdx < milestones.length - 1) {
+        currentIdx++;
+        render();
+        GLab.audio.playSuccess();
+      }
+    });
+
+    function resizeCanvas() {
+      canvas.width = canvas.parentElement.clientWidth;
+      renderPlummetChart();
+    }
+    window.addEventListener('resize', resizeCanvas);
+
+    GLab.init({
+      labNum: 73,
+      title: "Schnirelmann's Constant",
+      clusterNum: 8,
+      clusterName: "Historical Perspectives & Conjectures",
+      prevId: "lab072_chen_theorem",
+      nextId: "lab074_landau_four_problems"
+    });
+
+    resizeCanvas();
+    render();
+  </script>
+</body>
+</html>

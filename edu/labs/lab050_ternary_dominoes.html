@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 050: Ternary Prime Dominoes - Goldbach Discovery Labs</title>
+  <link rel="stylesheet" href="common.css">
+  <style>
+    .puzzle-tray {
+      background: #090e17;
+      border: 2px dashed var(--card-border);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      margin-bottom: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 200px;
+    }
+    .target-strip {
+      height: 48px;
+      background: rgba(30, 41, 59, 0.6);
+      border: 2px solid var(--accent);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      position: relative;
+      margin: 16px 0;
+      box-shadow: inset 0 2px 6px rgba(0,0,0,0.5);
+    }
+    .domino-dock {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 16px;
+      padding: 16px;
+      background: var(--card-bg-subtle);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--card-border);
+    }
+    .domino-tile {
+      height: 44px;
+      background: linear-gradient(135deg, #1e293b, #334155);
+      border: 2px solid #64748b;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      color: #f8fafc;
+      font-family: monospace;
+      font-size: 16px;
+      font-weight: 700;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+    .domino-tile:hover {
+      transform: translateY(-3px) scale(1.03);
+      border-color: var(--primary);
+    }
+    .domino-tile.in-tray-1 { background: linear-gradient(135deg, #0284c7, #38bdf8); color: #0b1120; border-color: #7dd3fc; }
+    .domino-tile.in-tray-2 { background: linear-gradient(135deg, #059669, #34d399); color: #0b1120; border-color: #6ee7b7; }
+    .domino-tile.in-tray-3 { background: linear-gradient(135deg, #9333ea, #c084fc); color: #0b1120; border-color: #d8b4fe; }
+    .level-pills { display: flex; gap: 8px; flex-wrap: wrap; }
+    .level-btn {
+      padding: 6px 12px;
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: var(--radius-sm);
+      background: var(--card-bg-subtle);
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      cursor: pointer;
+    }
+    .level-btn.active { background: var(--accent); color: #0b1120; }
+  </style>
+</head>
+<body>
+  <div id="lab-nav" class="lab-nav"></div>
+
+  <div class="container">
+    <div class="lab-header">
+      <h1>Lab 050: Ternary Prime Dominoes</h1>
+      <p class="hook">Fit exactly THREE prime dominoes into an odd target strip! Pick 3 prime lengths to seamlessly cover the interval with no gaps and celebrate Helfgott's proven theorem!</p>
+    </div>
+
+    <div class="lab-stage">
+      <div class="controls-bar">
+        <span style="font-size: 13px; font-weight: 600; color: var(--muted); text-transform: uppercase;">Select Odd Target:</span>
+        <div class="level-pills">
+          <button class="level-btn active" data-n="11">Target 11</button>
+          <button class="level-btn" data-n="15">Target 15</button>
+          <button class="level-btn" data-n="21">Target 21</button>
+          <button class="level-btn" data-n="27">Target 27</button>
+        </div>
+        <button class="btn btn-sm" id="btn-clear-ternary" style="margin-left: auto;">Reset Dominoes</button>
+      </div>
+
+      <div class="puzzle-tray">
+        <div style="font-size: 15px; font-weight: 700; color: var(--muted); margin-bottom: 6px;">
+          Odd Target Strip: Length <span id="target-label" style="color: var(--accent);">11</span>
+        </div>
+
+        <div class="target-strip" id="target-strip" style="width: 330px;">
+          <!-- 3 dominoes snap here -->
+        </div>
+
+        <div id="feedback-msg" style="font-size: 14px; font-weight: 600; min-height: 24px; color: var(--muted); margin-top: 6px;">
+          Click three prime dominoes below to place them in the strip.
+        </div>
+      </div>
+
+      <div style="font-size: 13px; font-weight: 700; text-transform: uppercase; color: var(--muted); margin-bottom: 8px;">
+        Prime Domino Supply:
+      </div>
+      <div class="domino-dock" id="domino-dock"></div>
+    </div>
+
+    <div class="pedagogy-grid">
+      <div class="pedagogy-card story">
+        <h2>✨ Intuitive Concept: The 3-Piece Jigsaw</h2>
+        <p>In Lab 009, we covered even strips with 2 prime dominoes. Now, our strips have <b>odd lengths</b> ($11, 15, 21, 27$).</p>
+        <p>Because $\text{Odd} + \text{Odd} = \text{Even}$, you can NEVER cover an odd strip with two odd primes! You need <b>THREE dominoes</b> ($p_1 + p_2 + p_3 = \text{Odd}$).</p>
+        <p>Helfgott's theorem guarantees that no matter what odd level you pick, there is ALWAYS a winning 3-domino solution!</p>
+      </div>
+
+      <div class="pedagogy-card challenge">
+        <h2>🎯 Try This! (Hands-On Challenges)</h2>
+        <div class="challenge-item">
+          <span class="badge">Challenge 1</span>
+          On <b>Target 11</b>, find a solution using three odd primes.
+          <button class="reveal-btn" data-target="ans-1">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-1">
+            $3 + 3 + 5 = 11$! (Or using the even prime 2: $2 + 2 + 7 = 11$).
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 2</span>
+          On <b>Target 15</b>, find a solution using three identical prime dominoes.
+          <button class="reveal-btn" data-target="ans-2">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-2">
+            Three 5-dominoes: <b>5 + 5 + 5 = 15</b>!
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 3</span>
+          Why does adding a 3rd domino make the puzzle so much easier than with 2 dominoes?
+          <button class="reveal-btn" data-target="ans-3">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-3">
+            Because with 2 dominoes, picking the first domino fixes the second domino completely. With 3 dominoes, you have two free choices before the third is determined, giving vastly more combinations!
+          </div>
+        </div>
+      </div>
+
+      <div class="pedagogy-card rigor">
+        <h2>📐 Mathematical Rigor & Formal Definition</h2>
+        <p>A ternary prime tiling is a triple $(p_1, p_2, p_3) \in \mathbb{P}^3$ such that:</p>
+        <div class="math-formula">
+          [0, p_1] \cup [p_1, p_1+p_2] \cup [p_1+p_2, p_1+p_2+p_3] = [0, M]
+        </div>
+        <p>with pairwise disjoint interior intervals, establishing the linear Diophantine relation $p_1 + p_2 + p_3 = M$.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <a href="index.html">← Return to 100 Explorations Hub</a> | Goldbach Discovery Labs &copy; 2026
+  </footer>
+
+  <script src="i18n.js"></script>
+  <script src="common.js"></script>
+  <script>
+    const levelBtns = document.querySelectorAll('.level-btn');
+    const targetStrip = document.getElementById('target-strip');
+    const targetLabel = document.getElementById('target-label');
+    const dominoDock = document.getElementById('domino-dock');
+    const feedbackMsg = document.getElementById('feedback-msg');
+    const btnClear = document.getElementById('btn-clear-ternary');
+
+    let currentTarget = 11;
+    let placedDominoes = [];
+    const availablePrimes = [2, 3, 5, 7, 11, 13, 17, 19];
+
+    function setLevel(n) {
+      currentTarget = n;
+      targetLabel.textContent = n;
+      placedDominoes = [];
+      const pxPerUnit = Math.min(22, Math.floor(460 / n));
+      targetStrip.style.width = (n * pxPerUnit) + 'px';
+
+      renderDock(pxPerUnit);
+      renderTray();
+    }
+
+    function renderDock(pxPerUnit) {
+      dominoDock.innerHTML = '';
+      availablePrimes.filter(p => p < currentTarget).forEach(p => {
+        const d = document.createElement('div');
+        d.className = 'domino-tile';
+        d.style.width = (p * pxPerUnit) + 'px';
+        d.textContent = p;
+        d.addEventListener('click', () => handleDominoClick(p));
+        dominoDock.appendChild(d);
+      });
+    }
+
+    function handleDominoClick(prime) {
+      if (placedDominoes.length >= 3) {
+        placedDominoes = [prime];
+      } else {
+        placedDominoes.push(prime);
+      }
+      GLab.audio.playTone(300 + prime * 18, 0.08, 'triangle');
+      renderTray();
+      checkTray();
+    }
+
+    function renderTray() {
+      targetStrip.innerHTML = '';
+      const pxPerUnit = Math.min(22, Math.floor(460 / currentTarget));
+
+      placedDominoes.forEach((p, idx) => {
+        const t = document.createElement('div');
+        t.className = `domino-tile in-tray-${idx + 1}`;
+        t.style.width = (p * pxPerUnit) + 'px';
+        t.textContent = p;
+        targetStrip.appendChild(t);
+      });
+    }
+
+    function checkTray() {
+      if (placedDominoes.length < 3) {
+        const sum = placedDominoes.reduce((a,b)=>a+b, 0);
+        feedbackMsg.style.color = 'var(--muted)';
+        feedbackMsg.textContent = `Placed ${placedDominoes.length}/3 dominoes (Sum: ${sum}). Need ${currentTarget - sum} more!`;
+      } else {
+        const sum = placedDominoes.reduce((a,b)=>a+b, 0);
+        if (sum === currentTarget) {
+          feedbackMsg.style.color = 'var(--green)';
+          feedbackMsg.textContent = `🎯 PERFECT FIT! ${placedDominoes[0]} + ${placedDominoes[1]} + ${placedDominoes[2]} = ${currentTarget}!`;
+          GLab.audio.playSuccess();
+        } else if (sum < currentTarget) {
+          feedbackMsg.style.color = 'var(--danger)';
+          feedbackMsg.textContent = `❌ Too short! Sum is ${sum} < ${currentTarget} (Gap of ${currentTarget - sum})`;
+          GLab.audio.playTone(220, 0.2, 'sawtooth');
+        } else {
+          feedbackMsg.style.color = 'var(--danger)';
+          feedbackMsg.textContent = `❌ Overhang! Sum is ${sum} > ${currentTarget} (Overlaps by ${sum - currentTarget})`;
+          GLab.audio.playTone(220, 0.2, 'sawtooth');
+        }
+      }
+    }
+
+    btnClear.addEventListener('click', () => {
+      placedDominoes = [];
+      feedbackMsg.style.color = 'var(--muted)';
+      feedbackMsg.textContent = 'Click three prime dominoes below to place them in the strip.';
+      renderTray();
+      GLab.audio.playClick();
+    });
+
+    levelBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        levelBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        setLevel(parseInt(btn.dataset.n));
+        GLab.audio.playClick();
+      });
+    });
+
+    GLab.init({
+      labNum: 50,
+      title: "Ternary Prime Dominoes",
+      clusterNum: 5,
+      clusterName: "Weak Goldbach & 3-Prime Partitions",
+      prevId: "lab049_vinogradov_bounds",
+      nextId: "lab051_memory_match"
+    });
+
+    setLevel(11);
+  </script>
+</body>
+</html>

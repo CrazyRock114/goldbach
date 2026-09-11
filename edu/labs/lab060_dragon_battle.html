@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 060: Boss Battle - The Goldbach Dragon - Goldbach Discovery Labs</title>
+  <link rel="stylesheet" href="common.css">
+  <style>
+    .battle-stage {
+      position: relative;
+      background: radial-gradient(circle at 50% 30%, #1e1b4b, #090d16);
+      border: 2px solid #6366f1;
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      overflow: hidden;
+    }
+    .boss-hud {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 12px 18px;
+      margin-bottom: 12px;
+    }
+    .hp-bar-container {
+      flex: 1;
+      max-width: 380px;
+      margin: 0 16px;
+    }
+    .hp-bar-wrap {
+      height: 16px;
+      background: #1e293b;
+      border: 1px solid #475569;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .hp-bar-fill {
+      height: 100%;
+      width: 100%;
+      background: linear-gradient(90deg, #ef4444, #f59e0b);
+      transition: width 0.4s ease-out;
+    }
+    .canvas-arena {
+      width: 100%;
+      height: 280px;
+      display: block;
+      border-radius: 8px;
+      background: transparent;
+    }
+    .spell-deck {
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 14px;
+      margin-top: 12px;
+    }
+    .deck-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 13px;
+    }
+    .prime-stones-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+    }
+    .prime-stone {
+      background: linear-gradient(135deg, #1e293b, #0f172a);
+      border: 2px solid #38bdf8;
+      color: #f8fafc;
+      font-size: 16px;
+      font-weight: 800;
+      font-family: monospace;
+      padding: 8px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.15s;
+    }
+    .prime-stone:hover {
+      background: #38bdf8;
+      color: #0b1120;
+      transform: translateY(-2px);
+    }
+    .prime-stone.selected {
+      background: #818cf8;
+      border-color: #c084fc;
+      color: #0b1120;
+      box-shadow: 0 0 14px #818cf8;
+    }
+    .cast-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 12px;
+    }
+    .cast-sum-display {
+      font-size: 24px;
+      font-weight: 900;
+      font-family: monospace;
+      color: #fbbf24;
+    }
+  </style>
+</head>
+<body>
+  <div id="lab-nav" class="lab-nav"></div>
+
+  <div class="container">
+    <div class="lab-header">
+      <h1>Lab 060: Boss Battle: The Goldbach Dragon</h1>
+      <p class="hook">The mighty Dragon Ignis protects the ancient treasure vault with mystical even armor! To penetrate each armor shield, cast two <b>Prime Magic Stones</b> that sum exactly to the Dragon's Armor HP!</p>
+    </div>
+
+    <div class="lab-stage">
+      <div class="battle-stage">
+        <div class="boss-hud">
+          <div>
+            <span style="font-size: 18px; font-weight: 900; color: #f43f5e;">🐉 IGNIS THE RED DRAGON</span>
+            <div style="font-size: 11px; color: var(--muted);" id="boss-phase-text">Phase 1: Scale Barrier (Target HP: 36)</div>
+          </div>
+
+          <div class="hp-bar-container">
+            <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-bottom: 2px;">
+              <span>Armor Integrity</span>
+              <span id="hp-val-text" style="color: #f87171; font-weight: bold;">36 / 36</span>
+            </div>
+            <div class="hp-bar-wrap">
+              <div class="hp-bar-fill" id="hp-fill"></div>
+            </div>
+          </div>
+
+          <button class="btn btn-secondary btn-sm" id="btn-restart-battle">🔄 Restart Battle</button>
+        </div>
+
+        <canvas id="battleCanvas" class="canvas-arena" height="280"></canvas>
+
+        <div class="spell-deck">
+          <div class="deck-header">
+            <span style="color: #38bdf8; font-weight: bold;">💎 Prime Spell Stones (Select 2 to cast):</span>
+            <span id="selected-pair-label" style="color: var(--muted);">Selected: None</span>
+          </div>
+
+          <div class="prime-stones-grid" id="stones-container"></div>
+
+          <div class="cast-bar">
+            <div class="cast-sum-display" id="cast-formula">? + ? = 0</div>
+            <button class="btn btn-primary" id="btn-cast-spell" style="padding: 8px 24px;">⚡ Cast Goldbach Spell</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pedagogy-grid">
+      <div class="pedagogy-card story">
+        <h2>✨ The Spell of Complementary Forces</h2>
+        <p>In classical mythology and game mechanics, bosses possess defensive shields that can only be shattered by harmonizing twin elemental forces.</p>
+        <p>In the Goldbach arena, each shield is an even number $N$. The secret key to piercing the shield is selecting two prime frequencies $(p, q)$ whose constructive wave interference lands squarely on $N$: $p + q = N$.</p>
+        <p>Because the dragon's armor numbers grow larger with each phase ($36 \to 54 \to 70 \to 84$), players naturally experience the growing density of Goldbach pairs—there are always multiple ways to defeat each phase!</p>
+      </div>
+
+      <div class="pedagogy-card challenge">
+        <h2>🎯 Try This! (Hands-On Challenges)</h2>
+        <div class="challenge-item">
+          <span class="badge">Challenge 1</span>
+          Phase 1 Armor is 36. Find at least three different prime stone spells that can pierce it.
+          <button class="reveal-btn" data-target="ans-1">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-1">
+            $36 = 5 + 31 = 7 + 29 = 13 + 23 = 17 + 19$. Any of these 4 pairs will deal a critical strike!
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 2</span>
+          Why does casting <b>2</b> never work against any phase except a shield of 4?
+          <button class="reveal-btn" data-target="ans-2">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-2">
+            Because $N - 2$ is an odd number. Except for $4 - 2 = 2$, no prime $p$ can pair with 2 to form an even number without violating parity!
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 3</span>
+          Defeat all 4 phases of Ignis without a single miscast!
+          <button class="reveal-btn" data-target="ans-3">💡 Strategy Tip</button>
+          <div class="answer" id="ans-3">
+            For Phase 4 ($N=84$), target twin primes near $84/2 = 42$: primes 41 and 43 sum to $41 + 43 = 84$ in an instant!
+          </div>
+        </div>
+      </div>
+
+      <div class="pedagogy-card rigor">
+        <h2>📐 Energy Conservation & Partition Sieve</h2>
+        <p>In physical models, energy conservation states $E_1 + E_2 = E_{\text{target}}$. In the discrete prime ring, the partition indicator function is defined as:</p>
+        <div class="math-formula">
+          I_N(p, q) = \begin{cases} 1 & \text{if } p, q \in \mathbb{P} \text{ and } p + q = N \\ 0 & \text{otherwise} \end{cases}
+        </div>
+        <p>Since the Goldbach representation count is $g(N) = \frac{1}{2} \sum_{p < N} I_N(p, N-p) \ge 1$ for all even $N \ge 4$, a valid attacking strike is mathematically guaranteed to exist for every shield phase.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <a href="index.html">← Return to 100 Explorations Hub</a> | Goldbach Discovery Labs &copy; 2026
+  </footer>
+
+  <script src="i18n.js"></script>
+  <script src="common.js"></script>
+  <script>
+    const canvas = document.getElementById('battleCanvas');
+    const ctx = canvas.getContext('2d');
+    const hpFill = document.getElementById('hp-fill');
+    const hpValText = document.getElementById('hp-val-text');
+    const bossPhaseText = document.getElementById('boss-phase-text');
+    const stonesContainer = document.getElementById('stones-container');
+    const castFormula = document.getElementById('cast-formula');
+    const pairLabel = document.getElementById('selected-pair-label');
+    const btnCast = document.getElementById('btn-cast-spell');
+    const btnRestart = document.getElementById('btn-restart-battle');
+
+    const phases = [
+      { phase: 1, name: 'Phase 1: Scale Barrier', target: 36 },
+      { phase: 2, name: 'Phase 2: Magma Core Shield', target: 54 },
+      { phase: 3, name: 'Phase 3: Obsidian Armor', target: 70 },
+      { phase: 4, name: 'Phase 4: Dragon Heart Matrix', target: 84 }
+    ];
+
+    const availablePrimes = [3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79];
+
+    let currentPhaseIdx = 0;
+    let selectedStones = [];
+    let particles = [];
+    let projectiles = [];
+    let dragonAnimationAngle = 0;
+    let dragonHitTimer = 0;
+    let isVictory = false;
+
+    function initBattle() {
+      currentPhaseIdx = 0;
+      selectedStones = [];
+      particles = [];
+      projectiles = [];
+      isVictory = false;
+      renderPhase();
+      renderStones();
+    }
+
+    function renderPhase() {
+      if (currentPhaseIdx >= phases.length) {
+        isVictory = true;
+        bossPhaseText.textContent = '🎉 DEFEATED! The Goldbach Dragon bowed before you!';
+        bossPhaseText.style.color = '#34d399';
+        hpValText.textContent = '0 / 0';
+        hpFill.style.width = '0%';
+        GLab.audio.playFanfare();
+        return;
+      }
+
+      const p = phases[currentPhaseIdx];
+      bossPhaseText.textContent = `${p.name} (Target HP: ${p.target})`;
+      bossPhaseText.style.color = '#fbbf24';
+      hpValText.textContent = `${p.target} / ${p.target}`;
+      hpFill.style.width = '100%';
+      clearSelection();
+    }
+
+    function renderStones() {
+      stonesContainer.innerHTML = '';
+      availablePrimes.forEach(prime => {
+        const btn = document.createElement('button');
+        btn.className = 'prime-stone';
+        btn.textContent = prime;
+        btn.dataset.val = prime;
+        btn.addEventListener('click', () => toggleStone(prime, btn));
+        stonesContainer.appendChild(btn);
+      });
+    }
+
+    function toggleStone(val, btn) {
+      const idx = selectedStones.indexOf(val);
+      if (idx !== -1) {
+        selectedStones.splice(idx, 1);
+        btn.classList.remove('selected');
+      } else {
+        if (selectedStones.length >= 2) {
+          // Deselect first
+          const firstVal = selectedStones.shift();
+          const firstBtn = stonesContainer.querySelector(`.prime-stone[data-val="${firstVal}"]`);
+          if (firstBtn) firstBtn.classList.remove('selected');
+        }
+        selectedStones.push(val);
+        btn.classList.add('selected');
+      }
+      updateCastDisplay();
+      GLab.audio.playClick();
+    }
+
+    function clearSelection() {
+      selectedStones = [];
+      stonesContainer.querySelectorAll('.prime-stone').forEach(b => b.classList.remove('selected'));
+      updateCastDisplay();
+    }
+
+    function updateCastDisplay() {
+      if (selectedStones.length === 0) {
+        castFormula.textContent = '? + ? = 0';
+        pairLabel.textContent = 'Selected: None';
+      } else if (selectedStones.length === 1) {
+        castFormula.textContent = `${selectedStones[0]} + ? = ${selectedStones[0]}`;
+        pairLabel.textContent = `Selected: Prime ${selectedStones[0]}`;
+      } else {
+        const sum = selectedStones[0] + selectedStones[1];
+        castFormula.textContent = `${selectedStones[0]} + ${selectedStones[1]} = ${sum}`;
+        pairLabel.textContent = `Selected: Pair (${selectedStones[0]}, ${selectedStones[1]})`;
+      }
+    }
+
+    btnCast.addEventListener('click', () => {
+      if (isVictory) return;
+      if (selectedStones.length !== 2) {
+        alert('Select exactly TWO Prime Stones to cast a Goldbach spell!');
+        return;
+      }
+
+      const p1 = selectedStones[0];
+      const p2 = selectedStones[1];
+      const sum = p1 + p2;
+      const target = phases[currentPhaseIdx].target;
+
+      // Launch projectiles
+      projectiles.push({ x: 80, y: 220, targetX: canvas.width / 2 - 40, targetY: 100, p: p1, color: '#38bdf8' });
+      projectiles.push({ x: 80, y: 240, targetX: canvas.width / 2 + 40, targetY: 100, p: p2, color: '#c084fc' });
+      GLab.audio.playTone(330, 0.2, 'triangle');
+
+      setTimeout(() => {
+        if (sum === target) {
+          // HIT!
+          dragonHitTimer = 30;
+          spawnExplosion(canvas.width / 2, 110, '#34d399', 40);
+          GLab.audio.playSuccess();
+          currentPhaseIdx++;
+          setTimeout(renderPhase, 800);
+        } else {
+          // DEFLECTED
+          spawnExplosion(canvas.width / 2, 110, '#ef4444', 15);
+          GLab.audio.playTone(140, 0.3, 'sawtooth');
+          alert(`Deflected! ${p1} + ${p2} = ${sum} does not pierce the ${target} HP armor!`);
+        }
+      }, 500);
+    });
+
+    function spawnExplosion(x, y, color, count) {
+      for (let i = 0; i < count; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = Math.random() * 5 + 2;
+        particles.push({
+          x, y,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          life: 30,
+          maxLife: 30,
+          color
+        });
+      }
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      dragonAnimationAngle += 0.04;
+
+      // Draw Dragon
+      const dragonX = canvas.width / 2;
+      const dragonY = 110 + Math.sin(dragonAnimationAngle) * 12;
+
+      ctx.save();
+      ctx.translate(dragonX, dragonY);
+
+      if (dragonHitTimer > 0) {
+        ctx.fillStyle = '#ffffff';
+        dragonHitTimer--;
+      } else if (isVictory) {
+        ctx.fillStyle = '#64748b';
+      } else {
+        ctx.fillStyle = '#dc2626';
+      }
+
+      // Wings
+      const wingFlap = Math.cos(dragonAnimationAngle * 1.5) * 20;
+      ctx.beginPath();
+      ctx.moveTo(-30, -10);
+      ctx.lineTo(-110, -50 + wingFlap);
+      ctx.lineTo(-60, 20);
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.moveTo(30, -10);
+      ctx.lineTo(110, -50 + wingFlap);
+      ctx.lineTo(60, 20);
+      ctx.fill();
+
+      // Body & Head
+      ctx.beginPath();
+      ctx.ellipse(0, 0, 45, 30, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Dragon Head
+      ctx.beginPath();
+      ctx.moveTo(-15, -20);
+      ctx.lineTo(0, -60);
+      ctx.lineTo(15, -20);
+      ctx.fill();
+
+      // Eyes
+      ctx.fillStyle = isVictory ? '#334155' : '#fbbf24';
+      ctx.beginPath();
+      ctx.arc(-8, -40, 4, 0, Math.PI * 2);
+      ctx.arc(8, -40, 4, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Armor Shield Ring
+      if (!isVictory) {
+        ctx.strokeStyle = '#38bdf8';
+        ctx.lineWidth = 3;
+        ctx.setLineDash([8, 6]);
+        ctx.beginPath();
+        ctx.arc(0, 0, 75, dragonAnimationAngle, dragonAnimationAngle + Math.PI * 2);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
+
+      ctx.restore();
+
+      // Draw Projectiles
+      for (let i = projectiles.length - 1; i >= 0; i--) {
+        const proj = projectiles[i];
+        proj.x += (proj.targetX - proj.x) * 0.2;
+        proj.y += (proj.targetY - proj.y) * 0.2;
+
+        ctx.fillStyle = proj.color;
+        ctx.beginPath();
+        ctx.arc(proj.x, proj.y, 10, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 10px monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText(proj.p, proj.x, proj.y + 3);
+
+        if (Math.hypot(proj.targetX - proj.x, proj.targetY - proj.y) < 10) {
+          projectiles.splice(i, 1);
+        }
+      }
+
+      // Draw Particles
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.life--;
+
+        ctx.fillStyle = p.color;
+        ctx.globalAlpha = p.life / p.maxLife;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 4, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.globalAlpha = 1;
+
+        if (p.life <= 0) particles.splice(i, 1);
+      }
+
+      requestAnimationFrame(animate);
+    }
+
+    btnRestart.addEventListener('click', initBattle);
+
+    function resizeCanvas() {
+      canvas.width = canvas.parentElement.clientWidth - 32;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    GLab.init({
+      labNum: 60,
+      title: "Boss Battle: Goldbach Dragon",
+      clusterNum: 6,
+      clusterName: "Gamified Puzzles & Detective Cases",
+      prevId: "lab059_trivia_ladder",
+      nextId: "lab061_prime_polynomial_square"
+    });
+
+    initBattle();
+    requestAnimationFrame(animate);
+  </script>
+</body>
+</html>

@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 012: The Multiple-of-6 Prime Bonus Lab - Goldbach Discovery Labs</title>
+  <link rel="stylesheet" href="common.css">
+  <style>
+    .tri-comparison {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .tri-card {
+      background: var(--card-bg-subtle);
+      border: 2px solid var(--card-border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      transition: all 0.25s;
+    }
+    .tri-card.highlight {
+      border-color: var(--primary);
+      background: rgba(56, 189, 248, 0.08);
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.2);
+    }
+    .tri-card .big-val {
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--text);
+    }
+    .tri-card .mod-label {
+      font-size: 13px;
+      color: var(--muted);
+      font-family: monospace;
+      margin-bottom: 8px;
+    }
+    .tri-card .pair-count {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--accent);
+      margin: 8px 0;
+    }
+    .tri-card .pairs-box {
+      width: 100%;
+      background: rgba(0,0,0,0.3);
+      border-radius: var(--radius-sm);
+      padding: 8px;
+      font-size: 12.5px;
+      font-family: monospace;
+      max-height: 140px;
+      overflow-y: auto;
+      text-align: left;
+    }
+    .tri-card .pairs-box div {
+      padding: 2px 0;
+      color: #cbd5e1;
+    }
+    .bonus-meter {
+      background: var(--card-bg-subtle);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-md);
+      padding: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    @media (max-width: 768px) {
+      .tri-comparison {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="lab-nav" class="lab-nav"></div>
+
+  <div class="container">
+    <div class="lab-header">
+      <h1>Lab 012: The Multiple-of-6 Prime Bonus Lab</h1>
+      <p class="hook">Compare three consecutive even numbers: $6k-2$, $6k$, and $6k+2$. Why does the multiple of 6 ALWAYS get approximately twice as many Goldbach pairs as its neighbors?</p>
+    </div>
+
+    <div class="lab-stage">
+      <div class="controls-bar">
+        <div class="control-group">
+          <label for="base-k">Set Factor <i>k</i> ($6k$ Center):</label>
+          <input type="range" id="base-k" min="2" max="25" step="1" value="5">
+          <span style="font-size: 18px; font-weight: 800; color: var(--accent);" id="k-display">k = 5 (Center = 30)</span>
+        </div>
+        <div class="stat-pill" style="margin-left: auto;">
+          <span>Bonus Multiplier:</span>
+          <span class="num" id="bonus-ratio" style="color: var(--green);">~2.0×</span>
+        </div>
+      </div>
+
+      <div class="tri-comparison">
+        <div class="tri-card" id="card-left">
+          <div class="mod-label">N ≡ 4 (mod 6)</div>
+          <div class="big-val" id="val-left">28</div>
+          <div class="pair-count" id="count-left">2 pairs</div>
+          <div style="font-size: 11px; color: var(--danger); margin-bottom: 6px;">❌ Knockout by 3 on (6k+1) primes</div>
+          <div class="pairs-box" id="box-left"></div>
+        </div>
+
+        <div class="tri-card highlight" id="card-center">
+          <div class="mod-label" style="color: var(--primary);">N ≡ 0 (mod 6) [MULTIPLE OF 6]</div>
+          <div class="big-val" style="color: var(--primary);" id="val-center">30</div>
+          <div class="pair-count" style="color: var(--green);" id="count-center">3 pairs</div>
+          <div style="font-size: 11px; color: var(--green); margin-bottom: 6px;">✔ ZERO mod-3 lockout! Full access!</div>
+          <div class="pairs-box" id="box-center"></div>
+        </div>
+
+        <div class="tri-card" id="card-right">
+          <div class="mod-label">N ≡ 2 (mod 6)</div>
+          <div class="big-val" id="val-right">32</div>
+          <div class="pair-count" id="count-right">2 pairs</div>
+          <div style="font-size: 11px; color: var(--danger); margin-bottom: 6px;">❌ Knockout by 3 on (6k-1) primes</div>
+          <div class="pairs-box" id="box-right"></div>
+        </div>
+      </div>
+
+      <div class="bonus-meter">
+        <div style="text-align: center;">
+          <div style="font-size: 12px; color: var(--muted); text-transform: uppercase;">Average Non-Multiple of 6</div>
+          <div style="font-size: 24px; font-weight: 800; color: #94a3b8;" id="avg-non6">2.0 pairs</div>
+        </div>
+        <div style="font-size: 32px; font-weight: 800; color: var(--accent);">VS</div>
+        <div style="text-align: center;">
+          <div style="font-size: 12px; color: var(--muted); text-transform: uppercase;">Multiple of 6 (6k)</div>
+          <div style="font-size: 24px; font-weight: 800; color: var(--green);" id="cur-6k">3.0 pairs</div>
+        </div>
+        <div style="text-align: center;">
+          <div style="font-size: 12px; color: var(--muted); text-transform: uppercase;">Empirical Bonus Factor</div>
+          <div style="font-size: 24px; font-weight: 800; color: var(--primary);" id="calc-bonus">1.50×</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pedagogy-grid">
+      <div class="pedagogy-card story">
+        <h2>✨ Intuitive Concept: The Modulo 3 Massacre</h2>
+        <p>Why do numbers divisible by 6 get so many more pairs than their immediate neighbors?</p>
+        <p>Because all odd primes $>3$ have remainders 1 or 5 modulo 6 (which means remainders 1 or 2 mod 3). When you test candidate prime $p$ against target $N$:</p>
+        <ul>
+          <li>If $N \equiv 2 \pmod 6$: Any prime $p \equiv 5 \pmod 6$ produces a complement $N - p \equiv 2 - 5 \equiv -3 \equiv 0 \pmod 3$. <b>It is divisible by 3 and instantly disqualified!</b></li>
+          <li>If $N \equiv 4 \pmod 6$: Any prime $p \equiv 1 \pmod 6$ produces $N - p \equiv 4 - 1 \equiv 3 \equiv 0 \pmod 3$. <b>Disqualified by 3!</b></li>
+          <li>If $N \equiv 0 \pmod 6$: $(1) + (5) = 6 \equiv 0$. <b>Neither group is divisible by 3! Both sets of primes survive!</b></li>
+        </ul>
+        <p>Multiples of 6 escape the modulo 3 massacre entirely, receiving twice the prime candidates!</p>
+      </div>
+
+      <div class="pedagogy-card challenge">
+        <h2>🎯 Try This! (Hands-On Challenges)</h2>
+        <div class="challenge-item">
+          <span class="badge">Challenge 1</span>
+          Set $k = 10$ ($6k = 60$). Compare the pairs of $58$, $60$, and $62$.
+          <button class="reveal-btn" data-target="ans-1">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-1">
+            • $58$ has 4 pairs.<br>
+            • $60$ has <b>6 pairs</b>!<br>
+            • $62$ has 3 pairs.<br>
+            The average of neighbors is $(4+3)/2 = 3.5$, while 60 has 6 pairs (a bonus factor of $6 / 3.5 \approx 1.71\times$!).
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 2</span>
+          What happens when $k$ itself is divisible by 5 (like $k=5 \implies 30$ or $k=10 \implies 60$)?
+          <button class="reveal-btn" data-target="ans-2">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-2">
+            It gets a <b>Double Bonus</b>! Because $N$ is divisible by 2, 3, AND 5 ($30k$), it escapes lockout from 2, from 3, AND from 5, boosting its pair count even higher!
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 3</span>
+          Calculate the theoretical limit of this bonus factor using the Hardy-Littlewood formula.
+          <button class="reveal-btn" data-target="ans-3">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-3">
+            For the prime $p=3$, the Euler factor in the singular series is $\frac{3-1}{3-2} = \frac{2}{1} = 2$. Multiples of 3 have this factor, while non-multiples of 3 do not. The theoretical bonus is exactly <b>2.000×</b>!
+          </div>
+        </div>
+      </div>
+
+      <div class="pedagogy-card rigor">
+        <h2>📐 Mathematical Rigor & Formal Definition</h2>
+        <p>Let $\mathfrak{S}(N)$ be the Hardy-Littlewood singular series for binary Goldbach:</p>
+        <div class="math-formula">
+          \mathfrak{S}(N) = 2 C_2 \prod_{p \mid N, p > 2} \frac{p-1}{p-2}
+        </div>
+        <p>For $N \equiv 0 \pmod 6$, the prime $p=3$ divides $N$, so the product includes the factor:</p>
+        <div class="math-formula">
+          \frac{3-1}{3-2} = 2
+        </div>
+        <p>For $N \not\equiv 0 \pmod 6$, $3 \nmid N$, so this factor is absent (value 1). Consequently, the asymptotic ratio between multiples of 6 and generic even numbers is strictly 2:1.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <a href="index.html">← Return to 100 Explorations Hub</a> | Goldbach Discovery Labs &copy; 2026
+  </footer>
+
+  <script src="i18n.js"></script>
+  <script src="common.js"></script>
+  <script>
+    const slider = document.getElementById('base-k');
+    const kDisplay = document.getElementById('k-display');
+    const valLeft = document.getElementById('val-left');
+    const valCenter = document.getElementById('val-center');
+    const valRight = document.getElementById('val-right');
+    const countLeft = document.getElementById('count-left');
+    const countCenter = document.getElementById('count-center');
+    const countRight = document.getElementById('count-right');
+    const boxLeft = document.getElementById('box-left');
+    const boxCenter = document.getElementById('box-center');
+    const boxRight = document.getElementById('box-right');
+    const avgNon6 = document.getElementById('avg-non6');
+    const cur6k = document.getElementById('cur-6k');
+    const calcBonus = document.getElementById('calc-bonus');
+
+    function updateComparison() {
+      const k = parseInt(slider.value);
+      const centerN = 6 * k;
+      const leftN = centerN - 2;
+      const rightN = centerN + 2;
+
+      kDisplay.textContent = `k = ${k} (Center = ${centerN})`;
+
+      valLeft.textContent = leftN;
+      valCenter.textContent = centerN;
+      valRight.textContent = rightN;
+
+      const pairsLeft = GLab.getGoldbachPairs(leftN);
+      const pairsCenter = GLab.getGoldbachPairs(centerN);
+      const pairsRight = GLab.getGoldbachPairs(rightN);
+
+      countLeft.textContent = `${pairsLeft.length} pairs`;
+      countCenter.textContent = `${pairsCenter.length} pairs`;
+      countRight.textContent = `${pairsRight.length} pairs`;
+
+      boxLeft.innerHTML = pairsLeft.map(p => `<div>${p[0]} + ${p[1]} = ${leftN}</div>`).join('');
+      boxCenter.innerHTML = pairsCenter.map(p => `<div>${p[0]} + ${p[1]} = ${centerN}</div>`).join('');
+      boxRight.innerHTML = pairsRight.map(p => `<div>${p[0]} + ${p[1]} = ${rightN}</div>`).join('');
+
+      const avg = (pairsLeft.length + pairsRight.length) / 2;
+      avgNon6.textContent = `${avg.toFixed(1)} pairs`;
+      cur6k.textContent = `${pairsCenter.length} pairs`;
+
+      const ratio = avg > 0 ? (pairsCenter.length / avg).toFixed(2) : '1.00';
+      calcBonus.textContent = `${ratio}×`;
+    }
+
+    slider.addEventListener('input', () => {
+      updateComparison();
+      GLab.audio.playTone(350 + parseInt(slider.value) * 15, 0.08, 'triangle');
+    });
+
+    GLab.init({
+      labNum: 12,
+      title: "The Multiple-of-6 Prime Bonus Lab",
+      clusterNum: 2,
+      clusterName: "Modular Arithmetic & The Power of 6",
+      prevId: "lab011_mod6_gears",
+      nextId: "lab013_primorial_oasis"
+    });
+
+    updateComparison();
+  </script>
+</body>
+</html>

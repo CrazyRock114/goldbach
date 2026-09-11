@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 054: Goldbach Mini-Sudoku - Goldbach Discovery Labs</title>
+  <link rel="stylesheet" href="common.css">
+  <style>
+    .sudoku-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 24px;
+      flex-wrap: wrap;
+      margin: 20px 0;
+    }
+    .grid-wrapper {
+      background: var(--card-bg-subtle);
+      border: 2px solid var(--card-border);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      display: inline-block;
+    }
+    .sudoku-table {
+      border-collapse: collapse;
+      margin: 0 auto;
+    }
+    .sudoku-cell {
+      width: 54px;
+      height: 54px;
+      border: 1px solid #475569;
+      text-align: center;
+      font-size: 22px;
+      font-weight: 800;
+      font-family: monospace;
+      color: #38bdf8;
+      background: #0f172a;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.15s ease;
+    }
+    .sudoku-cell:hover {
+      background: #1e293b;
+    }
+    .sudoku-cell.selected {
+      background: #312e81 !important;
+      outline: 2px solid #818cf8;
+    }
+    .sudoku-cell.fixed {
+      color: #f8fafc;
+      background: #1e293b;
+      cursor: default;
+    }
+    .sudoku-cell.error {
+      background: #881337 !important;
+      color: #fca5a5 !important;
+    }
+    .target-header, .target-row-label {
+      font-size: 13px;
+      font-weight: 800;
+      color: #fbbf24;
+      text-align: center;
+      padding: 6px;
+    }
+    .keypad {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      max-width: 220px;
+    }
+    .keypad-btn {
+      background: #1e293b;
+      border: 1px solid #475569;
+      color: #f8fafc;
+      font-size: 20px;
+      font-weight: 800;
+      padding: 12px 0;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: center;
+    }
+    .keypad-btn:hover {
+      background: #334155;
+      border-color: #38bdf8;
+    }
+    .keypad-btn.action {
+      font-size: 13px;
+      background: #334155;
+      color: #94a3b8;
+    }
+  </style>
+</head>
+<body>
+  <div id="lab-nav" class="lab-nav"></div>
+
+  <div class="container">
+    <div class="lab-header">
+      <h1>Lab 054: Goldbach Mini-Sudoku</h1>
+      <p class="hook">Fill the 4×4 grid exclusively with <b>Prime Numbers</b> {2, 3, 5, 7, 11, 13} so that every 2×1 block or row pair sums to the designated Goldbach even target!</p>
+    </div>
+
+    <div class="lab-stage">
+      <div class="controls-bar">
+        <div class="control-group">
+          <label for="select-puzzle">Puzzle Selection:</label>
+          <select id="select-puzzle" class="btn btn-secondary btn-sm" style="background:#1e293b; color:var(--fg); border:1px solid var(--card-border);">
+            <option value="1">Puzzle 1: The Twin Bridges (Pairs summing to 12 & 16)</option>
+            <option value="2">Puzzle 2: The Hexagonal Sums (Pairs summing to 10, 14, 18)</option>
+            <option value="3">Puzzle 3: The Primorial Target (Pairs summing to 20 & 24)</option>
+          </select>
+        </div>
+        <button class="btn btn-primary btn-sm" id="btn-check">✔ Check Grid</button>
+        <button class="btn btn-secondary btn-sm" id="btn-hint">💡 Hint</button>
+        <button class="btn btn-secondary btn-sm" id="btn-clear">🔄 Reset</button>
+      </div>
+
+      <div class="sudoku-container">
+        <div class="grid-wrapper">
+          <table class="sudoku-table" id="sudoku-table"></table>
+        </div>
+
+        <div>
+          <div style="font-size: 12px; color: var(--muted); text-transform: uppercase; margin-bottom: 8px; text-align: center;">Prime Keypad</div>
+          <div class="keypad">
+            <button class="keypad-btn" data-val="2">2</button>
+            <button class="keypad-btn" data-val="3">3</button>
+            <button class="keypad-btn" data-val="5">5</button>
+            <button class="keypad-btn" data-val="7">7</button>
+            <button class="keypad-btn" data-val="11">11</button>
+            <button class="keypad-btn" data-val="13">13</button>
+            <button class="keypad-btn" data-val="17">17</button>
+            <button class="keypad-btn" data-val="19">19</button>
+            <button class="keypad-btn action" id="btn-erase">CLEAR</button>
+          </div>
+          <div id="grid-status" style="margin-top: 14px; font-weight: bold; text-align: center; font-size: 14px; min-height: 24px;"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pedagogy-grid">
+      <div class="pedagogy-card story">
+        <h2>✨ Prime Grid Constraints</h2>
+        <p>In standard Sudoku, digits 1 through 9 are constrained purely by permutation. In <b>Goldbach Sudoku</b>, numbers must be strictly prime and meet <b>additive constraints</b>.</p>
+        <p>For example, if a 2-cell block must sum to <b>16</b>, and you know both cells are prime, the only possible unordered pairs from our prime bank are $(3, 13)$ and $(5, 11)$. A single given digit immediately forces its partner by the involution $q = N - p$!</p>
+        <p>Deductive reasoning in this puzzle exercises both linear Diophantine constraints and prime pattern recognition.</p>
+      </div>
+
+      <div class="pedagogy-card challenge">
+        <h2>🎯 Try This! (Hands-On Challenges)</h2>
+        <div class="challenge-item">
+          <span class="badge">Challenge 1</span>
+          If a 2-cell row target is <b>12</b> and one cell contains <b>5</b>, what must the other cell contain?
+          <button class="reveal-btn" data-target="ans-1">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-1">
+            $12 - 5 = \mathbf{7}$. Since 7 is prime, $(5, 7)$ is the only solution containing 5!
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 2</span>
+          Can <b>2</b> be placed in any block whose target sum is <b>14</b>?
+          <button class="reveal-btn" data-target="ans-2">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-2">
+            No! Because $14 - 2 = 12$, which is composite ($2^2 \times 3$). Only odd primes can sum to even numbers $\ge 6$!
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 3</span>
+          Solve Puzzle 3 with zero error checks.
+          <button class="reveal-btn" data-target="ans-3">💡 Strategy Tip</button>
+          <div class="answer" id="ans-3">
+            Start with the cells that intersect both a row target of 24 and a column target of 20. The intersection pinpoints the single prime shared by both decompositions.
+          </div>
+        </div>
+      </div>
+
+      <div class="pedagogy-card rigor">
+        <h2>📐 Additive Graph Embedding & Coloring</h2>
+        <p>Let $G = (V, E)$ be a bipartite constraint graph where vertices $v_i \in V$ represent grid cells and edges $e = (v_i, v_j) \in E$ enforce the equation:</p>
+        <div class="math-formula">
+          x_i + x_j = N_e, \quad x_i, x_j \in \mathbb{P}
+        </div>
+        <p>Since the Goldbach set of each even target $|S(N_e)|$ is finite and small for small $N_e$, the constraint satisfaction problem (CSP) possesses unique deterministic propagation cascades akin to exact cover algorithms.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <a href="index.html">← Return to 100 Explorations Hub</a> | Goldbach Discovery Labs &copy; 2026
+  </footer>
+
+  <script src="i18n.js"></script>
+  <script src="common.js"></script>
+  <script>
+    const table = document.getElementById('sudoku-table');
+    const puzzleSelect = document.getElementById('select-puzzle');
+    const btnCheck = document.getElementById('btn-check');
+    const btnHint = document.getElementById('btn-hint');
+    const btnClear = document.getElementById('btn-clear');
+    const btnErase = document.getElementById('btn-erase');
+    const gridStatus = document.getElementById('grid-status');
+
+    let selectedCell = null;
+
+    const puzzles = {
+      1: {
+        size: 4,
+        rowTargets: [12, 16, 12, 16],
+        colTargets: [12, 16, 12, 16],
+        initial: [
+          [5, null, null, 11],
+          [null, 13, null, null],
+          [null, null, 7, null],
+          [7, null, null, 5]
+        ],
+        solution: [
+          [5, 7, 5, 11],
+          [7, 13, 7, 5],
+          [5, 7, 7, 11],
+          [7, 11, 5, 5]
+        ]
+      },
+      2: {
+        size: 4,
+        rowTargets: [10, 14, 18, 14],
+        colTargets: [10, 14, 18, 14],
+        initial: [
+          [3, null, null, 7],
+          [null, 11, null, null],
+          [null, null, 13, null],
+          [7, null, null, 3]
+        ],
+        solution: [
+          [3, 7, 3, 7],
+          [7, 11, 7, 7],
+          [5, 7, 13, 5],
+          [7, 7, 5, 3]
+        ]
+      },
+      3: {
+        size: 4,
+        rowTargets: [20, 24, 20, 24],
+        colTargets: [20, 24, 20, 24],
+        initial: [
+          [7, null, null, 13],
+          [null, 11, null, null],
+          [null, null, 17, null],
+          [13, null, null, 7]
+        ],
+        solution: [
+          [7, 13, 7, 13],
+          [13, 11, 13, 11],
+          [3, 17, 3, 17],
+          [13, 7, 13, 7]
+        ]
+      }
+    };
+
+    let currentPuzzle = puzzles[1];
+    let userGrid = [];
+
+    function initPuzzle() {
+      const pId = puzzleSelect.value;
+      currentPuzzle = puzzles[pId];
+      userGrid = JSON.parse(JSON.stringify(currentPuzzle.initial));
+      selectedCell = null;
+      gridStatus.textContent = '';
+      renderGrid();
+    }
+
+    function renderGrid() {
+      table.innerHTML = '';
+      const size = currentPuzzle.size;
+
+      // Header row with column targets
+      const headerRow = document.createElement('tr');
+      const cornerTh = document.createElement('th');
+      headerRow.appendChild(cornerTh);
+      for (let c = 0; c < size; c++) {
+        const th = document.createElement('th');
+        th.className = 'target-header';
+        th.textContent = `∑=${currentPuzzle.colTargets[c]}`;
+        headerRow.appendChild(th);
+      }
+      table.appendChild(headerRow);
+
+      // Rows
+      for (let r = 0; r < size; r++) {
+        const tr = document.createElement('tr');
+        
+        // Row target label
+        const rowLabel = document.createElement('td');
+        rowLabel.className = 'target-row-label';
+        rowLabel.textContent = `∑=${currentPuzzle.rowTargets[r]}`;
+        tr.appendChild(rowLabel);
+
+        for (let c = 0; c < size; c++) {
+          const td = document.createElement('td');
+          td.className = 'sudoku-cell';
+          const val = userGrid[r][c];
+          if (val !== null) td.textContent = val;
+
+          const isFixed = currentPuzzle.initial[r][c] !== null;
+          if (isFixed) {
+            td.classList.add('fixed');
+          } else {
+            td.addEventListener('click', () => selectCell(td, r, c));
+          }
+
+          tr.appendChild(td);
+        }
+        table.appendChild(tr);
+      }
+    }
+
+    function selectCell(td, r, c) {
+      document.querySelectorAll('.sudoku-cell').forEach(el => el.classList.remove('selected'));
+      selectedCell = { td, r, c };
+      td.classList.add('selected');
+      GLab.audio.playClick();
+    }
+
+    document.querySelectorAll('.keypad-btn[data-val]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (!selectedCell) return;
+        const val = parseInt(btn.dataset.val);
+        userGrid[selectedCell.r][selectedCell.c] = val;
+        selectedCell.td.textContent = val;
+        selectedCell.td.classList.remove('error');
+        GLab.audio.playClick();
+      });
+    });
+
+    btnErase.addEventListener('click', () => {
+      if (!selectedCell) return;
+      userGrid[selectedCell.r][selectedCell.c] = null;
+      selectedCell.td.textContent = '';
+      selectedCell.td.classList.remove('error');
+      GLab.audio.playClick();
+    });
+
+    btnCheck.addEventListener('click', () => {
+      let allCorrect = true;
+      let allFilled = true;
+      const size = currentPuzzle.size;
+
+      const cells = table.querySelectorAll('.sudoku-cell');
+      cells.forEach(c => c.classList.remove('error'));
+
+      for (let r = 0; r < size; r++) {
+        let rowSum = 0;
+        for (let c = 0; c < size; c++) {
+          const val = userGrid[r][c];
+          if (val === null) {
+            allFilled = false;
+          } else {
+            rowSum += val;
+          }
+        }
+      }
+
+      // Check against solution
+      for (let r = 0; r < size; r++) {
+        for (let c = 0; c < size; c++) {
+          const val = userGrid[r][c];
+          if (val === null) {
+            allFilled = false;
+          } else if (val !== currentPuzzle.solution[r][c]) {
+            allCorrect = false;
+            // Highlight error
+            const cellElem = table.rows[r + 1].cells[c + 1];
+            cellElem.classList.add('error');
+          }
+        }
+      }
+
+      if (!allFilled) {
+        gridStatus.textContent = '⚠️ Some cells are still empty!';
+        gridStatus.style.color = '#f59e0b';
+        GLab.audio.playTone(220, 0.2, 'triangle');
+      } else if (allCorrect) {
+        gridStatus.textContent = '🎉 PERFECT! All Goldbach constraints satisfied!';
+        gridStatus.style.color = '#34d399';
+        GLab.audio.playFanfare();
+      } else {
+        gridStatus.textContent = '❌ Red cells have incorrect prime values.';
+        gridStatus.style.color = '#ef4444';
+        GLab.audio.playTone(160, 0.25, 'sawtooth');
+      }
+    });
+
+    btnHint.addEventListener('click', () => {
+      const size = currentPuzzle.size;
+      for (let r = 0; r < size; r++) {
+        for (let c = 0; c < size; c++) {
+          if (userGrid[r][c] === null || userGrid[r][c] !== currentPuzzle.solution[r][c]) {
+            userGrid[r][c] = currentPuzzle.solution[r][c];
+            renderGrid();
+            gridStatus.textContent = `💡 Revealed cell at row ${r+1}, col ${c+1}!`;
+            gridStatus.style.color = '#38bdf8';
+            GLab.audio.playSuccess();
+            return;
+          }
+        }
+      }
+    });
+
+    btnClear.addEventListener('click', initPuzzle);
+    puzzleSelect.addEventListener('change', initPuzzle);
+
+    GLab.init({
+      labNum: 54,
+      title: "Goldbach Mini-Sudoku",
+      clusterNum: 6,
+      clusterName: "Gamified Puzzles & Detective Cases",
+      prevId: "lab053_composite_maze",
+      nextId: "lab055_cross_number"
+    });
+
+    initPuzzle();
+  </script>
+</body>
+</html>

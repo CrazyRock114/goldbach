@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 087: Farey Sequences & Ford Circles - Goldbach Discovery Labs</title>
+  <link rel="stylesheet" href="common.css">
+  <style>
+    .ford-stage {
+      height: 380px;
+      position: relative;
+    }
+    .circles-legend {
+      display: flex;
+      justify-content: space-around;
+      background: var(--card-bg-subtle);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-sm);
+      padding: 10px 16px;
+      margin-top: 14px;
+      flex-wrap: wrap;
+      gap: 10px;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <div id="lab-nav" class="lab-nav"></div>
+
+  <div class="container">
+    <div class="lab-header">
+      <h1>Lab 087: Farey Sequences & Ford Circles for Goldbach Pairs</h1>
+      <p class="hook">Lester R. Ford discovered that fractions $p/q$ can be represented as tangent bubbles resting on the number line! For any Goldbach partition $p + q = N$, the fractions $p/N$ and $q/N$ produce twin Ford circles mirrored across the center $1/2$.</p>
+    </div>
+
+    <div class="lab-stage">
+      <div class="controls-bar">
+        <div class="control-group">
+          <label for="select-n">Target Even <i>N</i>:</label>
+          <select id="select-n" class="btn btn-secondary btn-sm" style="background:#1e293b; color:var(--fg); border:1px solid var(--card-border);">
+            <option value="12">N = 12 (Pairs: 5+7)</option>
+            <option value="20">N = 20 (Pairs: 3+17, 7+13)</option>
+            <option value="24" selected>N = 24 (Pairs: 5+19, 7+17, 11+13)</option>
+            <option value="30">N = 30 (Pairs: 7+23, 11+19, 13+17)</option>
+          </select>
+        </div>
+        <div class="stat-pill" style="margin-left: auto;">
+          <span>Midpoint Symmetry:</span>
+          <span class="num" style="color: #fbbf24;">Axis x = 1/2</span>
+        </div>
+      </div>
+
+      <div class="canvas-container ford-stage">
+        <canvas id="fordCanvas" height="380"></canvas>
+      </div>
+
+      <div class="circles-legend">
+        <div><span style="color: #fbbf24; font-weight: bold;">● Yellow:</span> Central Midpoint Circle (1/2)</div>
+        <div><span style="color: #38bdf8; font-weight: bold;">● Blue / Purple:</span> Twin Goldbach Partner Circles (p/N & q/N)</div>
+        <div><span style="color: #64748b; font-weight: bold;">● Gray:</span> Standard Farey Intermediate Circles</div>
+      </div>
+    </div>
+
+    <div class="pedagogy-grid">
+      <div class="pedagogy-card story">
+        <h2>✨ Bubbles of Number Theory</h2>
+        <p>In 1938, American mathematician <b>Lester R. Ford</b> defined a geometric representation of fractions: for any reduced fraction $h/k$, draw a circle tangent to the horizontal axis at $x = h/k$ with diameter $1/k^2$.</p>
+        <p>Ford discovered a breathtaking geometric truth: <b>no two Ford circles ever overlap</b>! They are either completely disjoint, or they touch each other with perfect tangency if and only if $|h_1 k_2 - h_2 k_1| = 1$ (adjacent terms in a Farey sequence).</p>
+        <p>In Goldbach's conjecture, decomposing $N = p + q$ splits the unit interval $[0, 1]$ into two symmetric halves: $p/N + q/N = 1$. The twin circles for $p/N$ and $q/N$ have identical radii and sit in reflection symmetry on either side of the majestic central circle at $1/2$!</p>
+      </div>
+
+      <div class="pedagogy-card challenge">
+        <h2>🎯 Try This! (Hands-On Challenges)</h2>
+        <div class="challenge-item">
+          <span class="badge">Challenge 1</span>
+          Why does the circle at $x = 1/2$ have such a massive radius compared to $p/N$?
+          <button class="reveal-btn" data-target="ans-1">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-1">
+            Radius is $r = 1 / (2 k^2)$. For $1/2$, the denominator is $k = 2$, so radius is $1/8 = 0.125$. For $p/24$, the denominator is 24, so radius is $1 / (2 \times 576) \approx 0.00086$ (much smaller!).
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 2</span>
+          Verify that twin Goldbach circles $(p/N, q/N)$ always have the exact same size.
+          <button class="reveal-btn" data-target="ans-2">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-2">
+            Both fractions share the exact same reduced denominator (or identical factor of $N$). Since radius depends strictly on denominator $k$, their circles are mirror-image twins!
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 3</span>
+          How do Ford circles connect to the Hardy-Littlewood circle method?
+          <button class="reveal-btn" data-target="ans-3">💡 Rademacher's Contour</button>
+          <div class="answer" id="ans-3">
+            In 1937, Hans Rademacher used the upper boundaries of Ford circles as the exact path of integration to solve partition asymptotic formulas, unifying circle method major arcs with hyperbolic geometry!
+          </div>
+        </div>
+      </div>
+
+      <div class="pedagogy-card rigor">
+        <h2>📐 Ford Tangency Criterion & Farey Neighbors</h2>
+        <p>Let $C(h_1/k_1)$ and $C(h_2/k_2)$ be two Ford circles. The squared distance between their centers is:</p>
+        <div class="math-formula">
+          d^2 = \left(\frac{h_1}{k_1} - \frac{h_2}{k_2}\right)^2 + \left(\frac{1}{2k_1^2} - \frac{1}{2k_2^2}\right)^2 = (r_1 + r_2)^2 + \frac{(h_1 k_2 - h_2 k_1)^2 - 1}{k_1^2 k_2^2}
+        </div>
+        <p>Hence $d = r_1 + r_2 \iff |h_1 k_2 - h_2 k_1| = 1$. The boundary of all mutually tangent Ford circles tiles the hyperbolic upper half-plane under the modular group $\operatorname{PSL}_2(\mathbb{Z})$.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <a href="index.html">← Return to 100 Explorations Hub</a> | Goldbach Discovery Labs &copy; 2026
+  </footer>
+
+  <script src="i18n.js"></script>
+  <script src="common.js"></script>
+  <script>
+    const selectN = document.getElementById('select-n');
+    const canvas = document.getElementById('fordCanvas');
+    const ctx = canvas.getContext('2d');
+
+    function gcd(a, b) {
+      while (b > 0) {
+        const t = a % b;
+        a = b;
+        b = t;
+      }
+      return a;
+    }
+
+    function render() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const N = parseInt(selectN.value);
+      const pairs = GLab.getGoldbachPairs(N);
+
+      const padding = 40;
+      const w = canvas.width - padding * 2;
+      const groundY = canvas.height - 40;
+      const scaleY = (canvas.height - 80) / 0.5; // map height [0, 0.5]
+
+      // Draw Ground Axis
+      ctx.strokeStyle = '#475569';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(padding, groundY);
+      ctx.lineTo(canvas.width - padding, groundY);
+      ctx.stroke();
+
+      // Draw Farey circles up to denominator 8
+      for (let q = 1; q <= 8; q++) {
+        for (let p = 0; p <= q; p++) {
+          if (gcd(p, q) === 1) {
+            const frac = p / q;
+            const r = 1 / (2 * q * q);
+            const cx = padding + frac * w;
+            const cy = groundY - r * scaleY;
+            const screenR = r * scaleY;
+
+            ctx.strokeStyle = '#334155';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.arc(cx, cy, screenR, 0, Math.PI * 2);
+            ctx.stroke();
+          }
+        }
+      }
+
+      // Draw Central Midpoint Circle: 1/2
+      const rHalf = 1 / 8; // 1/(2*4)
+      const cxHalf = padding + 0.5 * w;
+      const cyHalf = groundY - rHalf * scaleY;
+      const srHalf = rHalf * scaleY;
+
+      ctx.fillStyle = 'rgba(251, 191, 36, 0.2)';
+      ctx.beginPath();
+      ctx.arc(cxHalf, cyHalf, srHalf, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#fbbf24';
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+
+      ctx.fillStyle = '#fbbf24';
+      ctx.font = 'bold 12px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText('1/2', cxHalf, cyHalf);
+
+      // Draw Goldbach Circles for p/N and q/N
+      pairs.forEach((pair, idx) => {
+        const p1 = pair[0];
+        const p2 = pair[1];
+
+        [p1, p2].forEach((primeVal, pIdx) => {
+          const g = gcd(primeVal, N);
+          const num = primeVal / g;
+          const den = N / g;
+          const frac = primeVal / N;
+
+          // Artificial visual boost for tiny radii so student can clearly observe them
+          const visualR = Math.max(0.02, 1 / (2 * den * den) * 4);
+          const cx = padding + frac * w;
+          const cy = groundY - visualR * scaleY;
+          const sr = visualR * scaleY;
+
+          const color = (pIdx === 0) ? '#38bdf8' : '#c084fc';
+          ctx.fillStyle = (pIdx === 0) ? 'rgba(56, 189, 248, 0.25)' : 'rgba(192, 132, 252, 0.25)';
+          ctx.beginPath();
+          ctx.arc(cx, cy, sr, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.strokeStyle = color;
+          ctx.lineWidth = 2;
+          ctx.stroke();
+
+          ctx.fillStyle = '#f8fafc';
+          ctx.font = '10px monospace';
+          ctx.textAlign = 'center';
+          ctx.fillText(`${primeVal}/${N}`, cx, cy);
+        });
+      });
+
+      // Axis ticks
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = '11px monospace';
+      ctx.fillText('0', padding, groundY + 16);
+      ctx.fillText('1', canvas.width - padding, groundY + 16);
+    }
+
+    function resizeCanvas() {
+      canvas.width = canvas.parentElement.clientWidth;
+      render();
+    }
+    window.addEventListener('resize', resizeCanvas);
+
+    selectN.addEventListener('change', () => {
+      render();
+      GLab.audio.playClick();
+    });
+
+    GLab.init({
+      labNum: 87,
+      title: "Farey & Ford Circles",
+      clusterNum: 9,
+      clusterName: "Advanced Number Theory & Modular Forms",
+      prevId: "lab086_continued_fractions",
+      nextId: "lab088_p_adic_trees"
+    });
+
+    resizeCanvas();
+  </script>
+</body>
+</html>

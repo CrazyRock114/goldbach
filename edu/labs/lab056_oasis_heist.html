@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 056: Case of the Oasis Heist - Goldbach Discovery Labs</title>
+  <link rel="stylesheet" href="common.css">
+  <style>
+    .detective-desk {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin: 20px 0;
+    }
+    @media (max-width: 768px) {
+      .detective-desk {
+        grid-template-columns: 1fr;
+      }
+    }
+    .case-file {
+      background: #0f172a;
+      border: 2px solid #334155;
+      border-radius: var(--radius-sm);
+      padding: 18px;
+    }
+    .case-stamp {
+      display: inline-block;
+      border: 2px solid #ef4444;
+      color: #ef4444;
+      font-weight: 900;
+      font-size: 12px;
+      letter-spacing: 2px;
+      padding: 2px 8px;
+      transform: rotate(-4deg);
+      margin-bottom: 12px;
+      text-transform: uppercase;
+    }
+    .suspect-card {
+      background: #1e293b;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 12px;
+      margin-top: 12px;
+    }
+    .clue-list {
+      list-style: none;
+      padding: 0;
+      margin: 10px 0;
+    }
+    .clue-list li {
+      padding: 8px 12px;
+      background: #1e293b;
+      border-left: 3px solid #38bdf8;
+      border-radius: 4px;
+      margin-bottom: 8px;
+      font-size: 13px;
+    }
+    .safe-inspector {
+      background: #131d31;
+      border: 2px solid #2563eb;
+      border-radius: var(--radius-sm);
+      padding: 18px;
+    }
+    .safe-dial {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin: 20px 0;
+    }
+    .safe-code {
+      font-size: 40px;
+      font-weight: 900;
+      color: #fbbf24;
+      font-family: monospace;
+      letter-spacing: 4px;
+      background: #090d16;
+      padding: 6px 24px;
+      border-radius: 8px;
+      border: 2px solid #d97706;
+      box-shadow: inset 0 2px 10px rgba(0,0,0,0.6);
+    }
+    .metric-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <div id="lab-nav" class="lab-nav"></div>
+
+  <div class="container">
+    <div class="lab-header">
+      <h1>Lab 056: Case of the Oasis Heist</h1>
+      <p class="hook">The elusive "Primorial Phantom" has burgled three major vaults! The detective bureau discovered a secret pattern: the thief <i>only</i> strikes vaults whose combination number possesses an extreme <b>Goldbach Richness Score</b>. Deduce their next target!</p>
+    </div>
+
+    <div class="lab-stage">
+      <div class="detective-desk">
+        <div class="case-file">
+          <div class="case-stamp">TOP SECRET DOSSIER</div>
+          <h3 style="color: #f8fafc; margin-bottom: 6px;">Case #1742: The Primorial Phantom</h3>
+          <p style="color: var(--muted); font-size: 13px; line-height: 1.5;">
+            Inspector Goldbach noticed that all targeted bank vaults share a hyper-abundant number of prime pair decompositions. Standard even numbers have few pairs, but primorial multiples ($2 \times 3 \times 5 = 30$) create a massive statistical spike!
+          </p>
+
+          <h4 style="color: #38bdf8; font-size: 13px; margin-top: 14px; text-transform: uppercase;">Crime Scene Evidence:</h4>
+          <ul class="clue-list">
+            <li><b>Vault 1 Robbed:</b> Combination was <b>60</b> ($g(60) = 6$ pairs, $2 \cdot 3 \cdot 5 \mid 60$).</li>
+            <li><b>Vault 2 Robbed:</b> Combination was <b>90</b> ($g(90) = 9$ pairs, $2 \cdot 3 \cdot 5 \mid 90$).</li>
+            <li><b>Vault 3 Robbed:</b> Combination was <b>120</b> ($g(120) = 12$ pairs, $2 \cdot 3 \cdot 5 \mid 120$).</li>
+          </ul>
+
+          <div class="suspect-card">
+            <div style="font-weight: 800; color: #fbbf24; font-size: 14px;">Next Four Suspect Vaults:</div>
+            <p style="font-size: 12px; color: var(--muted); margin: 4px 0 10px 0;">Which vault will the Phantom hit tonight?</p>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px;">
+              <button class="btn btn-secondary btn-sm vault-btn" data-n="128">Vault A: 128 (Power of 2)</button>
+              <button class="btn btn-secondary btn-sm vault-btn" data-n="150">Vault B: 150 (Multiple of 30)</button>
+              <button class="btn btn-secondary btn-sm vault-btn" data-n="142">Vault C: 142 (Semiprime 2x71)</button>
+              <button class="btn btn-secondary btn-sm vault-btn" data-n="146">Vault D: 146 (Semiprime 2x73)</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="safe-inspector">
+          <h3 style="color: #60a5fa; margin-bottom: 6px;">🔬 Forensic Safe Analyzer</h3>
+          <p style="font-size: 12px; color: var(--muted);">Inspect any candidate combination to reveal its prime anatomy and richness coefficient.</p>
+
+          <div class="safe-dial">
+            <div class="safe-code" id="safe-n">150</div>
+          </div>
+
+          <div style="background: rgba(0,0,0,0.3); border-radius: 8px; padding: 12px; margin-bottom: 14px;">
+            <div class="metric-row">
+              <span style="color: var(--muted);">Prime Factors:</span>
+              <span id="forensic-factors" style="font-weight: bold; color: #a5b4fc;">2 × 3 × 5²</span>
+            </div>
+            <div class="metric-row">
+              <span style="color: var(--muted);">Divisible by 2, 3, 5?</span>
+              <span id="forensic-mod30" style="font-weight: bold; color: #34d399;">YES (Multiple of 30)</span>
+            </div>
+            <div class="metric-row">
+              <span style="color: var(--muted);">Goldbach Pairs g(N):</span>
+              <span id="forensic-pairs" style="font-weight: bold; color: #fbbf24;">12 Pairs</span>
+            </div>
+            <div class="metric-row">
+              <span style="color: var(--muted);">Singular Series Factor S(N):</span>
+              <span id="forensic-sn" style="font-weight: bold; color: #38bdf8;">2.667x Normal</span>
+            </div>
+            <div class="metric-row">
+              <span style="color: var(--muted);">Phantom Threat Level:</span>
+              <span id="forensic-threat" style="font-weight: 800; color: #ef4444;">CRITICAL (99.8%)</span>
+            </div>
+          </div>
+
+          <button class="btn btn-primary" id="btn-arrest" style="width: 100%;">🚨 Stake Out & Ambush Thief at this Vault!</button>
+          <div id="verdict-banner" style="margin-top: 10px; font-weight: bold; text-align: center; min-height: 24px;"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pedagogy-grid">
+      <div class="pedagogy-card story">
+        <h2>✨ The Science of Primorial Oases</h2>
+        <p>Why did the Phantom prefer 150 over 128 or 142? Because 150 is divisible by both 3 and 5 ($150 = 30 \times 5$).</p>
+        <p>When an even number is divisible by an odd prime $p$, no prime partner candidate can be eliminated by the congruence $q \equiv 0 \pmod p$. Instead, both residue classes modulo $p$ remain available!</p>
+        <p>For $p=3$, this gives a bonus factor of $\frac{3-1}{3-2} = \mathbf{2.0\times}$. For $p=5$, an extra $\frac{5-1}{5-2} = \mathbf{1.333\times}$. Multiplied together, multiples of 30 receive a theoretical boost of $2.0 \times 1.333 = \mathbf{2.67\times}$ more pairs than powers of 2!</p>
+      </div>
+
+      <div class="pedagogy-card challenge">
+        <h2>🎯 Try This! (Hands-On Challenges)</h2>
+        <div class="challenge-item">
+          <span class="badge">Challenge 1</span>
+          Why does Vault A (128) have so few Goldbach pairs despite being close to 150?
+          <button class="reveal-btn" data-target="ans-1">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-1">
+            $128 = 2^7$ has NO odd prime factors! It gets zero Hardy-Littlewood boost, making it a "Goldbach Desert" with only 3 pairs: $(19, 109), (29, 99\text{ no}), (31, 97), (109, 19)$.
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 2</span>
+          What would be the Phantom's ultimate dream vault combination under 300?
+          <button class="reveal-btn" data-target="ans-2">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-2">
+            <b>210</b>! Because $210 = 2 \times 3 \times 5 \times 7$ is divisible by 3, 5, AND 7. It achieves the maximum singular series bonus $2 \times \frac{4}{3} \times \frac{6}{5} = \mathbf{3.2\times}$!
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 3</span>
+          Ambush the Phantom at Vault B and explain the mathematical deduction to the Chief.
+          <button class="reveal-btn" data-target="ans-3">💡 Detective Speech</button>
+          <div class="answer" id="ans-3">
+            "Chief, the thief is mathematically addicted to the singular series $S(N) = \prod_{p \mid N, p>2} \frac{p-1}{p-2}$. Only Vault 150 offers $S(150) = 8/3 \approx 2.67$, matching the 60-90-120 pattern perfectly!"
+          </div>
+        </div>
+      </div>
+
+      <div class="pedagogy-card rigor">
+        <h2>📐 The Hardy-Littlewood Singular Series Formula</h2>
+        <p>The number of Goldbach representations $g(N)$ is governed asymptotically by the singular series $\mathfrak{S}(N)$:</p>
+        <div class="math-formula">
+          \mathfrak{S}(N) = 2 C_2 \prod_{p \mid N, p > 2} \frac{p-1}{p-2}, \quad C_2 = \prod_{p > 2} \left(1 - \frac{1}{(p-1)^2}\right) \approx 0.66016
+        </div>
+        <p>For any even number coprime to 3 and 5 (such as $2^k$), $\mathfrak{S}(N) = 2 C_2 \approx 1.32$. But when $30 \mid N$, $\mathfrak{S}(N) = 2 C_2 \times 2 \times \frac{4}{3} \approx 3.52$. The ratio is exactly $\frac{8}{3} = 2.667$, creating the upper envelope peaks of the Goldbach comet.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <a href="index.html">← Return to 100 Explorations Hub</a> | Goldbach Discovery Labs &copy; 2026
+  </footer>
+
+  <script src="i18n.js"></script>
+  <script src="common.js"></script>
+  <script>
+    const safeN = document.getElementById('safe-n');
+    const forensicFactors = document.getElementById('forensic-factors');
+    const forensicMod30 = document.getElementById('forensic-mod30');
+    const forensicPairs = document.getElementById('forensic-pairs');
+    const forensicSn = document.getElementById('forensic-sn');
+    const forensicThreat = document.getElementById('forensic-threat');
+    const btnArrest = document.getElementById('btn-arrest');
+    const verdictBanner = document.getElementById('verdict-banner');
+
+    let currentSelectedN = 150;
+
+    const vaultData = {
+      128: {
+        factors: '2⁷ (Power of 2)',
+        mod30: 'NO (Coprime to 3, 5, 7)',
+        sn: '1.000x Normal (Desert Floor)',
+        threat: 'LOW (1.2%)',
+        threatColor: '#34d399'
+      },
+      150: {
+        factors: '2 × 3 × 5²',
+        mod30: 'YES (30 × 5)',
+        sn: '2.667x Normal (Primorial Oasis)',
+        threat: 'CRITICAL (99.8%)',
+        threatColor: '#ef4444'
+      },
+      142: {
+        factors: '2 × 71 (Semiprime)',
+        mod30: 'NO (71 is large prime)',
+        sn: '1.014x Normal (Sparse)',
+        threat: 'LOW (4.5%)',
+        threatColor: '#34d399'
+      },
+      146: {
+        factors: '2 × 73 (Semiprime)',
+        mod30: 'NO (73 is large prime)',
+        sn: '1.014x Normal (Sparse)',
+        threat: 'LOW (4.1%)',
+        threatColor: '#34d399'
+      }
+    };
+
+    function updateForensics(n) {
+      currentSelectedN = n;
+      safeN.textContent = n;
+      const pairs = GLab.getGoldbachPairs(n);
+      forensicPairs.textContent = `${pairs.length} Pairs`;
+
+      const data = vaultData[n];
+      if (data) {
+        forensicFactors.textContent = data.factors;
+        forensicMod30.textContent = data.mod30;
+        forensicSn.textContent = data.sn;
+        forensicThreat.textContent = data.threat;
+        forensicThreat.style.color = data.threatColor;
+      }
+      verdictBanner.textContent = '';
+      GLab.audio.playClick();
+    }
+
+    document.querySelectorAll('.vault-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.vault-btn').forEach(b => b.classList.remove('btn-primary'));
+        btn.classList.add('btn-primary');
+        updateForensics(parseInt(btn.dataset.n));
+      });
+    });
+
+    btnArrest.addEventListener('click', () => {
+      if (currentSelectedN === 150) {
+        verdictBanner.textContent = '🎉 CASE CLOSED! You ambushed the Primorial Phantom red-handed at Vault 150!';
+        verdictBanner.style.color = '#34d399';
+        GLab.audio.playFanfare();
+      } else {
+        verdictBanner.textContent = `❌ STAKE-OUT FAILED! Vault ${currentSelectedN} was completely quiet. The Phantom struck Vault 150 instead!`;
+        verdictBanner.style.color = '#ef4444';
+        GLab.audio.playTone(160, 0.3, 'sawtooth');
+      }
+    });
+
+    GLab.init({
+      labNum: 56,
+      title: "Case of the Oasis Heist",
+      clusterNum: 6,
+      clusterName: "Gamified Puzzles & Detective Cases",
+      prevId: "lab055_cross_number",
+      nextId: "lab057_desert_survival"
+    });
+
+    updateForensics(150);
+  </script>
+</body>
+</html>

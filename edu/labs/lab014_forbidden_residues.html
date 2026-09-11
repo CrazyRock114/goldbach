@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 014: The Forbidden Residues Inspector - Goldbach Discovery Labs</title>
+  <link rel="stylesheet" href="common.css">
+  <style>
+    .inspector-stage {
+      min-height: 280px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .residue-strip {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin: 20px 0;
+    }
+    .res-cell {
+      width: 72px;
+      height: 90px;
+      border-radius: var(--radius-md);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: monospace;
+      border: 2px solid var(--card-border);
+      transition: all 0.25s ease;
+      position: relative;
+    }
+    .res-cell.allowed {
+      background: rgba(52, 211, 153, 0.15);
+      border-color: var(--green);
+      color: #a7f3d0;
+    }
+    .res-cell.forbidden {
+      background: rgba(248, 113, 113, 0.15);
+      border-color: var(--danger);
+      color: #fca5a5;
+    }
+    .res-cell.self-divisible {
+      background: rgba(148, 163, 184, 0.1);
+      border-color: var(--card-border);
+      color: var(--muted);
+    }
+    .res-num { font-size: 22px; font-weight: 800; }
+    .res-comp { font-size: 11px; margin-top: 4px; opacity: 0.85; }
+    .res-badge {
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 2px 4px;
+      border-radius: 3px;
+      margin-top: 6px;
+    }
+    .allowed .res-badge { background: var(--green); color: #0b1120; }
+    .forbidden .res-badge { background: var(--danger); color: #ffffff; }
+    .self-divisible .res-badge { background: var(--card-border); color: #cbd5e1; }
+  </style>
+</head>
+<body>
+  <div id="lab-nav" class="lab-nav"></div>
+
+  <div class="container">
+    <div class="lab-header">
+      <h1>Lab 014: The Forbidden Residues Inspector</h1>
+      <p class="hook">Why can't primes land on just any remainder? Inspect modular lockouts across moduli $m = 3, 5, 7, 11$ and see which residue channels are strictly forbidden from producing Goldbach pairs!</p>
+    </div>
+
+    <div class="lab-stage">
+      <div class="controls-bar">
+        <div class="control-group">
+          <label for="inspect-n">Target <i>N</i>:</label>
+          <input type="range" id="inspect-n" min="6" max="60" step="2" value="28">
+          <span style="font-size: 18px; font-weight: 800; color: var(--accent);" id="n-val">28</span>
+        </div>
+        <div class="control-group">
+          <label for="mod-selector">Prime Modulus <i>p</i>:</label>
+          <select id="mod-selector">
+            <option value="3" selected>Mod 3 (p = 3)</option>
+            <option value="5">Mod 5 (p = 5)</option>
+            <option value="7">Mod 7 (p = 7)</option>
+            <option value="11">Mod 11 (p = 11)</option>
+          </select>
+        </div>
+        <div class="stat-pill" style="margin-left: auto;">
+          <span>Open Channels:</span>
+          <span class="num" id="open-channels-badge">1 / 3</span>
+        </div>
+      </div>
+
+      <div class="canvas-container inspector-stage">
+        <div style="font-size: 14px; color: var(--muted); text-align: center;">
+          Inspection Table for <b style="color:var(--text);" id="inspect-desc">N = 28 modulo 3</b>:
+        </div>
+        <div class="residue-strip" id="residue-strip"></div>
+        <div id="summary-msg" style="font-size: 13.5px; font-weight: 600; text-align: center; max-width: 650px; color: var(--text);"></div>
+      </div>
+    </div>
+
+    <div class="pedagogy-grid">
+      <div class="pedagogy-card story">
+        <h2>✨ Intuitive Concept: The Lockout Sieve</h2>
+        <p>When searching for primes $p + q = N$, we must avoid creating a complement $q = N - p$ that is divisible by a small prime like 3, 5, or 7.</p>
+        <p>Consider modulus <b>3</b>. If $N = 28$ ($28 \equiv 1 \pmod 3$):</p>
+        <ul>
+          <li>If $p \equiv 1 \pmod 3$, then $q = 28 - p \equiv 1 - 1 \equiv 0 \pmod 3$. Divisible by 3! <b>FORBIDDEN</b> 🚫!</li>
+          <li>If $p \equiv 0 \pmod 3$, $p$ is itself a multiple of 3. (Only $p=3$ works).</li>
+          <li>If $p \equiv 2 \pmod 3$, then $q \equiv 1 - 2 \equiv -1 \equiv 2 \pmod 3$. <b>ALLOWED</b> ✔!</li>
+        </ul>
+        <p>This leaves only <b>ONE open channel</b> for large primes: $p \equiv 2 \pmod 3$!</p>
+      </div>
+
+      <div class="pedagogy-card challenge">
+        <h2>🎯 Try This! (Hands-On Challenges)</h2>
+        <div class="challenge-item">
+          <span class="badge">Challenge 1</span>
+          Set $N = 30$ and Modulus = 3. How many open channels are there?
+          <button class="reveal-btn" data-target="ans-1">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-1">
+            Since $30 \equiv 0 \pmod 3$, if $p \equiv 1$, then $q \equiv 0 - 1 \equiv 2 \pmod 3$ (not 0). If $p \equiv 2$, then $q \equiv 1 \pmod 3$ (not 0). Both non-zero channels ($p \equiv 1$ and $p \equiv 2$) are <b>OPEN</b>! That is <b>2 open channels</b> instead of 1, yielding the $2\times$ bonus!
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 2</span>
+          Switch to Modulus 5. What happens when $5 \mid N$ (e.g. $N=30$ or $N=50$)?
+          <button class="reveal-btn" data-target="ans-2">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-2">
+            When $5 \mid N$, all 4 units $\{1, 2, 3, 4\}$ remain open! When $5 \nmid N$, one unit residue is knocked out ($N - r \equiv 0 \pmod 5$), leaving only 3 open channels. The ratio of open channels is $4 / 3 \approx 1.33\times$!
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 3</span>
+          Why does the number of open channels always equal $p-1$ when $p \mid N$, and $p-2$ when $p \nmid N$?
+          <button class="reveal-btn" data-target="ans-3">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-3">
+            Modulo $p$, there are $p-1$ non-zero residues. When $p \nmid N$, one of these non-zero residues $r$ has complement $N - r \equiv 0 \pmod p$, knocking out a second residue! Thus only $(p-1) - 1 = p-2$ survive. When $p \mid N$, the complement $N - r \equiv 0 - r \equiv -r \not\equiv 0$, so zero units are knocked out by 0!
+          </div>
+        </div>
+      </div>
+
+      <div class="pedagogy-card rigor">
+        <h2>📐 Mathematical Rigor & Formal Definition</h2>
+        <p>For an odd prime $p$, consider the number of solutions to $x + y \equiv N \pmod p$ with $x, y \in (\mathbb{Z}/p\mathbb{Z})^\times$:</p>
+        <div class="math-formula">
+          c_p(N) = \begin{cases} 
+          p - 1 & \text{if } p \mid N \\
+          p - 2 & \text{if } p \nmid N 
+          \end{cases}
+        </div>
+        <p>The local density factor at prime $p$ is $\frac{c_p(N)}{p - 1}$, which yields $1$ if $p \mid N$ (relative to max) and $\frac{p-2}{p-1}$ if $p \nmid N$. Inverting gives the Euler factor $\frac{p-1}{p-2}$ in the singular series.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <a href="index.html">← Return to 100 Explorations Hub</a> | Goldbach Discovery Labs &copy; 2026
+  </footer>
+
+  <script src="i18n.js"></script>
+  <script src="common.js"></script>
+  <script>
+    const sliderN = document.getElementById('inspect-n');
+    const nVal = document.getElementById('n-val');
+    const modSelector = document.getElementById('mod-selector');
+    const openChannelsBadge = document.getElementById('open-channels-badge');
+    const inspectDesc = document.getElementById('inspect-desc');
+    const residueStrip = document.getElementById('residue-strip');
+    const summaryMsg = document.getElementById('summary-msg');
+
+    function renderInspection() {
+      const n = parseInt(sliderN.value);
+      const mod = parseInt(modSelector.value);
+      nVal.textContent = n;
+      inspectDesc.textContent = `N = ${n} modulo ${mod} (N mod ${mod} = ${n % mod})`;
+
+      residueStrip.innerHTML = '';
+      let openCount = 0;
+      let totalNonZero = mod - 1;
+
+      for (let r = 0; r < mod; r++) {
+        const comp = (n - r + mod * 10) % mod;
+        const cell = document.createElement('div');
+        cell.className = 'res-cell';
+
+        if (r === 0) {
+          cell.classList.add('self-divisible');
+          cell.innerHTML = `
+            <div class="res-num">r = 0</div>
+            <div class="res-comp">comp: ${comp}</div>
+            <span class="res-badge">Div by ${mod}</span>
+          `;
+        } else if (comp === 0) {
+          cell.classList.add('forbidden');
+          cell.innerHTML = `
+            <div class="res-num">r = ${r}</div>
+            <div class="res-comp">comp: 0</div>
+            <span class="res-badge">Forbidden</span>
+          `;
+        } else {
+          cell.classList.add('allowed');
+          openCount++;
+          cell.innerHTML = `
+            <div class="res-num">r = ${r}</div>
+            <div class="res-comp">comp: ${comp}</div>
+            <span class="res-badge">Allowed</span>
+          `;
+        }
+
+        residueStrip.appendChild(cell);
+      }
+
+      openChannelsBadge.textContent = `${openCount} / ${totalNonZero} (${((openCount/totalNonZero)*100).toFixed(0)}%)`;
+
+      if (n % mod === 0) {
+        summaryMsg.innerHTML = `<span style="color:var(--green);">★ Zero Knockout!</span> Since ${mod} divides ${n}, all <b>${openCount}</b> coprime residue classes remain fully open! (Bonus factor: ${(openCount / (openCount - 1)).toFixed(2)}×)`;
+      } else {
+        summaryMsg.innerHTML = `<span style="color:var(--danger);">⚠ Lockout Active:</span> Residue <b>r = ${n % mod}</b> produces complement 0 mod ${mod} (divisible by ${mod}), leaving only <b>${openCount}</b> of ${totalNonZero} channels open.`;
+      }
+    }
+
+    sliderN.addEventListener('input', () => {
+      renderInspection();
+      GLab.audio.playTone(300 + (parseInt(sliderN.value) % parseInt(modSelector.value)) * 40, 0.08, 'sine');
+    });
+
+    modSelector.addEventListener('change', () => {
+      renderInspection();
+      GLab.audio.playClick();
+    });
+
+    GLab.init({
+      labNum: 14,
+      title: "The Forbidden Residues Inspector",
+      clusterNum: 2,
+      clusterName: "Modular Arithmetic & The Power of 6",
+      prevId: "lab013_primorial_oasis",
+      nextId: "lab015_modular_kaleidoscope"
+    });
+
+    renderInspection();
+  </script>
+</body>
+</html>

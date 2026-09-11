@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 085: Gauss's Golden Theorem: Quadratic Reciprocity - Goldbach Discovery Labs</title>
+  <link rel="stylesheet" href="common.css">
+  <style>
+    .reciprocity-stage {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin: 20px 0;
+    }
+    @media (max-width: 768px) {
+      .reciprocity-stage {
+        grid-template-columns: 1fr;
+      }
+    }
+    .symbol-card {
+      background: var(--card-bg-subtle);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      text-align: center;
+    }
+    .legendre-fraction {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      font-weight: 900;
+      font-family: monospace;
+      color: #38bdf8;
+    }
+    .legendre-fraction .parens {
+      font-size: 40px;
+      font-weight: 300;
+      color: var(--muted);
+    }
+    .frac-col {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 0 4px;
+    }
+    .frac-bar {
+      width: 100%;
+      height: 2px;
+      background: #38bdf8;
+      margin: 2px 0;
+    }
+    .canvas-wrap {
+      height: 280px;
+      position: relative;
+    }
+  </style>
+</head>
+<body>
+  <div id="lab-nav" class="lab-nav"></div>
+
+  <div class="container">
+    <div class="lab-header">
+      <h1>Lab 085: Gauss's Golden Theorem: Quadratic Reciprocity</h1>
+      <p class="hook">Carl Friedrich Gauss was so proud of Quadratic Reciprocity that he published eight distinct proofs! Given any Goldbach prime pair $(p, q)$, test whether $p$ is a square mod $q$, and discover why their mutual solvability is linked by the golden law!</p>
+    </div>
+
+    <div class="lab-stage">
+      <div class="controls-bar">
+        <div class="control-group">
+          <label for="select-pair">Select Goldbach Pair (p + q = N):</label>
+          <select id="select-pair" class="btn btn-secondary btn-sm" style="background:#1e293b; color:var(--fg); border:1px solid var(--card-border);">
+            <option value="5,19" selected>5 + 19 = 24 (p ≡ 1 mod 4)</option>
+            <option value="7,17">7 + 17 = 24 (Both odd)</option>
+            <option value="7,23">7 + 23 = 30 (Both p, q ≡ 3 mod 4!)</option>
+            <option value="11,19">11 + 19 = 30 (Both p, q ≡ 3 mod 4!)</option>
+            <option value="13,17">13 + 17 = 30 (Both p, q ≡ 1 mod 4)</option>
+          </select>
+        </div>
+        <div class="stat-pill" style="margin-left: auto;">
+          <span>Theorema Aureum:</span>
+          <span class="num" style="color: #fbbf24;">(p/q)(q/p) = (-1)^{(p-1)(q-1)/4}</span>
+        </div>
+      </div>
+
+      <div class="reciprocity-stage">
+        <div class="symbol-card" style="border-top: 4px solid #38bdf8;">
+          <h3 style="margin: 0; color: #38bdf8;">Legendre Symbol (p / q)</h3>
+          <div class="legendre-fraction">
+            <span class="parens">(</span>
+            <div class="frac-col">
+              <span id="disp-p">5</span>
+              <div class="frac-bar"></div>
+              <span id="disp-q1">19</span>
+            </div>
+            <span class="parens">)</span>
+            <span style="margin: 0 10px; color: var(--muted);">=</span>
+            <span style="color: #34d399;" id="val-sym1">+1</span>
+          </div>
+          <div style="font-size: 12px; color: var(--muted);" id="expl-sym1">
+            5 is a quadratic residue mod 19 (9² ≡ 81 ≡ 5 mod 19).
+          </div>
+        </div>
+
+        <div class="symbol-card" style="border-top: 4px solid #fbbf24;">
+          <h3 style="margin: 0; color: #fbbf24;">Reciprocal Symbol (q / p)</h3>
+          <div class="legendre-fraction">
+            <span class="parens">(</span>
+            <div class="frac-col">
+              <span id="disp-q2">19</span>
+              <div class="frac-bar" style="background:#fbbf24;"></div>
+              <span id="disp-p2" style="color:#fbbf24;">5</span>
+            </div>
+            <span class="parens">)</span>
+            <span style="margin: 0 10px; color: var(--muted);">=</span>
+            <span style="color: #34d399;" id="val-sym2">+1</span>
+          </div>
+          <div style="font-size: 12px; color: var(--muted);" id="expl-sym2">
+            19 ≡ 4 mod 5, and 2² ≡ 4 ≡ 19 mod 5.
+          </div>
+        </div>
+      </div>
+
+      <div style="font-size: 12px; color: var(--muted); text-transform: uppercase; margin-bottom: 6px;">Eisenstein's Geometric Lattice Box Proof:</div>
+      <div class="canvas-container canvas-wrap">
+        <canvas id="latticeCanvas" height="280"></canvas>
+      </div>
+      <div id="reciprocity-summary" style="margin-top: 10px; font-weight: bold; text-align: center; color: #38bdf8; font-size: 14px;"></div>
+    </div>
+
+    <div class="pedagogy-grid">
+      <div class="pedagogy-card story">
+        <h2>✨ The Mirror of Quadratic Solvability</h2>
+        <p>Suppose you want to know if $x^2 \equiv p \pmod q$ has a solution. In the 18th century, you had to test every single number up to $q$.</p>
+        <p>In 1796, at age 19, <b>Carl Friedrich Gauss</b> proved the miraculous <b>Law of Quadratic Reciprocity</b>: whether $p$ is a square modulo $q$ is completely tied to whether $q$ is a square modulo $p$!</p>
+        <p>The symbols $(p/q)$ and $(q/p)$ are ALWAYS EQUAL, with only one single exception: when <b>both $p \equiv 3 \pmod 4$ and $q \equiv 3 \pmod 4$</b>, the symbols have OPPOSITE signs! This enables computing square roots modulo giant primes in milliseconds.</p>
+      </div>
+
+      <div class="pedagogy-card challenge">
+        <h2>🎯 Try This! (Hands-On Challenges)</h2>
+        <div class="challenge-item">
+          <span class="badge">Challenge 1</span>
+          Select $7 + 23 = 30$. Why do the two Legendre symbols have opposite signs?
+          <button class="reveal-btn" data-target="ans-1">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-1">
+            $7 \equiv 3 \pmod 4$ and $23 \equiv 3 \pmod 4$! Because both primes leave remainder 3 upon division by 4, $(-1)^{\frac{7-1}{2}\frac{23-1}{2}} = (-1)^{3 \times 11} = -1$. The symbols must flip signs!
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 2</span>
+          Select $13 + 17 = 30$. What are their residues modulo 4?
+          <button class="reveal-btn" data-target="ans-2">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-2">
+            $13 \equiv 1 \pmod 4$ and $17 \equiv 1 \pmod 4$. Since at least one is $1 \pmod 4$, $(13/17) = (17/13)$. Both symbols are identical!
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 3</span>
+          Look at Eisenstein's lattice box. What do the points inside represent?
+          <button class="reveal-btn" data-target="ans-3">💡 Geometry of Numbers</button>
+          <div class="answer" id="ans-3">
+            Gotthold Eisenstein proved the theorem by counting integer grid points inside a rectangle of size $\frac{p-1}{2} \times \frac{q-1}{2}$. The diagonal line splits the points into two triangles corresponding directly to $(p/q)$ and $(q/p)$!
+          </div>
+        </div>
+      </div>
+
+      <div class="pedagogy-card rigor">
+        <h2>📐 Formal Statement of the Law of Quadratic Reciprocity</h2>
+        <p>For distinct odd primes $p, q \in \mathbb{P}_{>2}$, the Legendre symbol $(a/p) \equiv a^{(p-1)/2} \pmod p$ satisfies:</p>
+        <div class="math-formula">
+          \left(\frac{p}{q}\right) \left(\frac{q}{p}\right) = (-1)^{\frac{p-1}{2}\frac{q-1}{2}}
+        </div>
+        <p>With supplementary laws $\left(\frac{-1}{p}\right) = (-1)^{(p-1)/2}$ and $\left(\frac{2}{p}\right) = (-1)^{(p^2-1)/8}$. This reciprocity law was the progenitor of Artin Reciprocity and the modern Langlands Program.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <a href="index.html">← Return to 100 Explorations Hub</a> | Goldbach Discovery Labs &copy; 2026
+  </footer>
+
+  <script src="i18n.js"></script>
+  <script src="common.js"></script>
+  <script>
+    const pairSelect = document.getElementById('select-pair');
+    const dispP = document.getElementById('disp-p');
+    const dispQ1 = document.getElementById('disp-q1');
+    const valSym1 = document.getElementById('val-sym1');
+    const explSym1 = document.getElementById('expl-sym1');
+
+    const dispQ2 = document.getElementById('disp-q2');
+    const dispP2 = document.getElementById('disp-p2');
+    const valSym2 = document.getElementById('val-sym2');
+    const explSym2 = document.getElementById('expl-sym2');
+
+    const summaryEl = document.getElementById('reciprocity-summary');
+    const canvas = document.getElementById('latticeCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // Euler's criterion for Legendre symbol (a / p)
+    function legendre(a, p) {
+      a = ((a % p) + p) % p;
+      if (a === 0) return 0;
+      let res = 1;
+      let base = a;
+      let exp = (p - 1) / 2;
+      while (exp > 0) {
+        if (exp % 2 === 1) res = (res * base) % p;
+        base = (base * base) % p;
+        exp = Math.floor(exp / 2);
+      }
+      return res === p - 1 ? -1 : res;
+    }
+
+    function update() {
+      const [pStr, qStr] = pairSelect.value.split(',');
+      const p = parseInt(pStr);
+      const q = parseInt(qStr);
+
+      dispP.textContent = p;
+      dispQ1.textContent = q;
+      dispQ2.textContent = q;
+      dispP2.textContent = p;
+
+      const sym1 = legendre(p, q);
+      const sym2 = legendre(q, p);
+
+      valSym1.textContent = (sym1 >= 0 ? `+${sym1}` : sym1);
+      valSym1.style.color = (sym1 === 1) ? '#34d399' : '#f87171';
+      explSym1.textContent = (sym1 === 1) ? `${p} is a quadratic residue modulo ${q}` : `${p} is a non-residue modulo ${q}`;
+
+      valSym2.textContent = (sym2 >= 0 ? `+${sym2}` : sym2);
+      valSym2.style.color = (sym2 === 1) ? '#34d399' : '#f87171';
+      explSym2.textContent = (sym2 === 1) ? `${q} is a quadratic residue modulo ${p}` : `${q} is a non-residue modulo ${p}`;
+
+      const both3Mod4 = (p % 4 === 3 && q % 4 === 3);
+      if (both3Mod4) {
+        summaryEl.innerHTML = `⚡ <b>Both ${p} and ${q} ≡ 3 (mod 4)!</b> Law mandates opposite signs: (${p}/${q}) · (${q}/${p}) = -1 ✔`;
+        summaryEl.style.color = '#fbbf24';
+      } else {
+        summaryEl.innerHTML = `✔ <b>At least one prime ≡ 1 (mod 4).</b> Law mandates identical signs: (${p}/${q}) = (${q}/${p}) = ${sym1} ✔`;
+        summaryEl.style.color = '#38bdf8';
+      }
+
+      renderEisensteinBox(p, q);
+    }
+
+    function renderEisensteinBox(p, q) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const padding = 35;
+      const w = canvas.width - padding * 2;
+      const h = canvas.height - padding * 2;
+
+      const halfP = (p - 1) / 2;
+      const halfQ = (q - 1) / 2;
+
+      // Draw bounding box
+      ctx.strokeStyle = '#334155';
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(padding, padding, w, h);
+
+      // Draw diagonal dividing line: y = (q/p) * x
+      ctx.strokeStyle = '#fbbf24';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(padding, canvas.height - padding);
+      ctx.lineTo(canvas.width - padding, padding);
+      ctx.stroke();
+
+      // Draw integer lattice points inside the box
+      for (let x = 1; x <= halfP; x++) {
+        for (let y = 1; y <= halfQ; y++) {
+          const px = padding + (x / (halfP + 1)) * w;
+          const py = canvas.height - padding - (y / (halfQ + 1)) * h;
+
+          // Check if point is below or above diagonal: q*x vs p*y
+          const isBelow = (q * x > p * y);
+
+          ctx.fillStyle = isBelow ? '#38bdf8' : '#c084fc';
+          ctx.beginPath();
+          ctx.arc(px, py, 3.5, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+
+      // Legend
+      ctx.fillStyle = '#38bdf8';
+      ctx.font = '12px sans-serif';
+      ctx.fillText(`● Lower Triangle points: ${(halfP * halfQ) / 2 | 0}`, padding, 20);
+
+      ctx.fillStyle = '#c084fc';
+      ctx.fillText(`● Upper Triangle points`, padding + 220, 20);
+    }
+
+    function resizeCanvas() {
+      canvas.width = canvas.parentElement.clientWidth;
+      update();
+    }
+    window.addEventListener('resize', resizeCanvas);
+
+    pairSelect.addEventListener('change', () => {
+      update();
+      GLab.audio.playClick();
+    });
+
+    GLab.init({
+      labNum: 85,
+      title: "Quadratic Reciprocity",
+      clusterNum: 9,
+      clusterName: "Advanced Number Theory & Modular Forms",
+      prevId: "lab084_primitive_roots_cyclic",
+      nextId: "lab086_continued_fractions"
+    });
+
+    resizeCanvas();
+  </script>
+</body>
+</html>

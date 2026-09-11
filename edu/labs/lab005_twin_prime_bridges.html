@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 005: Twin Prime Bridges & Midpoints - Goldbach Discovery Labs</title>
+  <link rel="stylesheet" href="common.css">
+  <style>
+    .bridge-viewport {
+      height: 360px;
+      position: relative;
+    }
+    .twin-selector {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding: 10px 0;
+      scrollbar-width: thin;
+    }
+    .twin-chip {
+      background: var(--card-bg-subtle);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-sm);
+      padding: 8px 14px;
+      cursor: pointer;
+      white-space: nowrap;
+      font-size: 13.5px;
+      transition: all 0.2s ease;
+    }
+    .twin-chip:hover, .twin-chip.active {
+      border-color: var(--primary);
+      background: rgba(56, 189, 248, 0.15);
+      transform: translateY(-2px);
+    }
+    .twin-chip strong {
+      color: var(--accent);
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+  <div id="lab-nav" class="lab-nav"></div>
+
+  <div class="container">
+    <div class="lab-header">
+      <h1>Lab 005: Twin Prime Bridges & Midpoints</h1>
+      <p class="hook">Twin primes $(p, p+2)$ have an even midpoint $m$. Discover why every twin prime pair naturally builds an indestructible suspension bridge proving Goldbach for $2m$!</p>
+    </div>
+
+    <div class="lab-stage">
+      <div class="controls-bar">
+        <span style="font-size: 13px; font-weight: 600; color: var(--muted); text-transform: uppercase;">Select Twin Prime Pair:</span>
+        <button class="btn btn-accent btn-sm" id="btn-drop-weight">🏗 Drop Load on Midpoint</button>
+        <div class="stat-pill" style="margin-left: auto;">
+          <span>Target Even Number (2m):</span>
+          <strong class="num" id="target-even">8</strong>
+        </div>
+      </div>
+
+      <div class="twin-selector" id="twin-chips">
+        <!-- populated dynamically -->
+      </div>
+
+      <div class="canvas-container bridge-viewport">
+        <canvas id="bridgeCanvas" height="360"></canvas>
+      </div>
+    </div>
+
+    <div class="pedagogy-grid">
+      <div class="pedagogy-card story">
+        <h2>✨ Intuitive Concept: The Midpoint Miracle</h2>
+        <p>A pair of <b>twin primes</b> are primes that differ by exactly 2, such as $(3, 5)$, $(5, 7)$, $(11, 13)$, $(17, 19)$, and $(29, 31)$.</p>
+        <p>Because they are separated by 2, the number trapped right between them is their average (midpoint):</p>
+        <div class="math-formula">
+          m = \frac{p + (p+2)}{2} = p + 1
+        </div>
+        <p>Multiplying both sides by 2 gives: <b>$2m = p + (p+2)$</b>!</p>
+        <p>This means <b>any time twin primes exist, they automatically prove Goldbach's conjecture for the even number $2m$!</b> Furthermore, for any twin prime pair greater than $(3, 5)$, that midpoint $m$ is <i>always a multiple of 6</i> ($6k$), so $2m = 12k$!</p>
+      </div>
+
+      <div class="pedagogy-card challenge">
+        <h2>🎯 Try This! (Hands-On Challenges)</h2>
+        <div class="challenge-item">
+          <span class="badge">Challenge 1</span>
+          Select the twin prime pair $(17, 19)$. What is their midpoint $m$, and what even number $2m$ do they prove?
+          <button class="reveal-btn" data-target="ans-1">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-1">
+            The midpoint is $m = 18$. The proven even number is $2 \times 18 = 36$. Indeed, $17 + 19 = 36$. (Notice 18 is $6 \times 3$!)
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 2</span>
+          Why is the midpoint of any twin prime pair $(p, p+2)$ with $p > 3$ always a multiple of 6?
+          <button class="reveal-btn" data-target="ans-2">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-2">
+            Of any three consecutive integers $p, p+1, p+2$: exactly one must be a multiple of 3. Since $p$ and $p+2$ are prime and $>3$, neither can be divisible by 3. Thus, the middle number $p+1$ must be divisible by 3. And since $p$ is odd, $p+1$ is even (divisible by 2). Divisible by both 2 and 3 means $p+1$ is a <b>multiple of 6</b>!
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 3</span>
+          Find a twin prime pair whose midpoint $m$ is $30$. What is $2m$?
+          <button class="reveal-btn" data-target="ans-3">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-3">
+            The twin primes surrounding 30 are <b>(29, 31)</b>! Their sum is $29 + 31 = 60 = 2 \times 30$.
+          </div>
+        </div>
+      </div>
+
+      <div class="pedagogy-card rigor">
+        <h2>📐 Mathematical Rigor & Formal Definition</h2>
+        <p>Let $\mathcal{T} = \{(p, p+2) \mid p \in \mathbb{P}, p+2 \in \mathbb{P}\}$ be the set of twin prime pairs. For every $(p, q) \in \mathcal{T}$ with $q = p+2$:</p>
+        <div class="math-formula">
+          m = \frac{p+q}{2} = p+1 \in \mathbb{N} \implies 2m = p + q
+        </div>
+        <p><b>Proposition:</b> For all $(p, p+2) \in \mathcal{T}$ with $p > 3$:</p>
+        <div class="math-formula">
+          p \equiv -1 \pmod 6, \quad p+2 \equiv 1 \pmod 6 \implies m = p+1 \equiv 0 \pmod 6
+        </div>
+        <p>Therefore, the image of twin prime sums lies strictly in the subset of even integers divisible by 12: $\{2m \mid (p, p+2) \in \mathcal{T}, p > 3\} \subset 12\mathbb{N}$.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <a href="index.html">← Return to 100 Explorations Hub</a> | Goldbach Discovery Labs &copy; 2026
+  </footer>
+
+  <script src="i18n.js"></script>
+  <script src="common.js"></script>
+  <script>
+    const twinList = [
+      [3, 5], [5, 7], [11, 13], [17, 19], [29, 31],
+      [41, 43], [59, 61], [71, 73], [101, 103], [107, 109],
+      [137, 139], [149, 151], [179, 181], [191, 193], [197, 199]
+    ];
+
+    let currentTwin = twinList[0];
+    let weightY = 0;
+    let isDropping = false;
+
+    const chipsContainer = document.getElementById('twin-chips');
+    const targetEven = document.getElementById('target-even');
+    const btnDrop = document.getElementById('btn-drop-weight');
+    const canvas = document.getElementById('bridgeCanvas');
+    const ctx = canvas.getContext('2d');
+
+    function initChips() {
+      chipsContainer.innerHTML = '';
+      twinList.forEach((pair, idx) => {
+        const chip = document.createElement('div');
+        chip.className = 'twin-chip' + (idx === 0 ? ' active' : '');
+        chip.innerHTML = `(${pair[0]}, ${pair[1]}) → <strong>2m = ${pair[0] + pair[1]}</strong>`;
+        chip.addEventListener('click', () => {
+          document.querySelectorAll('.twin-chip').forEach(c => c.classList.remove('active'));
+          chip.classList.add('active');
+          currentTwin = pair;
+          weightY = 0;
+          isDropping = false;
+          updateBridge();
+          GLab.audio.playTone(300 + idx * 25, 0.1, 'triangle');
+        });
+        chipsContainer.appendChild(chip);
+      });
+    }
+
+    function updateBridge() {
+      const p1 = currentTwin[0];
+      const p2 = currentTwin[1];
+      const sum = p1 + p2;
+      const m = sum / 2;
+      targetEven.textContent = `${sum} (m = ${m})`;
+
+      const w = canvas.width = canvas.parentElement.clientWidth;
+      const h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      const groundY = h - 45;
+      const towerWidth = 32;
+      const towerHeight = 200;
+      const towerLeftX = w * 0.22;
+      const towerRightX = w * 0.78;
+      const midX = (towerLeftX + towerRightX) / 2;
+
+      // Draw water/canyon at bottom
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(0, groundY, w, 50);
+
+      ctx.strokeStyle = 'rgba(56, 189, 248, 0.3)';
+      ctx.lineWidth = 2;
+      for (let i = 0; i < w; i += 40) {
+        ctx.beginPath();
+        ctx.moveTo(i, groundY + 15);
+        ctx.lineTo(i + 20, groundY + 15);
+        ctx.stroke();
+      }
+
+      // Draw Left Tower (Prime p1)
+      drawTower(towerLeftX, groundY, towerWidth, towerHeight, p1, '#38bdf8', 'Tower p');
+      // Draw Right Tower (Prime p2)
+      drawTower(towerRightX, groundY, towerWidth, towerHeight, p2, '#34d399', 'Tower p + 2');
+
+      // Suspension cable
+      const topY = groundY - towerHeight;
+      const sagY = topY + 130 + (isDropping ? Math.sin(Date.now() / 60) * 8 : 0);
+
+      ctx.strokeStyle = '#fbbf24';
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.moveTo(towerLeftX, topY);
+      ctx.quadraticCurveTo(midX, sagY, towerRightX, topY);
+      ctx.stroke();
+
+      // Vertical suspension suspenders
+      ctx.strokeStyle = 'rgba(251, 191, 36, 0.35)';
+      ctx.lineWidth = 1.5;
+      const steps = 14;
+      for (let s = 1; s < steps; s++) {
+        const t = s / steps;
+        const x = towerLeftX + (towerRightX - towerLeftX) * t;
+        // quadratic curve point Y
+        const cableY = Math.pow(1 - t, 2) * topY + 2 * (1 - t) * t * sagY + Math.pow(t, 2) * topY;
+        ctx.beginPath();
+        ctx.moveTo(x, cableY);
+        ctx.lineTo(x, groundY - 30);
+        ctx.stroke();
+      }
+
+      // Road deck
+      ctx.strokeStyle = '#94a3b8';
+      ctx.lineWidth = 8;
+      ctx.beginPath();
+      ctx.moveTo(towerLeftX - 50, groundY - 30);
+      ctx.lineTo(towerRightX + 50, groundY - 30);
+      ctx.stroke();
+
+      // Midpoint Keystone Marker
+      ctx.fillStyle = '#fbbf24';
+      ctx.beginPath();
+      ctx.arc(midX, groundY - 30, 10, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = '#0b1120';
+      ctx.font = 'bold 11px monospace';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('m', midX, groundY - 30);
+
+      // Dropped weight animation
+      if (isDropping) {
+        ctx.fillStyle = '#f43f5e';
+        ctx.beginPath();
+        ctx.roundRect(midX - 35, groundY - 80, 70, 45, 6);
+        ctx.fill();
+
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 14px monospace';
+        ctx.fillText(`2m = ${sum}`, midX, groundY - 58);
+      }
+    }
+
+    function drawTower(x, groundY, width, height, label, color, sublabel) {
+      ctx.fillStyle = '#1e293b';
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.rect(x - width/2, groundY - height, width, height);
+      ctx.fill();
+      ctx.stroke();
+
+      // Lattice X inside tower
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+      ctx.lineWidth = 1.5;
+      for (let y = groundY - height; y < groundY - 20; y += 40) {
+        ctx.beginPath();
+        ctx.moveTo(x - width/2, y);
+        ctx.lineTo(x + width/2, y + 40);
+        ctx.moveTo(x + width/2, y);
+        ctx.lineTo(x - width/2, y + 40);
+        ctx.stroke();
+      }
+
+      // Tower badge at top
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.arc(x, groundY - height - 16, 20, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = '#0b1120';
+      ctx.font = 'bold 15px monospace';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(label, x, groundY - height - 16);
+
+      ctx.fillStyle = color;
+      ctx.font = '11px sans-serif';
+      ctx.fillText(sublabel, x, groundY - height - 42);
+    }
+
+    btnDrop.addEventListener('click', () => {
+      isDropping = true;
+      updateBridge();
+      GLab.audio.playSuccess();
+      setTimeout(() => {
+        isDropping = false;
+        updateBridge();
+      }, 2500);
+    });
+
+    window.addEventListener('resize', updateBridge);
+
+    GLab.init({
+      labNum: 5,
+      title: "Twin Prime Bridges & Midpoints",
+      clusterNum: 1,
+      clusterName: "Foundations & Small Integers",
+      prevId: "lab004_sieve_radar",
+      nextId: "lab006_cousin_sexy_constellations"
+    });
+
+    initChips();
+    updateBridge();
+  </script>
+</body>
+</html>

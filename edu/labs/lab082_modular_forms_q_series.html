@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 082: Modular Forms & q-Series - Goldbach Discovery Labs</title>
+  <link rel="stylesheet" href="common.css">
+  <style>
+    .q-stage {
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 20px;
+      margin: 20px 0;
+    }
+    @media (max-width: 768px) {
+      .q-stage {
+        grid-template-columns: 1fr;
+      }
+    }
+    .canvas-wrap {
+      height: 380px;
+      position: relative;
+    }
+    .sidebar-panel {
+      background: var(--card-bg-subtle);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .cusp-badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 4px;
+      background: #1e1b4b;
+      border: 1px solid #818cf8;
+      color: #e0e7ff;
+      font-size: 11px;
+      font-family: monospace;
+      margin: 2px;
+    }
+  </style>
+</head>
+<body>
+  <div id="lab-nav" class="lab-nav"></div>
+
+  <div class="container">
+    <div class="lab-header">
+      <h1>Lab 082: Modular Forms & $q$-Series Expansion</h1>
+      <p class="hook">Inside the unit disk $|q| < 1$, the prime series $P(q) = \sum q^p$ transforms into a complex analytical field. Watch the major arc cusps ignite around the unit circle as $q$ approaches rational roots of unity $e^{2\pi i a/b}$!</p>
+    </div>
+
+    <div class="lab-stage">
+      <div class="controls-bar">
+        <div class="control-group">
+          <label for="q-radius">Modulus $|q| = r$:</label>
+          <input type="range" id="q-radius" min="0.70" max="0.98" step="0.02" value="0.90">
+          <span style="font-size: 18px; font-weight: 800; color: var(--accent);" id="r-val">0.90</span>
+        </div>
+        <div class="control-group">
+          <label for="prime-cutoff">Prime Terms:</label>
+          <input type="range" id="prime-cutoff" min="10" max="80" step="5" value="30">
+          <span style="font-size: 18px; font-weight: 800; color: var(--accent);" id="p-cutoff-val">30</span>
+        </div>
+      </div>
+
+      <div class="q-stage">
+        <div class="canvas-container canvas-wrap">
+          <canvas id="qCanvas" height="380"></canvas>
+        </div>
+
+        <div class="sidebar-panel">
+          <h3 style="color: #38bdf8; font-size: 14px; text-transform: uppercase; margin: 0;">Major Arc Cusps & Roots</h3>
+          <p style="font-size: 12px; color: var(--muted); margin: 0; line-height: 1.5;">
+            As radius $r \to 1^-$, the generating function $|P(q)^2|$ spikes dramatically at rational angles $\theta = 2\pi a/b$ where $b \in \{1, 2, 3, 4, 6\}$:
+          </p>
+          <div>
+            <span class="cusp-badge">q = 1 (θ = 0)</span>
+            <span class="cusp-badge">q = -1 (θ = π)</span>
+            <span class="cusp-badge">q = e^{i 2π/3} (120°)</span>
+            <span class="cusp-badge">q = e^{i π/3} (60°)</span>
+          </div>
+
+          <div style="background: #090d16; padding: 10px; border-radius: 6px; border: 1px solid #1e293b; font-size: 12px;">
+            <div style="color: #fbbf24; font-weight: bold; margin-bottom: 4px;">Modular Singularity:</div>
+            The blowup magnitude at $\theta = 2\pi/6$ directly mirrors the $2\times$ multiple-of-6 bonus in Goldbach partitions!
+          </div>
+
+          <div id="cursor-readout" style="font-size: 12px; color: #a5b4fc; font-family: monospace;">
+            Hover over the disk to inspect |P(q)|²
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pedagogy-grid">
+      <div class="pedagogy-card story">
+        <h2>✨ From Circle Method to Modular Forms</h2>
+        <p>In 1918, Ramanujan and Hardy realized that counting partitions is equivalent to analyzing the boundary singularities of complex functions on the unit disk.</p>
+        <p>By letting $q = r e^{i \theta}$, the prime series $P(q) = \sum_{p} q^p$ becomes a complex power series. On the boundary circle $r = 1$, the function does not converge; instead, it develops an infinite forest of sharp singular spikes at every rational angle $a/b$!</p>
+        <p>Because the spikes at denominators 1, 2, 3, 6 are the tallest, integrating around the circle captures these "major arc" resonances, producing the Hardy-Littlewood singular series formula $\mathfrak{S}(N)$.</p>
+      </div>
+
+      <div class="pedagogy-card challenge">
+        <h2>🎯 Try This! (Hands-On Challenges)</h2>
+        <div class="challenge-item">
+          <span class="badge">Challenge 1</span>
+          Slide radius $r$ from 0.70 to 0.98. What happens to the spikes near the boundary?
+          <button class="reveal-btn" data-target="ans-1">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-1">
+            As $r \to 1$, the geometric series nears its boundary singularity. The spikes become razor-sharp and narrow, visually isolating the Major Arcs from the flat Minor Arc sea!
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 2</span>
+          Why is the spike at angle $0$ ($q = 1$) the largest of all?
+          <button class="reveal-btn" data-target="ans-2">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-2">
+            At $\theta = 0$, all terms $q^p = r^p$ are purely real and positive! There is zero destructive interference, creating the absolute maximum amplitude.
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 3</span>
+          Why does modular symmetry prevent minor arcs from canceling completely in Strong Goldbach?
+          <button class="reveal-btn" data-target="ans-3">💡 Deep Math Insight</button>
+          <div class="answer" id="ans-3">
+            Because in degree 2 ($P(q)^2$), the $L^2$ norm of the minor arcs is $\sim \frac{N}{\ln^2 N}$, identical in scale to the main term! In Weak Goldbach ($P(q)^3$), the extra power dampens the minor arcs down to $\mathcal{O}(N^2 / \ln^3 N)$, allowing proof.
+          </div>
+        </div>
+      </div>
+
+      <div class="pedagogy-card rigor">
+        <h2>📐 Boundary Asymptotics & The Farey Dissection</h2>
+        <p>Near a rational boundary cusp $q = r e^{2\pi i a/b}$ with $(a, b) = 1$:</p>
+        <div class="math-formula">
+          P(r e^{2\pi i a/b}) \sim \frac{\mu(b)}{\phi(b)} \frac{1}{1 - r} \quad \text{as } r \to 1^-
+        </div>
+        <p>Squaring the series produces coefficients $\frac{\mu(b)^2}{\phi(b)^2} (1 - r)^{-2}$. Integrating $P(q)^2 q^{-N-1} dq$ along a Farey dissection circle of radius $r = 1 - 1/N$ asymptotically recovers the Goldbach singular series $\mathfrak{S}(N)$.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <a href="index.html">← Return to 100 Explorations Hub</a> | Goldbach Discovery Labs &copy; 2026
+  </footer>
+
+  <script src="i18n.js"></script>
+  <script src="common.js"></script>
+  <script>
+    const sliderR = document.getElementById('q-radius');
+    const dispR = document.getElementById('r-val');
+    const sliderP = document.getElementById('prime-cutoff');
+    const dispP = document.getElementById('p-cutoff-val');
+    const cursorReadout = document.getElementById('cursor-readout');
+    const canvas = document.getElementById('qCanvas');
+    const ctx = canvas.getContext('2d');
+
+    function update() {
+      dispR.textContent = parseFloat(sliderR.value).toFixed(2);
+      dispP.textContent = sliderP.value;
+      renderDisk();
+    }
+
+    function renderDisk() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const rVal = parseFloat(sliderR.value);
+      const primeCount = parseInt(sliderP.value);
+      const primes = GLab.getPrimes(300).slice(0, primeCount);
+
+      const cx = canvas.width / 2;
+      const cy = canvas.height / 2;
+      const R = Math.min(cx, cy) - 30;
+
+      // Draw Unit Circle boundary
+      ctx.strokeStyle = '#334155';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.arc(cx, cy, R, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Draw Current Radius circle
+      ctx.strokeStyle = '#6366f1';
+      ctx.lineWidth = 1;
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.arc(cx, cy, R * rVal, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Compute and plot magnitude |P(r e^{i theta})|^2 as radial envelope
+      const steps = 360;
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+
+      let maxMag = 0;
+      const mags = new Float32Array(steps);
+
+      for (let i = 0; i < steps; i++) {
+        const theta = (i / steps) * Math.PI * 2;
+        let real = 0;
+        let imag = 0;
+
+        for (const p of primes) {
+          const powerR = Math.pow(rVal, p);
+          const angle = p * theta;
+          real += powerR * Math.cos(angle);
+          imag += powerR * Math.sin(angle);
+        }
+
+        const mag = real * real + imag * imag;
+        mags[i] = mag;
+        if (mag > maxMag) maxMag = mag;
+      }
+
+      for (let i = 0; i < steps; i++) {
+        const theta = (i / steps) * Math.PI * 2;
+        const norm = (mags[i] / (maxMag || 1));
+        const plotR = R * rVal + norm * 26;
+        const px = cx + Math.cos(theta) * plotR;
+        const py = cy + Math.sin(theta) * plotR;
+
+        if (i === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+      }
+      ctx.closePath();
+      ctx.stroke();
+
+      // Gradient fill inside the wave
+      ctx.fillStyle = 'rgba(56, 189, 248, 0.12)';
+      ctx.fill();
+
+      // Mark key cusps
+      const cusps = [
+        { theta: 0, label: 'q=1 (Major Arc)' },
+        { theta: Math.PI, label: 'q=-1 (mod 2)' },
+        { theta: Math.PI / 3, label: '60° (mod 6)' },
+        { theta: 2 * Math.PI / 3, label: '120° (mod 3)' }
+      ];
+
+      cusps.forEach(c => {
+        const px = cx + Math.cos(c.theta) * R;
+        const py = cy + Math.sin(c.theta) * R;
+
+        ctx.fillStyle = '#fbbf24';
+        ctx.beginPath();
+        ctx.arc(px, py, 4, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = '#f8fafc';
+        ctx.font = '10px monospace';
+        ctx.textAlign = (px > cx) ? 'left' : 'right';
+        ctx.fillText(c.label, px + (px > cx ? 6 : -6), py);
+      });
+    }
+
+    canvas.addEventListener('mousemove', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const mx = e.clientX - rect.left - canvas.width / 2;
+      const my = e.clientY - rect.top - canvas.height / 2;
+      const dist = Math.hypot(mx, my);
+      const R = Math.min(canvas.width, canvas.height) / 2 - 30;
+      const r = dist / R;
+      const theta = Math.atan2(my, mx);
+      const deg = Math.round(((theta * 180 / Math.PI) + 360) % 360);
+
+      cursorReadout.textContent = `Cursor: r=${r.toFixed(2)}, θ=${deg}°`;
+    });
+
+    function resizeCanvas() {
+      canvas.width = canvas.parentElement.clientWidth;
+      update();
+    }
+    window.addEventListener('resize', resizeCanvas);
+
+    sliderR.addEventListener('input', () => { update(); GLab.audio.playClick(); });
+    sliderP.addEventListener('input', () => { update(); GLab.audio.playClick(); });
+
+    GLab.init({
+      labNum: 82,
+      title: "Modular Forms & q-Series",
+      clusterNum: 9,
+      clusterName: "Advanced Number Theory & Modular Forms",
+      prevId: "lab081_elliptic_curves",
+      nextId: "lab083_dirichlet_characters"
+    });
+
+    resizeCanvas();
+  </script>
+</body>
+</html>

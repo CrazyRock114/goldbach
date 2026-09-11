@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 075: Gauss's Li(x) & Prime Density - Goldbach Discovery Labs</title>
+  <link rel="stylesheet" href="common.css">
+  <style>
+    .density-metrics {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    @media (max-width: 768px) {
+      .density-metrics {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    .hud-box {
+      background: var(--card-bg-subtle);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-sm);
+      padding: 12px;
+      text-align: center;
+    }
+    .hud-title {
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .hud-num {
+      font-size: 22px;
+      font-weight: 800;
+      font-family: monospace;
+      margin-top: 4px;
+    }
+    .canvas-wrap {
+      height: 320px;
+      position: relative;
+    }
+  </style>
+</head>
+<body>
+  <div id="lab-nav" class="lab-nav"></div>
+
+  <div class="container">
+    <div class="lab-header">
+      <h1>Lab 075: Gauss's $\text{Li}(x)$ & Prime Counting Function $\pi(x)$</h1>
+      <p class="hook">At age 15, Carl Friedrich Gauss noticed that primes thin out like $1/\ln x$. Discover how Gauss's logarithmic integral $\text{Li}(x)$ underpins both the Prime Number Theorem and the Hardy-Littlewood Goldbach formula!</p>
+    </div>
+
+    <div class="lab-stage">
+      <div class="controls-bar">
+        <div class="control-group">
+          <label for="gauss-x">Upper Limit <i>x</i>:</label>
+          <input type="range" id="gauss-x" min="50" max="1000" step="25" value="500">
+          <span style="font-size: 18px; font-weight: 800; color: var(--accent);" id="gauss-x-val">500</span>
+        </div>
+        <div class="stat-pill" style="margin-left: auto;">
+          <span>Gauss (1792):</span>
+          <span class="num" style="color: #38bdf8;">π(x) ~ Li(x)</span>
+        </div>
+      </div>
+
+      <div class="density-metrics">
+        <div class="hud-box">
+          <div class="hud-title">True Primes π(x)</div>
+          <div class="hud-num" style="color: #38bdf8;" id="val-pi">95</div>
+        </div>
+        <div class="hud-box">
+          <div class="hud-title">Gauss Integral Li(x)</div>
+          <div class="hud-num" style="color: #fbbf24;" id="val-li">100.8</div>
+        </div>
+        <div class="hud-box">
+          <div class="hud-title">Approximation Error</div>
+          <div class="hud-num" style="color: #34d399;" id="val-error">+5.8 (5.8%)</div>
+        </div>
+        <div class="hud-box">
+          <div class="hud-title">Local Density 1 / ln(x)</div>
+          <div class="hud-num" style="color: #c084fc;" id="val-density">16.1%</div>
+        </div>
+      </div>
+
+      <div style="font-size: 12px; color: var(--muted); text-transform: uppercase; margin-bottom: 6px;">Step Function π(x) vs. Smooth Gauss Curve Li(x):</div>
+      <div class="canvas-container canvas-wrap">
+        <canvas id="gaussCanvas" height="320"></canvas>
+      </div>
+    </div>
+
+    <div class="pedagogy-grid">
+      <div class="pedagogy-card story">
+        <h2>✨ A 15-Year-Old Prodigy's Masterpiece</h2>
+        <p>In 1792, young <b>Carl Friedrich Gauss</b> received a copy of Johann Heinrich Lambert's book of mathematical tables, which included a table of logarithms and a list of primes up to 100,000.</p>
+        <p>By laboriously counting primes in blocks of 1,000, Gauss made a startling discovery: primes do not appear erratically without law; their average density near $x$ decreases exactly like the reciprocal of the natural logarithm, $\frac{1}{\ln x}$!</p>
+        <p>Summing up these probabilities gives the <b>Logarithmic Integral</b> $\text{Li}(x) = \int_2^x \frac{dt}{\ln t}$. Because the probability that $p$ is prime is $1/\ln p$ and $q = N-p$ is prime is $1/\ln(N-p)$, the expected number of Goldbach pairs is $\int \frac{dt}{\ln t \ln(N-t)} \approx \frac{N}{\ln^2 N}$!</p>
+      </div>
+
+      <div class="pedagogy-card challenge">
+        <h2>🎯 Try This! (Hands-On Challenges)</h2>
+        <div class="challenge-item">
+          <span class="badge">Challenge 1</span>
+          At $x = 1000$, how many true primes exist, and what does Gauss's $\text{Li}(x)$ predict?
+          <button class="reveal-btn" data-target="ans-1">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-1">
+            $\pi(1000) = \mathbf{168}$. Gauss's $\text{Li}(1000) \approx \mathbf{177.6}$. An error of less than 6%, astonishing for an asymptotic estimate!
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 2</span>
+          Why does $\text{Li}(x)$ consistently overestimate $\pi(x)$ for small numbers?
+          <button class="reveal-btn" data-target="ans-2">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-2">
+            For small $x$, $\text{Li}(x) > \pi(x)$. Remarkably, J. E. Littlewood proved in 1914 that the difference $\pi(x) - \text{Li}(x)$ changes sign infinitely many times, though the first crossover occurs at the astronomical Skewes number ($>10^{316}$)!
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 3</span>
+          How does the $1/\ln^2 N$ term in Goldbach originate directly from Gauss's discovery?
+          <button class="reveal-btn" data-target="ans-3">💡 The Square Connection</button>
+          <div class="answer" id="ans-3">
+            Since Goldbach requires TWO independent primes $p$ and $N-p$, the joint probability is $\frac{1}{\ln N} \times \frac{1}{\ln N} = \frac{1}{\ln^2 N}$.
+          </div>
+        </div>
+      </div>
+
+      <div class="pedagogy-card rigor">
+        <h2>📐 The Prime Number Theorem & Error Term</h2>
+        <p>The Prime Number Theorem (Hadamard & de la Vallée Poussin, 1896) asserts:</p>
+        <div class="math-formula">
+          \lim_{x \to \infty} \frac{\pi(x)}{\text{Li}(x)} = 1, \quad \text{Li}(x) = \int_2^x \frac{dt}{\ln t} = \frac{x}{\ln x} + \frac{x}{\ln^2 x} + \mathcal{O}\left(\frac{x}{\ln^3 x}\right)
+        </div>
+        <p>Under the Riemann Hypothesis, the error is bounded by $|\pi(x) - \text{Li}(x)| \le \frac{1}{8\pi} \sqrt{x} \ln x$, providing the precision required to bound major arcs in Goldbach circle method estimates.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <a href="index.html">← Return to 100 Explorations Hub</a> | Goldbach Discovery Labs &copy; 2026
+  </footer>
+
+  <script src="i18n.js"></script>
+  <script src="common.js"></script>
+  <script>
+    const sliderX = document.getElementById('gauss-x');
+    const dispX = document.getElementById('gauss-x-val');
+    const valPi = document.getElementById('val-pi');
+    const valLi = document.getElementById('val-li');
+    const valError = document.getElementById('val-error');
+    const valDensity = document.getElementById('val-density');
+    const canvas = document.getElementById('gaussCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // Numerical Li(x) using Simpson rule
+    function computeLi(x) {
+      if (x <= 2) return 0;
+      const steps = 200;
+      const h = (x - 2) / steps;
+      let sum = (1 / Math.log(2)) + (1 / Math.log(x));
+
+      for (let i = 1; i < steps; i++) {
+        const t = 2 + i * h;
+        const weight = (i % 2 === 0) ? 2 : 4;
+        sum += weight * (1 / Math.log(t));
+      }
+      return (h / 3) * sum;
+    }
+
+    function update() {
+      const x = parseInt(sliderX.value);
+      dispX.textContent = x;
+
+      const primes = GLab.getPrimes(x);
+      const piVal = primes.length;
+      valPi.textContent = piVal;
+
+      const liVal = computeLi(x);
+      valLi.textContent = liVal.toFixed(1);
+
+      const err = liVal - piVal;
+      const errPct = ((err / piVal) * 100).toFixed(1);
+      valError.textContent = `${err >= 0 ? '+' : ''}${err.toFixed(1)} (${errPct}%)`;
+
+      const localDensity = (1 / Math.log(x)) * 100;
+      valDensity.textContent = `${localDensity.toFixed(1)}%`;
+
+      renderCanvas(x, primes);
+    }
+
+    function renderCanvas(maxX, primes) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const padding = 35;
+      const w = canvas.width - padding * 2;
+      const h = canvas.height - padding * 2;
+
+      const maxPi = primes.length * 1.15;
+
+      // Axis
+      ctx.strokeStyle = '#334155';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(padding, canvas.height - padding);
+      ctx.lineTo(canvas.width - padding, canvas.height - padding);
+      ctx.stroke();
+
+      // Plot Gauss Li(t) smooth curve
+      ctx.strokeStyle = '#fbbf24';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      for (let pixel = 0; pixel <= w; pixel += 2) {
+        const t = 2 + (pixel / w) * (maxX - 2);
+        const li = computeLi(t);
+        const px = padding + pixel;
+        const py = canvas.height - padding - (li / maxPi) * h;
+        if (pixel === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+      }
+      ctx.stroke();
+
+      // Plot True pi(t) step function
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+
+      let currentPi = 0;
+      let primeIdx = 0;
+
+      for (let pixel = 0; pixel <= w; pixel++) {
+        const t = 2 + (pixel / w) * (maxX - 2);
+        while (primeIdx < primes.length && primes[primeIdx] <= t) {
+          currentPi++;
+          primeIdx++;
+        }
+        const px = padding + pixel;
+        const py = canvas.height - padding - (currentPi / maxPi) * h;
+        if (pixel === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+      }
+      ctx.stroke();
+
+      // Legend
+      ctx.fillStyle = '#38bdf8';
+      ctx.font = '12px sans-serif';
+      ctx.fillText('— True Prime Count π(x)', padding, 20);
+
+      ctx.fillStyle = '#fbbf24';
+      ctx.fillText('— Gauss Logarithmic Integral Li(x)', padding + 190, 20);
+    }
+
+    function resizeCanvas() {
+      canvas.width = canvas.parentElement.clientWidth;
+      update();
+    }
+    window.addEventListener('resize', resizeCanvas);
+
+    sliderX.addEventListener('input', () => {
+      update();
+      GLab.audio.playClick();
+    });
+
+    GLab.init({
+      labNum: 75,
+      title: "Gauss's Li(x) & Prime Density",
+      clusterNum: 8,
+      clusterName: "Historical Perspectives & Conjectures",
+      prevId: "lab074_landau_four_problems",
+      nextId: "lab076_riemann_zeta_music"
+    });
+
+    resizeCanvas();
+  </script>
+</body>
+</html>

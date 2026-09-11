@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 035: The Twin Prime Constant C2 - Goldbach Discovery Labs</title>
+  <link rel="stylesheet" href="common.css">
+  <style>
+    .convergence-stage {
+      height: 380px;
+      position: relative;
+    }
+  </style>
+</head>
+<body>
+  <div id="lab-nav" class="lab-nav"></div>
+
+  <div class="container">
+    <div class="lab-header">
+      <h1>Lab 035: The Twin Prime Constant $C_2 \approx 0.66016$</h1>
+      <p class="hook">A single magic number links Twin Primes to Goldbach's Conjecture: the Twin Prime Constant $C_2$. Watch an infinite product of prime fractions converge to the universal bedrock of the Goldbach comet!</p>
+    </div>
+
+    <div class="lab-stage">
+      <div class="controls-bar">
+        <div class="control-group">
+          <label for="step-slider">Primes Multiplied ($k$):</label>
+          <input type="range" id="step-slider" min="1" max="50" step="1" value="10">
+          <span style="font-size: 18px; font-weight: 800; color: var(--accent);" id="step-val">k = 10 primes</span>
+        </div>
+        <button class="btn btn-sm btn-primary" id="btn-snap-max">Multiply 50 Primes ▶</button>
+        <div class="stat-pill" style="margin-left: auto;">
+          <span>Current Product:</span>
+          <span class="num" id="prod-val" style="color: var(--green);">0.66241</span>
+        </div>
+      </div>
+
+      <div class="canvas-container convergence-stage">
+        <canvas id="convCanvas" height="380"></canvas>
+      </div>
+
+      <div style="margin-top: 14px; background: var(--card-bg-subtle); padding: 12px 18px; border-radius: var(--radius-sm); border: 1px solid var(--card-border); display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap; gap: 12px;">
+        <div style="text-align: center;">
+          <span style="font-size: 11px; color: var(--muted); text-transform: uppercase;">Twin Prime Constant C₂</span>
+          <div style="font-size: 22px; font-weight: 800; color: var(--primary);">0.66016 18158...</div>
+        </div>
+        <div style="text-align: center;">
+          <span style="font-size: 11px; color: var(--muted); text-transform: uppercase;">Goldbach Comet Floor 2C₂</span>
+          <div style="font-size: 22px; font-weight: 800; color: var(--accent);">1.32032 36316...</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pedagogy-grid">
+      <div class="pedagogy-card story">
+        <h2>✨ Intuitive Concept: An Infinite Prime Symphony</h2>
+        <p>Imagine multiplying infinite fractions together, one for each odd prime:</p>
+        <div class="math-formula">
+          C_2 = \left(1 - \frac{1}{2^2}\right) \times \left(1 - \frac{1}{4^2}\right) \times \left(1 - \frac{1}{6^2}\right) \times \dots
+        </div>
+        <p>For $p = 3$: $\frac{3}{4} = 0.75$.<br>
+        For $p = 5$: $0.75 \times \frac{15}{16} \approx 0.7031$.<br>
+        For $p = 7$: $0.7031 \times \frac{35}{36} \approx 0.6836$.</p>
+        <p>Because each fraction is just slightly less than 1, the product gently settles down to an exact cosmic limit: <b>$0.6601618...$</b>. Double this number ($2 C_2 \approx 1.3203$), and you get the exact coefficient for the bottom floor of the Goldbach Comet!</p>
+      </div>
+
+      <div class="pedagogy-card challenge">
+        <h2>🎯 Try This! (Hands-On Challenges)</h2>
+        <div class="challenge-item">
+          <span class="badge">Challenge 1</span>
+          How many prime terms does it take to reach within 1% of the true limit $0.66016$?
+          <button class="reveal-btn" data-target="ans-1">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-1">
+            Just <b>5 primes</b> ($p = 3, 5, 7, 11, 13$)! The partial product at $p=13$ is $\approx 0.6644$, already within $0.6\%$ of the true constant. The product converges very rapidly!
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 2</span>
+          Why is $p=2$ excluded from the product?
+          <button class="reveal-btn" data-target="ans-2">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-2">
+            Because if $p=2$, the denominator $(p-1)^2 = (2-1)^2 = 1$, and $1 - \frac{1}{1} = 0$, which would zero out the entire product! The prime 2 is factored out into the leading coefficient 2.
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 3</span>
+          Where else in number theory does $C_2$ appear?
+          <button class="reveal-btn" data-target="ans-3">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-3">
+            In the <b>Twin Prime Conjecture</b>! The estimated number of twin primes up to $x$ is $2 C_2 \int_2^x \frac{dt}{\ln^2 t}$. The exact same constant governs both twin primes and Goldbach pairs!
+          </div>
+        </div>
+      </div>
+
+      <div class="pedagogy-card rigor">
+        <h2>📐 Mathematical Rigor & Formal Definition</h2>
+        <p>The Twin Prime Constant $C_2$ is defined by the Euler product:</p>
+        <div class="math-formula">
+          C_2 = \prod_{p > 2} \left(1 - \frac{1}{(p - 1)^2}\right) = \prod_{p > 2} \frac{p(p - 2)}{(p - 1)^2} \approx 0.6601618158468695739278...
+        </div>
+        <p>Its relationship to the Riemann zeta function $\zeta(s)$ can be computed via accelerated series: $\ln C_2 = \sum_{k=2}^\infty \frac{-2^k + 2}{k} (\sum_{p>2} p^{-k})$.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <a href="index.html">← Return to 100 Explorations Hub</a> | Goldbach Discovery Labs &copy; 2026
+  </footer>
+
+  <script src="i18n.js"></script>
+  <script src="common.js"></script>
+  <script>
+    const slider = document.getElementById('step-slider');
+    const stepVal = document.getElementById('step-val');
+    const prodVal = document.getElementById('prod-val');
+    const btnMax = document.getElementById('btn-snap-max');
+    const canvas = document.getElementById('convCanvas');
+    const ctx = canvas.getContext('2d');
+
+    const primes = GLab.getPrimes(300).filter(p => p > 2);
+
+    function computePartialProducts(k) {
+      const data = [];
+      let prod = 1;
+      for (let i = 0; i < k; i++) {
+        const p = primes[i];
+        prod *= (1 - 1 / ((p - 1) * (p - 1)));
+        data.push({ i: i + 1, p, prod });
+      }
+      return data;
+    }
+
+    function renderConvergence() {
+      const k = parseInt(slider.value);
+      stepVal.textContent = `k = ${k} primes (up to p = ${primes[k-1]})`;
+
+      const data = computePartialProducts(k);
+      const curProd = data[data.length - 1].prod;
+      prodVal.textContent = curProd.toFixed(5);
+
+      const w = canvas.width = canvas.parentElement.clientWidth;
+      const h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      const margin = 45;
+      const plotW = w - margin * 2;
+      const plotH = h - margin * 2;
+
+      // Draw Axes
+      ctx.strokeStyle = '#334155';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(margin, h - margin);
+      ctx.lineTo(w - margin, h - margin);
+      ctx.moveTo(margin, h - margin);
+      ctx.lineTo(margin, margin);
+      ctx.stroke();
+
+      // Theoretical limit line y = 0.66016
+      const limitY = h - margin - ((0.66016 - 0.64) / (0.76 - 0.64)) * plotH;
+      ctx.strokeStyle = '#fbbf24';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.moveTo(margin, limitY);
+      ctx.lineTo(w - margin, limitY);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      ctx.fillStyle = '#fbbf24';
+      ctx.font = '11px monospace';
+      ctx.fillText('Asymptotic Limit C₂ ≈ 0.66016', w - margin - 180, limitY - 8);
+
+      // Plot Convergence curve
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+
+      data.forEach((d, idx) => {
+        const x = margin + (idx / Math.max(1, k - 1)) * plotW;
+        const y = h - margin - ((d.prod - 0.64) / (0.76 - 0.64)) * plotH;
+        if (idx === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      });
+      ctx.stroke();
+
+      // Plot Points
+      data.forEach((d, idx) => {
+        const x = margin + (idx / Math.max(1, k - 1)) * plotW;
+        const y = h - margin - ((d.prod - 0.64) / (0.76 - 0.64)) * plotH;
+
+        ctx.fillStyle = (idx === k - 1) ? '#34d399' : '#38bdf8';
+        ctx.beginPath();
+        ctx.arc(x, y, idx === k - 1 ? 6 : 3, 0, Math.PI * 2);
+        ctx.fill();
+      });
+    }
+
+    slider.addEventListener('input', () => {
+      renderConvergence();
+      GLab.audio.playTone(320 + parseInt(slider.value) * 6, 0.05, 'sine', 0.05);
+    });
+
+    btnMax.addEventListener('click', () => {
+      slider.value = 50;
+      renderConvergence();
+      GLab.audio.playSuccess();
+    });
+
+    window.addEventListener('resize', renderConvergence);
+
+    GLab.init({
+      labNum: 35,
+      title: "The Twin Prime Constant C2",
+      clusterNum: 4,
+      clusterName: "The Goldbach Comet & Asymptotic Landscape",
+      prevId: "lab034_hardy_littlewood",
+      nextId: "lab036_comet_density_histogram"
+    });
+
+    renderConvergence();
+  </script>
+</body>
+</html>

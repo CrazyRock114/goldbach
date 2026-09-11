@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 024: Ulam Spiral Pair Highlighter - Goldbach Discovery Labs</title>
+  <link rel="stylesheet" href="common.css">
+  <style>
+    .ulam-stage {
+      height: 440px;
+      position: relative;
+    }
+    .ulam-stats {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      background: var(--card-bg-subtle);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-sm);
+      padding: 12px 18px;
+      margin-top: 14px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div id="lab-nav" class="lab-nav"></div>
+
+  <div class="container">
+    <div class="lab-header">
+      <h1>Lab 024: Ulam Spiral Pair Highlighter</h1>
+      <p class="hook">Stanislaw Ulam's famous spiral arranges integers in a counter-clockwise vortex. Watch diagonal prime constellations connect through glowing Goldbach bridges for any chosen even number $N$!</p>
+    </div>
+
+    <div class="lab-stage">
+      <div class="controls-bar">
+        <div class="control-group">
+          <label for="ulam-n">Target <i>N</i>:</label>
+          <input type="range" id="ulam-n" min="10" max="100" step="2" value="36">
+          <span style="font-size: 18px; font-weight: 800; color: var(--accent);" id="n-val">36</span>
+        </div>
+        <div class="control-group">
+          <label for="grid-size">Grid Size:</label>
+          <select id="grid-size">
+            <option value="11">11 × 11 (Up to 121)</option>
+            <option value="15" selected>15 × 15 (Up to 225)</option>
+            <option value="19">19 × 19 (Up to 361)</option>
+          </select>
+        </div>
+        <div class="stat-pill" style="margin-left: auto;">
+          <span>Goldbach Chords:</span>
+          <span class="num" id="chords-badge">4 pairs</span>
+        </div>
+      </div>
+
+      <div class="canvas-container ulam-stage">
+        <canvas id="ulamCanvas" height="440"></canvas>
+      </div>
+
+      <div class="ulam-stats">
+        <div>
+          <span style="font-size: 11px; color: var(--muted); text-transform: uppercase;">Pairs Plotted:</span>
+          <div style="font-size: 16px; font-weight: 700; color: var(--green);" id="pairs-list">5 + 31, 7 + 29, 13 + 23, 17 + 19</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pedagogy-grid">
+      <div class="pedagogy-card story">
+        <h2>✨ Intuitive Concept: The Spiral Vortex</h2>
+        <p>In 1963, during a boring lecture, mathematician Stanislaw Ulam doodled a grid of numbers in a spiral: 1 at the center, winding outward: 2, 3, 4, 5, 6, 7, 8, 9...</p>
+        <p>When he circled the prime numbers, a shock greeted him: <b>primes line up in prominent diagonal bands</b>! These diagonals correspond to quadratic polynomials like Euler's $n^2 + n + 41$.</p>
+        <p>When you select an even number $N$, this lab illuminates the <b>bridges connecting prime partners</b> across Ulam's spiral, showing how Goldbach's conjecture threads right through the heart of the vortex!</p>
+      </div>
+
+      <div class="pedagogy-card challenge">
+        <h2>🎯 Try This! (Hands-On Challenges)</h2>
+        <div class="challenge-item">
+          <span class="badge">Challenge 1</span>
+          Set $N = 36$. How do the 4 Goldbach chord bridges span across the spiral center?
+          <button class="reveal-btn" data-target="ans-1">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-1">
+            Pairs like $17 + 19$ are twin primes right near each other in the inner core, while $5 + 31$ spans all the way from the innermost ring to the outer perimeter!
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 2</span>
+          Why do prime numbers form diagonals on the Ulam spiral rather than horizontal rows?
+          <button class="reveal-btn" data-target="ans-2">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-2">
+            Because diagonal steps correspond to jumping by consecutive square perimeters $(2k+1)^2 = 4k^2 + 4k + 1$, generating quadratic sequences $an^2 + bn + c$ which are known to have high prime concentrations!
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 3</span>
+          Switch to a larger grid ($19 \times 19$) and test $N = 80$. What pattern of chords forms?
+          <button class="reveal-btn" data-target="ans-3">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-3">
+            The chords criss-cross in a web centered around the midpoint $m = 40$.
+          </div>
+        </div>
+      </div>
+
+      <div class="pedagogy-card rigor">
+        <h2>📐 Mathematical Rigor & Formal Definition</h2>
+        <p>The Ulam spiral coordinates $(x_n, y_n) \in \mathbb{Z}^2$ for $n \in \mathbb{N}$ map diagonal rays to polynomials $P(k) = 4k^2 + bk + c$. The Goldbach graph on the Ulam spiral is the bipartite chord set:</p>
+        <div class="math-formula">
+          E_N = \{((x_p, y_p), (x_{N-p}, y_{N-p})) \mid p \in \mathbb{P}, N-p \in \mathbb{P}\}
+        </div>
+        <p>demonstrating geometric clustering along quadratic polynomial curves.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <a href="index.html">← Return to 100 Explorations Hub</a> | Goldbach Discovery Labs &copy; 2026
+  </footer>
+
+  <script src="i18n.js"></script>
+  <script src="common.js"></script>
+  <script>
+    const slider = document.getElementById('ulam-n');
+    const nVal = document.getElementById('n-val');
+    const gridSelect = document.getElementById('grid-size');
+    const chordsBadge = document.getElementById('chords-badge');
+    const pairsList = document.getElementById('pairs-list');
+    const canvas = document.getElementById('ulamCanvas');
+    const ctx = canvas.getContext('2d');
+
+    function getUlamCoords(gridDim) {
+      const coords = {};
+      let x = 0;
+      let y = 0;
+      let dx = 1;
+      let dy = 0;
+      let stepSize = 1;
+      let stepCount = 0;
+      let turns = 0;
+
+      const total = gridDim * gridDim;
+      for (let i = 1; i <= total; i++) {
+        coords[i] = { x, y };
+        x += dx;
+        y += dy;
+        stepCount++;
+
+        if (stepCount === stepSize) {
+          stepCount = 0;
+          // Turn 90 deg counter-clockwise
+          const temp = dx;
+          dx = -dy;
+          dy = temp;
+          turns++;
+          if (turns % 2 === 0) stepSize++;
+        }
+      }
+      return coords;
+    }
+
+    function renderUlam() {
+      const n = parseInt(slider.value);
+      nVal.textContent = n;
+      const dim = parseInt(gridSelect.value);
+
+      const coords = getUlamCoords(dim);
+      const pairs = GLab.getGoldbachPairs(n);
+      chordsBadge.textContent = `${pairs.length} pair${pairs.length>1?'s':''}`;
+      pairsList.textContent = pairs.map(p => `${p[0]} + ${p[1]}`).join('  •  ');
+
+      const w = canvas.width = canvas.parentElement.clientWidth;
+      const h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      const cx = w / 2;
+      const cy = h / 2;
+      const cellSize = Math.min((w - 40) / dim, (h - 40) / dim);
+
+      const toScreen = (gx, gy) => ({
+        x: cx + gx * cellSize,
+        y: cy - gy * cellSize
+      });
+
+      const total = dim * dim;
+      const pairSet = new Set();
+      pairs.forEach(p => {
+        pairSet.add(p[0]);
+        pairSet.add(p[1]);
+      });
+
+      // Draw cells
+      for (let i = 1; i <= total; i++) {
+        const pt = coords[i];
+        if (!pt) continue;
+        const s = toScreen(pt.x, pt.y);
+
+        const isP = GLab.isPrime(i);
+        const inPair = pairSet.has(i);
+
+        if (inPair) {
+          ctx.fillStyle = '#fbbf24';
+          ctx.beginPath();
+          ctx.arc(s.x, s.y, cellSize * 0.38, 0, Math.PI * 2);
+          ctx.fill();
+        } else if (isP) {
+          ctx.fillStyle = '#38bdf8';
+          ctx.beginPath();
+          ctx.arc(s.x, s.y, cellSize * 0.28, 0, Math.PI * 2);
+          ctx.fill();
+        } else {
+          ctx.fillStyle = '#1e293b';
+          ctx.beginPath();
+          ctx.arc(s.x, s.y, 2, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        if (dim <= 15 && i <= 50) {
+          ctx.fillStyle = inPair ? '#0b1120' : '#64748b';
+          ctx.font = 'bold 9px monospace';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(i, s.x, s.y);
+        }
+      }
+
+      // Draw glowing Goldbach chords between p and q
+      pairs.forEach(pair => {
+        const pt1 = coords[pair[0]];
+        const pt2 = coords[pair[1]];
+        if (pt1 && pt2) {
+          const s1 = toScreen(pt1.x, pt1.y);
+          const s2 = toScreen(pt2.x, pt2.y);
+
+          ctx.strokeStyle = 'rgba(52, 211, 153, 0.7)';
+          ctx.lineWidth = 2.5;
+          ctx.beginPath();
+          ctx.moveTo(s1.x, s1.y);
+          ctx.lineTo(s2.x, s2.y);
+          ctx.stroke();
+        }
+      });
+    }
+
+    slider.addEventListener('input', () => {
+      renderUlam();
+      GLab.audio.playTone(340 + parseInt(slider.value) * 6, 0.08, 'triangle');
+    });
+
+    gridSelect.addEventListener('change', () => {
+      renderUlam();
+      GLab.audio.playClick();
+    });
+
+    window.addEventListener('resize', renderUlam);
+
+    GLab.init({
+      labNum: 24,
+      title: "Ulam Spiral Pair Highlighter",
+      clusterNum: 3,
+      clusterName: "Geometric, Lattice & Visual Representations",
+      prevId: "lab023_step_pyramid",
+      nextId: "lab025_regular_polygons"
+    });
+
+    renderUlam();
+  </script>
+</body>
+</html>

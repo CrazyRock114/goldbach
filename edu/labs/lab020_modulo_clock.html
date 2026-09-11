@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 020: Two Hands of the Modulo Clock - Goldbach Discovery Labs</title>
+  <link rel="stylesheet" href="common.css">
+  <style>
+    .clock-stage {
+      height: 420px;
+      position: relative;
+    }
+    .clock-readouts {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      background: var(--card-bg-subtle);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-sm);
+      padding: 12px 18px;
+      margin-top: 14px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div id="lab-nav" class="lab-nav"></div>
+
+  <div class="container">
+    <div class="lab-header">
+      <h1>Lab 020: Two Hands of the Modulo Clock</h1>
+      <p class="hook">Rotate the dual hands of a mathematical clock ($m = 12$) to solve linear congruences $p + q \equiv N \pmod m$. When both hands point to primes summing to $N$, the clock bell chimes in harmonic resonance!</p>
+    </div>
+
+    <div class="lab-stage">
+      <div class="controls-bar">
+        <div class="control-group">
+          <label for="clock-n">Target Even <i>N</i>:</label>
+          <input type="range" id="clock-n" min="4" max="60" step="2" value="24">
+          <span style="font-size: 18px; font-weight: 800; color: var(--accent);" id="n-val">24</span>
+        </div>
+        <button class="btn btn-primary btn-sm" id="btn-next-hand-pair">⏰ Align Hands to Solution ▶</button>
+        <div class="stat-pill" style="margin-left: auto;">
+          <span>Target mod 12:</span>
+          <span class="num" id="mod12-badge">0</span>
+        </div>
+      </div>
+
+      <div class="canvas-container clock-stage">
+        <canvas id="clockCanvas" height="420"></canvas>
+      </div>
+
+      <div class="clock-readouts">
+        <div style="text-align: center;">
+          <div style="font-size: 11px; color: var(--muted); text-transform: uppercase;">Hand 1 (p)</div>
+          <div style="font-size: 24px; font-weight: 800; color: #38bdf8;" id="val-hand1">5</div>
+        </div>
+        <div style="font-size: 28px; font-weight: 800; color: var(--muted);">+</div>
+        <div style="text-align: center;">
+          <div style="font-size: 11px; color: var(--muted); text-transform: uppercase;">Hand 2 (q)</div>
+          <div style="font-size: 24px; font-weight: 800; color: #34d399;" id="val-hand2">19</div>
+        </div>
+        <div style="font-size: 28px; font-weight: 800; color: var(--muted);">=</div>
+        <div style="text-align: center;">
+          <div style="font-size: 11px; color: var(--muted); text-transform: uppercase;">Sum on Clock</div>
+          <div style="font-size: 24px; font-weight: 800; color: var(--accent);" id="val-clock-sum">24 (mod 12 = 0)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pedagogy-grid">
+      <div class="pedagogy-card story">
+        <h2>✨ Intuitive Concept: Clock Face Arithmetic</h2>
+        <p>You use modular arithmetic every single day when you look at a wall clock! If it is 9 o'clock and you wait 5 hours, $9 + 5 = 14 \equiv 2$ o'clock.</p>
+        <p>On this <b>Modulo 12 Clock</b>, two hands point to prime numbers $p$ and $q$. Their angle on the dial represents their remainder when divided by 12.</p>
+        <p>When the combined rotation of both hands equals $N \pmod{12}$, the dial locks into an algebraic resonance: a valid prime partition!</p>
+      </div>
+
+      <div class="pedagogy-card challenge">
+        <h2>🎯 Try This! (Hands-On Challenges)</h2>
+        <div class="challenge-item">
+          <span class="badge">Challenge 1</span>
+          On a 12-hour clock, which positions can primes $>3$ land on?
+          <button class="reveal-btn" data-target="ans-1">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-1">
+            Only 4 positions: <b>1, 5, 7, and 11</b>! All other 8 positions are divisible by 2 (0, 2, 4, 6, 8, 10) or by 3 (3, 9). Notice: $\phi(12) = 4$!
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 2</span>
+          Set $N = 24$. Notice that $24 \equiv 0 \pmod{12}$. How must the two clock hands balance?
+          <button class="reveal-btn" data-target="ans-2">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-2">
+            They must be mirror images across the 12 o'clock vertical axis ($p + q \equiv 0 \equiv 12 \pmod{12}$)! For example, 5 o'clock + 7 o'clock = 12 o'clock, or 1 o'clock + 11 o'clock = 12 o'clock!
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 3</span>
+          Click "Align Hands to Solution" to test $N = 36$. How many pairs can the clock display?
+          <button class="reveal-btn" data-target="ans-3">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-3">
+            $36$ has 4 pairs: $5+31$, $7+29$, $13+23$, and $17+19$. Each creates a balanced bilateral reflection on the clock face!
+          </div>
+        </div>
+      </div>
+
+      <div class="pedagogy-card rigor">
+        <h2>📐 Mathematical Rigor & Formal Definition</h2>
+        <p>Let $C_{12} \cong \mathbb{Z}/12\mathbb{Z}$. The set of coprime residues is $(\mathbb{Z}/12\mathbb{Z})^\times = \{1, 5, 7, 11\}$. Every prime $p > 3$ satisfies:</p>
+        <div class="math-formula">
+          p \in \{1, 5, 7, 11\} \pmod{12}
+        </div>
+        <p>Goldbach partitions satisfy the cyclic group congruence $p + q \equiv N \pmod{12}$. The Klein 4-group structure $(\mathbb{Z}/12\mathbb{Z})^\times \cong C_2 \times C_2$ guarantees involutive symmetry for all $N \equiv 0 \pmod{12}$.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <a href="index.html">← Return to 100 Explorations Hub</a> | Goldbach Discovery Labs &copy; 2026
+  </footer>
+
+  <script src="i18n.js"></script>
+  <script src="common.js"></script>
+  <script>
+    const slider = document.getElementById('clock-n');
+    const nVal = document.getElementById('n-val');
+    const btnNextPair = document.getElementById('btn-next-hand-pair');
+    const mod12Badge = document.getElementById('mod12-badge');
+    const valHand1 = document.getElementById('val-hand1');
+    const valHand2 = document.getElementById('val-hand2');
+    const valClockSum = document.getElementById('val-clock-sum');
+    const canvas = document.getElementById('clockCanvas');
+    const ctx = canvas.getContext('2d');
+
+    let currentPairIdx = 0;
+
+    function renderClock() {
+      const n = parseInt(slider.value);
+      nVal.textContent = n;
+      const mod12 = n % 12;
+      mod12Badge.textContent = `${mod12}`;
+
+      const pairs = GLab.getGoldbachPairs(n);
+      if (pairs.length === 0) return;
+
+      const [p, q] = pairs[currentPairIdx % pairs.length];
+      valHand1.textContent = `${p} (${p%12} o'clock)`;
+      valHand2.textContent = `${q} (${q%12} o'clock)`;
+      valClockSum.textContent = `${p} + ${q} = ${n} (mod 12 = ${mod12})`;
+
+      const w = canvas.width = canvas.parentElement.clientWidth;
+      const h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      const cx = w / 2;
+      const cy = h / 2;
+      const radius = Math.min(cx, cy) - 35;
+
+      // Clock casing
+      ctx.fillStyle = '#1e293b';
+      ctx.beginPath();
+      ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#475569';
+      ctx.lineWidth = 8;
+      ctx.stroke();
+
+      // Golden bezel
+      ctx.strokeStyle = '#fbbf24';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      // 12 Hours ticks & labels
+      for (let hr = 1; hr <= 12; hr++) {
+        const theta = (hr / 12) * Math.PI * 2 - Math.PI / 2;
+        const tickR = radius - 15;
+        const textR = radius - 32;
+
+        const isPrimeHour = [1, 5, 7, 11].includes(hr % 12);
+
+        // Tick mark
+        ctx.strokeStyle = isPrimeHour ? '#38bdf8' : '#64748b';
+        ctx.lineWidth = isPrimeHour ? 3 : 1.5;
+        ctx.beginPath();
+        ctx.moveTo(cx + Math.cos(theta) * tickR, cy + Math.sin(theta) * tickR);
+        ctx.lineTo(cx + Math.cos(theta) * (radius - 5), cy + Math.sin(theta) * (radius - 5));
+        ctx.stroke();
+
+        // Hour numeral
+        ctx.fillStyle = isPrimeHour ? '#fbbf24' : '#94a3b8';
+        ctx.font = isPrimeHour ? 'bold 15px monospace' : '13px monospace';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(hr, cx + Math.cos(theta) * textR, cy + Math.sin(theta) * textR);
+      }
+
+      // Hand 1 (Blue for p)
+      const theta1 = ((p % 12) / 12) * Math.PI * 2 - Math.PI / 2;
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 5;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(cx + Math.cos(theta1) * (radius * 0.65), cy + Math.sin(theta1) * (radius * 0.65));
+      ctx.stroke();
+
+      // Hand 2 (Green for q)
+      const theta2 = ((q % 12) / 12) * Math.PI * 2 - Math.PI / 2;
+      ctx.strokeStyle = '#34d399';
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(cx + Math.cos(theta2) * (radius * 0.82), cy + Math.sin(theta2) * (radius * 0.82));
+      ctx.stroke();
+
+      // Center cap
+      ctx.fillStyle = '#fbbf24';
+      ctx.beginPath();
+      ctx.arc(cx, cy, 8, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    btnNextPair.addEventListener('click', () => {
+      currentPairIdx++;
+      renderClock();
+      GLab.audio.playSuccess();
+    });
+
+    slider.addEventListener('input', () => {
+      currentPairIdx = 0;
+      renderClock();
+      GLab.audio.playClick();
+    });
+
+    window.addEventListener('resize', renderClock);
+
+    GLab.init({
+      labNum: 20,
+      title: "Two Hands of the Modulo Clock",
+      clusterNum: 2,
+      clusterName: "Modular Arithmetic & The Power of 6",
+      prevId: "lab019_cross_sieve_42",
+      nextId: "lab021_prime_lattice"
+    });
+
+    renderClock();
+  </script>
+</body>
+</html>

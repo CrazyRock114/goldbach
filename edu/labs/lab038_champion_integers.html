@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 038: The Champion Integers Hall of Fame - Goldbach Discovery Labs</title>
+  <link rel="stylesheet" href="common.css">
+  <style>
+    .hall-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .trophy-card {
+      background: var(--card-bg-subtle);
+      border: 2px solid var(--card-border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.25s;
+    }
+    .trophy-card:hover, .trophy-card.active {
+      border-color: var(--accent);
+      transform: translateY(-3px);
+      box-shadow: 0 0 16px rgba(251, 191, 36, 0.25);
+    }
+    .trophy-card.active {
+      background: rgba(251, 191, 36, 0.1);
+    }
+    .trophy-rank {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .trophy-n {
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--primary);
+      margin: 4px 0;
+    }
+    .trophy-record {
+      font-size: 15px;
+      font-family: monospace;
+      color: var(--green);
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <div id="lab-nav" class="lab-nav"></div>
+
+  <div class="container">
+    <div class="lab-header">
+      <h1>Lab 038: The Champion Integers Hall of Fame</h1>
+      <p class="hook">Meet the record-breaking "Champion Integers" that set brand-new all-time highs for the smallest Goldbach prime $p_{\min}(N)$! Step through mathematical history to see who pushed the boundary furthest.</p>
+    </div>
+
+    <div class="lab-stage">
+      <div class="hall-grid" id="hall-grid">
+        <!-- Populated dynamically with Champions: 4, 6, 12, 30, 98, 220, 308, 556, 992 -->
+      </div>
+
+      <div style="background: var(--card-bg-subtle); padding: 18px; border-radius: var(--radius-md); border: 1px solid var(--card-border);">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+          <div>
+            <span style="font-size: 11px; color: var(--muted); text-transform: uppercase;">Champion Spotlight:</span>
+            <h2 style="color: var(--accent); font-size: 22px; margin-top: 2px;" id="spotlight-title">N = 98 (Record p_min = 19)</h2>
+          </div>
+          <div class="stat-pill">
+            <span>Winning Partition:</span>
+            <span class="num" id="spotlight-pair">19 + 79 = 98</span>
+          </div>
+        </div>
+        <p style="color: #cbd5e1; font-size: 14px; margin-top: 10px;" id="spotlight-desc">
+          98 is the undisputed champion of the two-digit numbers! It resists the first 7 prime keys (3, 5, 7, 11, 13, 17), holding the all-time record until 220.
+        </p>
+      </div>
+    </div>
+
+    <div class="pedagogy-grid">
+      <div class="pedagogy-card story">
+        <h2>✨ Intuitive Concept: Record-Breaking Champions</h2>
+        <p>In sports, champions break world records for high jumps or sprints. In number theory, <b>Champion Integers break world records for resisting small prime keys</b>!</p>
+        <p>For $N = 4$, the record is $p=2$.<br>
+        For $N = 6$, the record jumps to $p=3$.<br>
+        For $N = 12$, it reaches $p=5$.<br>
+        For $N = 30$, it reaches $p=7$.<br>
+        For $N = 98$, it makes a giant leap to $p=19$!</p>
+        <p>Notice how slowly the records climb: you have to travel all the way past 900 to find a number whose smallest prime key is 73!</p>
+      </div>
+
+      <div class="pedagogy-card challenge">
+        <h2>🎯 Try This! (Hands-On Challenges)</h2>
+        <div class="challenge-item">
+          <span class="badge">Challenge 1</span>
+          Why is 10 NOT in the Hall of Fame?
+          <button class="reveal-btn" data-target="ans-1">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-1">
+            Because for $N=10$, $p_{\min}(10) = 3$ ($3+7=10$). But the record of 3 was ALREADY established earlier by $N=6$! A number only enters the Hall of Fame if it strictly <b>exceeds</b> all previous records.
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 2</span>
+          Click on <b>Champion 220</b>. What is its record $p_{\min}$?
+          <button class="reveal-btn" data-target="ans-2">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-2">
+            $p_{\min}(220) = 23$ ($23 + 197 = 220$). It beats 98's record of 19!
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 3</span>
+          Why are many champions divisible by 2 and other small primes?
+          <button class="reveal-btn" data-target="ans-3">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-3">
+            If $N$ shares divisors with small numbers, $N - p$ will also be divisible by those numbers when $p$ shares residues, knocking out multiple small prime candidates simultaneously!
+          </div>
+        </div>
+      </div>
+
+      <div class="pedagogy-card rigor">
+        <h2>📐 Mathematical Rigor & Formal Definition</h2>
+        <p>An integer $N^* \in 2\mathbb{N}_{\ge 4}$ is a Goldbach Champion Integer if:</p>
+        <div class="math-formula">
+          p_{\min}(N^*) > \max_{4 \le N < N^*} p_{\min}(N)
+        </div>
+        <p>The sequence of champions $\{4, 6, 12, 30, 98, 220, 308, 556, 992, \dots\}$ forms OEIS sequence A025018. The record values $p_{\min}(N^*)$ form OEIS sequence A025019.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <a href="index.html">← Return to 100 Explorations Hub</a> | Goldbach Discovery Labs &copy; 2026
+  </footer>
+
+  <script src="i18n.js"></script>
+  <script src="common.js"></script>
+  <script>
+    const champions = [
+      { rank: 1, n: 4, p: 2, q: 2, desc: "The inaugural champion! The only number to use the only even prime, 2." },
+      { rank: 2, n: 6, p: 3, q: 3, desc: "The first odd prime champion: 3 + 3 = 6." },
+      { rank: 3, n: 12, p: 5, q: 7, desc: "First number where 3 fails (12 - 3 = 9 composite), raising the record to 5!" },
+      { rank: 4, n: 30, p: 7, q: 23, desc: "Resists 3 (27 comp) and 5 (25 comp), requiring prime 7!" },
+      { rank: 5, n: 98, p: 19, q: 79, desc: "The legendary two-digit king! Defeats 3, 5, 7, 11, 13, 17 in a row before surrendering to 19." },
+      { rank: 6, n: 220, p: 23, q: 197, desc: "The first three-digit champion, establishing the record of 23." },
+      { rank: 7, n: 308, p: 31, q: 277, desc: "Pushes the record beyond 30 to prime 31." },
+      { rank: 8, n: 556, p: 47, q: 509, desc: "A massive jump to 47, holding the title across hundreds of integers." },
+      { rank: 9, n: 992, p: 73, q: 919, desc: "The grand master under 1000, setting the remarkable record of p_min = 73!" }
+    ];
+
+    const hallGrid = document.getElementById('hall-grid');
+    const spotTitle = document.getElementById('spotlight-title');
+    const spotPair = document.getElementById('spotlight-pair');
+    const spotDesc = document.getElementById('spotlight-desc');
+
+    function selectChampion(c) {
+      document.querySelectorAll('.trophy-card').forEach(card => card.classList.remove('active'));
+      const card = document.getElementById(`champ-${c.n}`);
+      if (card) card.classList.add('active');
+
+      spotTitle.textContent = `N = ${c.n} (Record p_min = ${c.p})`;
+      spotPair.textContent = `${c.p} + ${c.q} = ${c.n}`;
+      spotDesc.textContent = c.desc;
+      GLab.audio.playTone(300 + c.p * 8, 0.1, 'triangle');
+    }
+
+    champions.forEach((c, idx) => {
+      const card = document.createElement('div');
+      card.className = 'trophy-card' + (c.n === 98 ? ' active' : '');
+      card.id = `champ-${c.n}`;
+      card.innerHTML = `
+        <div class="trophy-rank">🏆 Record #${c.rank}</div>
+        <div class="trophy-n">${c.n}</div>
+        <div class="trophy-record">p_min = ${c.p}</div>
+      `;
+      card.addEventListener('click', () => selectChampion(c));
+      hallGrid.appendChild(card);
+    });
+
+    GLab.init({
+      labNum: 38,
+      title: "The Champion Integers Hall of Fame",
+      clusterNum: 4,
+      clusterName: "The Goldbach Comet & Asymptotic Landscape",
+      prevId: "lab037_smallest_prime_hunter",
+      nextId: "lab039_fourier_spectrogram"
+    });
+  </script>
+</body>
+</html>

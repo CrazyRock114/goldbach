@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 078: Uncle Petros & Goldbach's Conjecture - Goldbach Discovery Labs</title>
+  <link rel="stylesheet" href="common.css">
+  <style>
+    .story-theater {
+      background: #090d16;
+      border: 2px solid #334155;
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      margin: 20px 0;
+      position: relative;
+    }
+    .dialogue-scene {
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      gap: 20px;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    @media (max-width: 600px) {
+      .dialogue-scene {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+    }
+    .uncle-avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #334155, #0f172a);
+      border: 3px solid #fbbf24;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 50px;
+      margin: 0 auto;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+    }
+    .speech-bubble {
+      background: #1e293b;
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 16px 20px;
+      position: relative;
+      font-size: 14px;
+      line-height: 1.7;
+      color: #e2e8f0;
+    }
+    .speech-bubble::before {
+      content: '';
+      position: absolute;
+      left: -10px;
+      top: 24px;
+      border-top: 10px solid transparent;
+      border-bottom: 10px solid transparent;
+      border-right: 10px solid #1e293b;
+    }
+    .interactive-desk {
+      background: var(--card-bg-subtle);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 16px;
+      margin-top: 16px;
+    }
+    .bean-tray {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      min-height: 60px;
+      align-items: center;
+      padding: 10px;
+      background: #020617;
+      border-radius: 8px;
+      border: 1px inset #1e293b;
+      margin: 10px 0;
+    }
+    .bean {
+      width: 16px;
+      height: 22px;
+      background: radial-gradient(circle at 30% 30%, #fbbf24, #b45309);
+      border-radius: 50%;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+    }
+    .choices-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div id="lab-nav" class="lab-nav"></div>
+
+  <div class="container">
+    <div class="lab-header">
+      <h1>Lab 078: Uncle Petros & Goldbach's Conjecture</h1>
+      <p class="hook">Inspired by Apostolos Doxiadis's celebrated mathematical novel! Step into the quiet Athens study of Uncle Petros Papachristos. Solve his three tests of mathematical intuition and confront Gödel's Incompleteness Theorem.</p>
+    </div>
+
+    <div class="lab-stage">
+      <div class="story-theater">
+        <div class="dialogue-scene">
+          <div class="uncle-avatar">👴🏼</div>
+          <div class="speech-bubble" id="petros-speech">
+            "Welcome, nephew. You say you wish to become a mathematician? Mathematics is not for the faint of heart. It demands your entire soul. Take these dried fava beans on my desk. Can you split this even pile into two heaps, where each heap contains a prime number of beans?"
+          </div>
+        </div>
+
+        <div class="interactive-desk">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-weight: bold; color: #fbbf24;" id="task-title">Test 1: The Fava Bean Trial (Target: 22 Beans)</span>
+            <span class="badge" id="test-progress">Trial 1 of 3</span>
+          </div>
+
+          <div class="bean-tray" id="bean-container"></div>
+
+          <div style="display: flex; gap: 10px; align-items: center; margin-top: 10px;">
+            <span style="font-size: 13px; color: var(--muted);">Split 22 into:</span>
+            <input type="number" id="split-p1" value="3" min="2" max="20" style="width:60px; background:#1e293b; color:#38bdf8; border:1px solid #475569; padding:4px; border-radius:4px; font-weight:bold;">
+            <span style="font-size: 18px; color: var(--muted);">+</span>
+            <input type="number" id="split-p2" value="19" min="2" max="20" style="width:60px; background:#1e293b; color:#34d399; border:1px solid #475569; padding:4px; border-radius:4px; font-weight:bold;">
+            <button class="btn btn-primary btn-sm" id="btn-submit-split">✔ Submit Heap Split</button>
+          </div>
+
+          <div id="trial-feedback" style="font-size: 13px; font-weight: bold; margin-top: 10px; min-height: 20px;"></div>
+
+          <div class="choices-row" id="philosophical-choices" style="display:none;"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pedagogy-grid">
+      <div class="pedagogy-card story">
+        <h2>✨ Literature Meets Mathematical Obsession</h2>
+        <p>In the 1992 Greek novel (and 2000 worldwide bestseller) <i>Uncle Petros and Goldbach's Conjecture</i>, author <b>Apostolos Doxiadis</b> painted the psychological drama of dedicating one's entire existence to a single unsolved problem.</p>
+        <p>In 2000, to promote the English release, publishers Faber & Faber and Bloomsbury announced a <b>$1,000,000 cash prize</b> to anyone who could prove Goldbach's conjecture within two years! Thousands of amateur and professional mathematicians submitted attempts, but the prize went unclaimed.</p>
+        <p>The novel explores a haunting philosophical question: <i>Could Goldbach's conjecture be true, but unprovable?</i></p>
+      </div>
+
+      <div class="pedagogy-card challenge">
+        <h2>🎯 Try This! (Hands-On Challenges)</h2>
+        <div class="challenge-item">
+          <span class="badge">Challenge 1</span>
+          Solve Uncle Petros's bean trial with $N = 22$. What are the two prime heaps?
+          <button class="reveal-btn" data-target="ans-1">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-1">
+            $22 = 3 + 19 = 5 + 17 = 11 + 11$. Any of these three splits will earn Uncle Petros's nod of approval!
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 2</span>
+          How does Kurt Gödel's Incompleteness Theorem relate to Goldbach's Conjecture?
+          <button class="reveal-btn" data-target="ans-2">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-2">
+            In Peano Arithmetic, if Goldbach were <b>false</b>, there would exist a finite counter-example $N$, which could be verified in finite steps (and thus proven false). Therefore, if Goldbach is <i>undecidable</i>, it must be <b>true</b>!
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 3</span>
+          Why did the $1,000,000 publisher prize expire in 2002 without a winner?
+          <button class="reveal-btn" data-target="ans-3">💡 The Challenge Legacy</button>
+          <div class="answer" id="ans-3">
+            Because a genuine proof requires revolutionary mathematical machinery beyond contemporary arithmetic techniques—a 2-year deadline was impossible!
+          </div>
+        </div>
+      </div>
+
+      <div class="pedagogy-card rigor">
+        <h2>📐 Gödelian Undecidability & Arithmetic $\Pi_1$ Sentences</h2>
+        <p>Goldbach's conjecture is a $\Pi_1$ sentence in the arithmetical hierarchy:</p>
+        <div class="math-formula">
+          \forall n \in \mathbb{N} \; \exists p_1, p_2 \in \mathbb{P} : (2n + 4 = p_1 + p_2)
+        </div>
+        <p>Because the predicate is bounded-quantifier decidable for each $n$, any counter-example is effectively witnessable. Consequently, if the Peano axioms $\mathsf{PA}$ are consistent and Goldbach is unprovable in $\mathsf{PA}$, then Goldbach must be true in the standard model $\mathbb{N}$!</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <a href="index.html">← Return to 100 Explorations Hub</a> | Goldbach Discovery Labs &copy; 2026
+  </footer>
+
+  <script src="i18n.js"></script>
+  <script src="common.js"></script>
+  <script>
+    const petrosSpeech = document.getElementById('petros-speech');
+    const taskTitle = document.getElementById('task-title');
+    const testProgress = document.getElementById('test-progress');
+    const beanContainer = document.getElementById('bean-container');
+    const splitP1 = document.getElementById('split-p1');
+    const splitP2 = document.getElementById('split-p2');
+    const btnSubmit = document.getElementById('btn-submit-split');
+    const trialFeedback = document.getElementById('trial-feedback');
+    const philChoices = document.getElementById('philosophical-choices');
+
+    let currentTrial = 1;
+
+    function renderBeans(count) {
+      beanContainer.innerHTML = '';
+      for (let i = 0; i < count; i++) {
+        const b = document.createElement('div');
+        b.className = 'bean';
+        beanContainer.appendChild(b);
+      }
+    }
+
+    btnSubmit.addEventListener('click', () => {
+      const p1 = parseInt(splitP1.value);
+      const p2 = parseInt(splitP2.value);
+
+      if (currentTrial === 1) {
+        if (p1 + p2 !== 22) {
+          trialFeedback.textContent = `❌ ${p1} + ${p2} = ${p1 + p2} beans (not 22)! Count carefully!`;
+          trialFeedback.style.color = '#ef4444';
+          GLab.audio.playTone(150, 0.3, 'sawtooth');
+          return;
+        }
+
+        if (!GLab.isPrime(p1) || !GLab.isPrime(p2)) {
+          trialFeedback.textContent = `❌ Both heaps must be PRIME! One of your numbers is composite!`;
+          trialFeedback.style.color = '#ef4444';
+          GLab.audio.playTone(150, 0.3, 'sawtooth');
+          return;
+        }
+
+        // Success for trial 1!
+        trialFeedback.textContent = `✔ Correct! ${p1} and ${p2} are both prime beans summing to 22!`;
+        trialFeedback.style.color = '#34d399';
+        GLab.audio.playSuccess();
+
+        setTimeout(() => {
+          currentTrial = 2;
+          taskTitle.textContent = 'Test 2: The Spectre of Gödel';
+          testProgress.textContent = 'Trial 2 of 3';
+          petrosSpeech.innerHTML = `"Good, nephew. You have hands for arithmetic. But what if all our labor is in vain? In 1931, Kurt Gödel proved that in any logical system, there are true statements that can NEVER be proven. What if Goldbach is one of them?"`;
+          renderBeans(0);
+
+          philChoices.style.display = 'flex';
+          philChoices.innerHTML = `
+            <button class="btn btn-secondary btn-sm" onclick="choosePhilosophy(1)">Option A: Then we should abandon it and study practical math!</button>
+            <button class="btn btn-primary btn-sm" onclick="choosePhilosophy(2)">Option B: If it is unprovable, it must be TRUE!</button>
+          `;
+        }, 1200);
+      }
+    });
+
+    window.choosePhilosophy = function(choice) {
+      if (choice === 2) {
+        GLab.audio.playSuccess();
+        petrosSpeech.innerHTML = `"Brilliant! Exactly as Gödel himself observed! If there were a counter-example, a single finite calculation would prove it false. Therefore, if it is undecidable, no counter-example can ever exist—meaning it is TRUE!"`;
+        taskTitle.textContent = 'Test 3: The 1-Million Dollar Challenge';
+        testProgress.textContent = 'Trial 3 of 3';
+        philChoices.innerHTML = `
+          <button class="btn btn-primary btn-sm" onclick="finishStory()">Claim Uncle Petros's Blessing</button>
+        `;
+      } else {
+        GLab.audio.playTone(180, 0.3, 'triangle');
+        petrosSpeech.innerHTML = `"Spoken like my pragmatic brothers! But a true mathematician cannot simply walk away from beauty. Try again—think about what undecidability implies for counter-examples!"`;
+      }
+    };
+
+    window.finishStory = function() {
+      petrosSpeech.innerHTML = `"You have the mind of a true number theorist, my young friend. Whether proven or unproven, the harmony of the primes is eternal. Go forth and explore!"`;
+      trialFeedback.textContent = '🏆 Uncle Petros bestowed his blessing upon your mathematical quest!';
+      trialFeedback.style.color = '#fbbf24';
+      GLab.audio.playFanfare();
+      philChoices.style.display = 'none';
+    };
+
+    renderBeans(22);
+
+    GLab.init({
+      labNum: 78,
+      title: "Uncle Petros & Goldbach",
+      clusterNum: 8,
+      clusterName: "Historical Perspectives & Conjectures",
+      prevId: "lab077_terence_tao_five_primes",
+      nextId: "lab079_supercomputer_verifications"
+    });
+  </script>
+</body>
+</html>

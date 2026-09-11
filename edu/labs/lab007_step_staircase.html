@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 007: The Goldbach Step-Staircase - Goldbach Discovery Labs</title>
+  <link rel="stylesheet" href="common.css">
+  <style>
+    .stair-stage {
+      height: 400px;
+      position: relative;
+    }
+    .current-step-info {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      background: var(--card-bg-subtle);
+      padding: 12px 18px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--card-border);
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+  </style>
+</head>
+<body>
+  <div id="lab-nav" class="lab-nav"></div>
+
+  <div class="container">
+    <div class="lab-header">
+      <h1>Lab 007: The Goldbach Step-Staircase</h1>
+      <p class="hook">Climb an ascending staircase where each step is an even integer and stacked blocks represent its Goldbach pairs. Watch how skyscrapers rise on multiples of 6 while valleys dip on powers of 2!</p>
+    </div>
+
+    <div class="lab-stage">
+      <div class="controls-bar">
+        <div class="control-group">
+          <label for="step-max">Range (4 to N):</label>
+          <input type="range" id="step-max" min="20" max="80" step="2" value="40">
+          <span style="font-size: 16px; font-weight: 700; color: var(--accent);" id="max-display">40</span>
+        </div>
+        <button class="btn btn-primary btn-sm" id="btn-auto-climb">▶ Auto-Climb Stairs</button>
+        <button class="btn btn-sm" id="btn-step-prev">◀ Step Down</button>
+        <button class="btn btn-sm" id="btn-step-next">Step Up ▶</button>
+        <div class="stat-pill" style="margin-left: auto;">
+          <span>Current Step:</span>
+          <span class="num" id="current-step-badge">N = 4</span>
+        </div>
+      </div>
+
+      <div class="canvas-container stair-stage">
+        <canvas id="stairCanvas" height="400"></canvas>
+      </div>
+
+      <div class="current-step-info">
+        <div>
+          <span style="font-size: 11px; text-transform: uppercase; color: var(--muted);">Decomposition on this Step:</span>
+          <div style="font-size: 16px; font-weight: 700; color: var(--green); margin-top: 2px;" id="step-pairs-list">2 + 2 = 4</div>
+        </div>
+        <div class="stat-pill" style="margin-left: auto;">
+          <span>Stack Height:</span>
+          <span class="num" id="stack-height-badge">1 pair</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pedagogy-grid">
+      <div class="pedagogy-card story">
+        <h2>✨ Intuitive Concept: The Skyline of Numbers</h2>
+        <p>Imagine walking up a grand staircase in a mathematical city. Each step is an even number: 4, 6, 8, 10, 12, and so on.</p>
+        <p>Built upon each step is a tower of blocks: each block is a unique prime pair that sums to that number! As you look across the skyline, you'll see a fascinating pattern:</p>
+        <ul>
+          <li>The <b>Solo Four</b> (4, 6, 8, 12) are humble one-story cottages (1 pair).</li>
+          <li><b>Multiples of 6</b> (18, 24, 30, 36, 42...) shoot up like glistening skyscrapers!</li>
+          <li><b>Powers of 2</b> (16, 32, 64...) dip down into low valleys because they possess no odd prime factors.</li>
+        </ul>
+      </div>
+
+      <div class="pedagogy-card challenge">
+        <h2>🎯 Try This! (Hands-On Challenges)</h2>
+        <div class="challenge-item">
+          <span class="badge">Challenge 1</span>
+          Climb up to $N = 30$. How many stories high is its tower?
+          <button class="reveal-btn" data-target="ans-1">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-1">
+            $N = 30$ has <b>3 pairs</b>: $7+23, 11+19, 13+17$. (It is divisible by both 2, 3, and 5—the first primorial $2 \times 3 \times 5 = 30$—giving it maximum prime abundance!)
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 2</span>
+          Compare the tower of $N = 30$ with its neighbors $N = 28$ and $N = 32$. What do you notice?
+          <button class="reveal-btn" data-target="ans-2">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-2">
+            $N = 28$ has 2 pairs ($5+23, 11+17$). $N = 32$ has only 2 pairs ($3+29, 13+19$). 30 towers above both of its immediate neighbors!
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 3</span>
+          Look across the entire staircase up to 80. Are there any steps where the stack height is ZERO?
+          <button class="reveal-btn" data-target="ans-3">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-3">
+            <b>NEVER!</b> Every single step has a stack height of at least 1. If a step ever had height zero, that would be a counter-example disproving Goldbach's Conjecture!
+          </div>
+        </div>
+      </div>
+
+      <div class="pedagogy-card rigor">
+        <h2>📐 Mathematical Rigor & Formal Definition</h2>
+        <p>The Goldbach counting function $g(N)$ forms a discrete sequence over even integers $2\mathbb{N}_{\ge 4}$:</p>
+        <div class="math-formula">
+          g(N) = \sum_{p \le N/2} \mathbf{1}_{\mathbb{P}}(p) \cdot \mathbf{1}_{\mathbb{P}}(N - p)
+        </div>
+        <p>The sequence $g(N)$ is non-monotonic: it oscillates wildly due to the prime factors of $N$. By the Hardy-Littlewood asymptotic formula, $g(N)$ scales directly with the singular series factor:</p>
+        <div class="math-formula">
+          \mathfrak{S}(N) = 2 C_2 \prod_{p \mid N, p > 2} \frac{p-1}{p-2}
+        </div>
+        <p>which achieves strict local maxima when $\gcd(N, 6) = 6$ and local minima when $N = 2^k$.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <a href="index.html">← Return to 100 Explorations Hub</a> | Goldbach Discovery Labs &copy; 2026
+  </footer>
+
+  <script src="i18n.js"></script>
+  <script src="common.js"></script>
+  <script>
+    const maxSlider = document.getElementById('step-max');
+    const maxDisplay = document.getElementById('max-display');
+    const btnAuto = document.getElementById('btn-auto-climb');
+    const btnPrev = document.getElementById('btn-step-prev');
+    const btnNext = document.getElementById('btn-step-next');
+    const currentStepBadge = document.getElementById('current-step-badge');
+    const stepPairsList = document.getElementById('step-pairs-list');
+    const stackHeightBadge = document.getElementById('stack-height-badge');
+    const canvas = document.getElementById('stairCanvas');
+    const ctx = canvas.getContext('2d');
+
+    let currentStep = 4;
+    let autoClimbing = false;
+    let autoInterval = null;
+
+    function renderStairs() {
+      const maxN = parseInt(maxSlider.value);
+      maxDisplay.textContent = maxN;
+      const w = canvas.width = canvas.parentElement.clientWidth;
+      const h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      const evens = [];
+      for (let n = 4; n <= maxN; n += 2) evens.push(n);
+
+      const count = evens.length;
+      const stepWidth = Math.max(16, (w - 60) / count);
+      const startX = 30;
+      const groundY = h - 40;
+
+      // Find max pairs to scale block height
+      let maxPairs = 1;
+      const allPairs = {};
+      evens.forEach(n => {
+        const p = GLab.getGoldbachPairs(n);
+        allPairs[n] = p;
+        if (p.length > maxPairs) maxPairs = p.length;
+      });
+
+      const blockHeight = Math.min(24, (h - 100) / (maxPairs + 2));
+
+      // Draw steps
+      evens.forEach((n, idx) => {
+        const x = startX + idx * stepWidth;
+        const pairs = allPairs[n];
+        const isCurrent = n === currentStep;
+
+        // Step tread line
+        ctx.fillStyle = isCurrent ? 'rgba(56, 189, 248, 0.3)' : '#1e293b';
+        ctx.fillRect(x, groundY, stepWidth - 2, 40);
+
+        // Label step number
+        ctx.fillStyle = isCurrent ? '#fbbf24' : '#64748b';
+        ctx.font = isCurrent ? 'bold 11px monospace' : '9px monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText(n, x + stepWidth / 2, groundY + 16);
+
+        // Draw stacked pair blocks
+        pairs.forEach((pair, pIdx) => {
+          const blockY = groundY - (pIdx + 1) * blockHeight;
+          const isMul6 = (n % 6 === 0);
+
+          if (isCurrent) {
+            ctx.fillStyle = '#fbbf24';
+          } else if (isMul6) {
+            ctx.fillStyle = '#38bdf8'; // rich multiple of 6
+          } else {
+            ctx.fillStyle = '#34d399';
+          }
+
+          ctx.beginPath();
+          ctx.roundRect(x + 1, blockY + 1, stepWidth - 4, blockHeight - 2, 3);
+          ctx.fill();
+        });
+
+        // Climber marker on current step
+        if (isCurrent) {
+          const topBlockY = groundY - pairs.length * blockHeight;
+          ctx.fillStyle = '#fbbf24';
+          ctx.beginPath();
+          ctx.arc(x + stepWidth / 2, topBlockY - 12, 7, 0, Math.PI * 2);
+          ctx.fill();
+
+          ctx.fillStyle = '#0b1120';
+          ctx.font = 'bold 9px sans-serif';
+          ctx.fillText('▲', x + stepWidth / 2, topBlockY - 9);
+        }
+      });
+
+      // Update info panel
+      currentStepBadge.textContent = `N = ${currentStep}`;
+      const curPairs = allPairs[currentStep] || [];
+      stackHeightBadge.textContent = `${curPairs.length} pair${curPairs.length > 1 ? 's' : ''}`;
+      stepPairsList.innerHTML = curPairs.map(p => `${p[0]} + ${p[1]} = ${currentStep}`).join(' &nbsp;•&nbsp; ');
+    }
+
+    function setStep(n) {
+      const maxN = parseInt(maxSlider.value);
+      if (n < 4) n = 4;
+      if (n > maxN) n = maxN;
+      currentStep = n;
+      renderStairs();
+      const pairs = GLab.getGoldbachPairs(n);
+      GLab.audio.playTone(220 + pairs.length * 55, 0.1, 'triangle');
+    }
+
+    maxSlider.addEventListener('input', () => {
+      if (currentStep > parseInt(maxSlider.value)) {
+        currentStep = parseInt(maxSlider.value);
+      }
+      renderStairs();
+    });
+
+    btnPrev.addEventListener('click', () => setStep(currentStep - 2));
+    btnNext.addEventListener('click', () => setStep(currentStep + 2));
+
+    btnAuto.addEventListener('click', () => {
+      if (autoClimbing) {
+        clearInterval(autoInterval);
+        autoClimbing = false;
+        btnAuto.textContent = '▶ Auto-Climb Stairs';
+      } else {
+        autoClimbing = true;
+        btnAuto.textContent = '⏸ Pause Climb';
+        autoInterval = setInterval(() => {
+          let next = currentStep + 2;
+          if (next > parseInt(maxSlider.value)) next = 4;
+          setStep(next);
+        }, 350);
+      }
+    });
+
+    canvas.addEventListener('click', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const maxN = parseInt(maxSlider.value);
+      const evens = [];
+      for (let n = 4; n <= maxN; n += 2) evens.push(n);
+      const stepWidth = Math.max(16, (canvas.width - 60) / evens.length);
+      const idx = Math.floor((clickX - 30) / stepWidth);
+      if (idx >= 0 && idx < evens.length) {
+        setStep(evens[idx]);
+      }
+    });
+
+    window.addEventListener('resize', renderStairs);
+
+    GLab.init({
+      labNum: 7,
+      title: "The Goldbach Step-Staircase",
+      clusterNum: 1,
+      clusterName: "Foundations & Small Integers",
+      prevId: "lab006_cousin_sexy_constellations",
+      nextId: "lab008_string_art"
+    });
+
+    renderStairs();
+  </script>
+</body>
+</html>

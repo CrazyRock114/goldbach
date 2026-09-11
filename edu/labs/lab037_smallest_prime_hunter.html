@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 037: Smallest Prime Hunter p_min(N) - Goldbach Discovery Labs</title>
+  <link rel="stylesheet" href="common.css">
+  <style>
+    .hunter-stage {
+      background: var(--card-bg-subtle);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    .prime-trial-line {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 18px 0;
+    }
+    .trial-box {
+      width: 76px;
+      height: 76px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: monospace;
+      border: 2px solid var(--card-border);
+      background: #090e17;
+      transition: all 0.2s;
+    }
+    .trial-box.fail {
+      border-color: rgba(248, 113, 113, 0.4);
+      color: #94a3b8;
+      opacity: 0.6;
+    }
+    .trial-box.winner {
+      border-color: var(--green);
+      background: rgba(52, 211, 153, 0.2);
+      color: #34d399;
+      transform: scale(1.1);
+      box-shadow: 0 0 14px rgba(52, 211, 153, 0.35);
+    }
+    .trial-p { font-size: 18px; font-weight: 800; }
+    .trial-status { font-size: 10px; text-transform: uppercase; margin-top: 4px; }
+  </style>
+</head>
+<body>
+  <div id="lab-nav" class="lab-nav"></div>
+
+  <div class="container">
+    <div class="lab-header">
+      <h1>Lab 037: Smallest Prime Hunter $p_{\min}(N)$</h1>
+      <p class="hook">What is the very first prime $p$ that successfully unlocks a Goldbach pair for $N$? Hunt down $p_{\min}(N)$ and discover why even massive numbers are unlocked by surprisingly tiny primes!</p>
+    </div>
+
+    <div class="lab-stage">
+      <div class="controls-bar">
+        <div class="control-group">
+          <label for="hunter-n">Target <i>N</i>:</label>
+          <input type="range" id="hunter-n" min="4" max="150" step="2" value="98">
+          <span style="font-size: 18px; font-weight: 800; color: var(--accent);" id="n-val">98</span>
+        </div>
+        <button class="btn btn-sm btn-accent" id="btn-snap-98">Test Famous 98 ($p_{\min}=19$)</button>
+        <button class="btn btn-sm" id="btn-snap-12">Test 12 ($p_{\min}=5$)</button>
+        <div class="stat-pill" style="margin-left: auto;">
+          <span>Least Prime p_min:</span>
+          <span class="num" id="pmin-badge" style="color: var(--green);">19</span>
+        </div>
+      </div>
+
+      <div class="hunter-stage">
+        <div style="font-size: 14px; color: var(--muted); margin-bottom: 8px;">
+          Testing Primes in Ascending Order: $p = 2, 3, 5, 7, 11, 13, 17, 19 \dots$ against $N - p$:
+        </div>
+        <div class="prime-trial-line" id="trials-container"></div>
+        <div id="winner-summary" style="font-size: 16px; font-weight: 700; color: var(--green); margin-top: 10px;"></div>
+      </div>
+    </div>
+
+    <div class="pedagogy-grid">
+      <div class="pedagogy-card story">
+        <h2>✨ Intuitive Concept: The Smallest Key</h2>
+        <p>If you have a keyring of prime keys ($2, 3, 5, 7, 11, 13, 17, 19...$), which key is the <i>first one</i> to unlock the lock for $N$?</p>
+        <p>For almost every even number, the very first key you try—<b>3</b>—works immediately! (e.g. $6=3+3, 8=3+5, 10=3+7, 14=3+11, 16=3+13$).</p>
+        <p>The first number where 3 fails is <b>12</b> (since $12-3=9$, composite), requiring $p=5$ ($5+7$). And the famous record holder under 100 is <b>98</b>, which resists 3, 5, 7, 11, 13, and 17, finally surrendering to <b>19</b> ($19 + 79 = 98$)!</p>
+      </div>
+
+      <div class="pedagogy-card challenge">
+        <h2>🎯 Try This! (Hands-On Challenges)</h2>
+        <div class="challenge-item">
+          <span class="badge">Challenge 1</span>
+          Why does $p = 3$ fail for $N = 98$?
+          <button class="reveal-btn" data-target="ans-1">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-1">
+            $98 - 3 = 95 = 5 \times 19$ (composite!).
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 2</span>
+          Why does $p = 5$ fail for $N = 98$?
+          <button class="reveal-btn" data-target="ans-2">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-2">
+            $98 - 5 = 93 = 3 \times 31$ (composite!).
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 3</span>
+          Why does $p = 7$ fail for $N = 98$?
+          <button class="reveal-btn" data-target="ans-3">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-3">
+            $98 - 7 = 91 = 7 \times 13$ (composite!). In fact, $98 - 11 = 87 = 3 \times 29$, $98 - 13 = 85 = 5 \times 17$, $98 - 17 = 81 = 3^4$. All fail until $98 - 19 = 79$ (PRIME)!
+          </div>
+        </div>
+      </div>
+
+      <div class="pedagogy-card rigor">
+        <h2>📐 Mathematical Rigor & Formal Definition</h2>
+        <p>Define the least Goldbach prime functional:</p>
+        <div class="math-formula">
+          p_{\min}(N) = \min \{p \in \mathbb{P} \mid N - p \in \mathbb{P}\}
+        </div>
+        <p>Under the Generalized Riemann Hypothesis (GRH), it is conjectured that $p_{\min}(N) = O(\ln^2 N \ln \ln N)$. Unconditionally, Baker, Harman, and Pintz sieve methods bound $p_{\min}(N) \ll N^{0.525}$.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <a href="index.html">← Return to 100 Explorations Hub</a> | Goldbach Discovery Labs &copy; 2026
+  </footer>
+
+  <script src="i18n.js"></script>
+  <script src="common.js"></script>
+  <script>
+    const slider = document.getElementById('hunter-n');
+    const nVal = document.getElementById('n-val');
+    const pminBadge = document.getElementById('pmin-badge');
+    const trialsContainer = document.getElementById('trials-container');
+    const winnerSummary = document.getElementById('winner-summary');
+    const btnSnap98 = document.getElementById('btn-snap-98');
+    const btnSnap12 = document.getElementById('btn-snap-12');
+
+    const primes = GLab.getPrimes(150);
+
+    function huntPmin() {
+      const n = parseInt(slider.value);
+      nVal.textContent = n;
+
+      trialsContainer.innerHTML = '';
+      let winnerP = null;
+
+      for (let i = 0; i < primes.length; i++) {
+        const p = primes[i];
+        if (p > n / 2 && p !== n / 2) break;
+
+        const comp = n - p;
+        const isCompPrime = GLab.isPrime(comp);
+
+        const box = document.createElement('div');
+        box.className = 'trial-box';
+
+        if (isCompPrime && winnerP === null) {
+          winnerP = p;
+          box.classList.add('winner');
+          box.innerHTML = `
+            <div class="trial-p">p = ${p}</div>
+            <div class="trial-status">✔ WINNER!</div>
+            <div style="font-size:9px;">+ ${comp}</div>
+          `;
+          trialsContainer.appendChild(box);
+          break; // Stop once we find p_min!
+        } else {
+          box.classList.add('fail');
+          box.innerHTML = `
+            <div class="trial-p">${p}</div>
+            <div class="trial-status">FAIL</div>
+            <div style="font-size:9px;">(${comp} comp)</div>
+          `;
+          trialsContainer.appendChild(box);
+        }
+      }
+
+      if (winnerP) {
+        pminBadge.textContent = winnerP;
+        winnerSummary.innerHTML = `🎯 FOUND: Smallest prime key is <b>p = ${winnerP}</b>! Decomposition: <b>${winnerP} + ${n - winnerP} = ${n}</b>`;
+      }
+    }
+
+    slider.addEventListener('input', () => {
+      huntPmin();
+      GLab.audio.playClick();
+    });
+
+    btnSnap98.addEventListener('click', () => {
+      slider.value = 98;
+      huntPmin();
+      GLab.audio.playSuccess();
+    });
+
+    btnSnap12.addEventListener('click', () => {
+      slider.value = 12;
+      huntPmin();
+      GLab.audio.playSuccess();
+    });
+
+    GLab.init({
+      labNum: 37,
+      title: "Smallest Prime Hunter",
+      clusterNum: 4,
+      clusterName: "The Goldbach Comet & Asymptotic Landscape",
+      prevId: "lab036_comet_density_histogram",
+      nextId: "lab038_champion_integers"
+    });
+
+    huntPmin();
+  </script>
+</body>
+</html>

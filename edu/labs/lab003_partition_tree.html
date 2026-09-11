@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 003: Binary Prime Partition Trees - Goldbach Discovery Labs</title>
+  <link rel="stylesheet" href="common.css">
+  <style>
+    .tree-stage {
+      height: 380px;
+      position: relative;
+    }
+    .tree-controls {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .mode-toggle {
+      display: inline-flex;
+      background: var(--card-bg-subtle);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--card-border);
+      padding: 2px;
+    }
+    .mode-btn {
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      padding: 6px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+    }
+    .mode-btn.active {
+      background: var(--primary);
+      color: #0b1120;
+    }
+  </style>
+</head>
+<body>
+  <div id="lab-nav" class="lab-nav"></div>
+
+  <div class="container">
+    <div class="lab-header">
+      <h1>Lab 003: Binary Prime Partition Trees</h1>
+      <p class="hook">Students know prime factor trees (multiplication), but what does an ADDITIVE Goldbach tree look like? Explore how even numbers branch into pairs of prime leaves!</p>
+    </div>
+
+    <div class="lab-stage">
+      <div class="controls-bar">
+        <div class="control-group">
+          <label for="num-slider">Root Even Number <i>N</i>:</label>
+          <input type="range" id="num-slider" min="4" max="64" step="2" value="20">
+          <span style="font-size: 18px; font-weight: 800; color: var(--accent);" id="num-display">20</span>
+        </div>
+        <div class="mode-toggle">
+          <button class="mode-btn active" id="btn-additive">➕ Additive Goldbach Tree</button>
+          <button class="mode-btn" id="btn-multiplicative">✖ Multiplicative Factor Tree</button>
+        </div>
+        <div class="stat-pill" style="margin-left: auto;">
+          <span>Leaf Pair Branches:</span>
+          <span class="num" id="branch-count">2</span>
+        </div>
+      </div>
+
+      <div class="canvas-container tree-stage">
+        <canvas id="treeCanvas" height="380"></canvas>
+      </div>
+    </div>
+
+    <div class="pedagogy-grid">
+      <div class="pedagogy-card story">
+        <h2>✨ Intuitive Concept: Addition vs. Multiplication</h2>
+        <p>In school, you learned that primes are the <b>"atoms of multiplication"</b>: every composite number can be broken down into a unique set of prime factors (The Fundamental Theorem of Arithmetic), like $12 = 2 \times 2 \times 3$.</p>
+        <p>Goldbach's Conjecture asks whether primes are also the <b>"atoms of addition"</b>! Does every even number split into two prime building blocks added together? As this tree shows, unlike multiplication (which yields only <i>one</i> unique prime factorization), addition usually offers <i>multiple</i> distinct prime branching paths!</p>
+      </div>
+
+      <div class="pedagogy-card challenge">
+        <h2>🎯 Try This! (Hands-On Challenges)</h2>
+        <div class="challenge-item">
+          <span class="badge">Challenge 1</span>
+          Compare $N=30$ in Additive mode vs. Multiplicative mode. Which mode produces more branches?
+          <button class="reveal-btn" data-target="ans-1">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-1">
+            In Multiplicative mode, $30 = 2 \times 3 \times 5$ (only 1 unique prime factorization!). In Additive mode, $30 = 7+23 = 11+19 = 13+17$ (3 distinct Goldbach branches!). Addition gives 3 paths, multiplication gives 1.
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 2</span>
+          Find an even number $N \le 40$ where the additive tree branches are symmetric ($p = q = N/2$).
+          <button class="reveal-btn" data-target="ans-2">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-2">
+            Whenever $N/2$ is prime! For example: $N=6 \implies 3+3$; $N=10 \implies 5+5$; $N=14 \implies 7+7$; $N=22 \implies 11+11$; $N=26 \implies 13+13$; $N=34 \implies 17+17$; $N=38 \implies 19+19$.
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 3</span>
+          Why does $N=2^k$ (like 16, 32, 64) have only one prime factor in the multiplicative tree, but multiple branches in the additive tree?
+          <button class="reveal-btn" data-target="ans-3">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-3">
+            Multiplicatively, $16 = 2 \times 2 \times 2 \times 2$ (only the prime 2). But additively, $16 = 3 + 13 = 5 + 11$, unlocking entirely different odd primes!
+          </div>
+        </div>
+      </div>
+
+      <div class="pedagogy-card rigor">
+        <h2>📐 Mathematical Rigor & Formal Definition</h2>
+        <p>The Fundamental Theorem of Arithmetic establishes an isomorphism between positive integers and free commutative monoids generated by primes under multiplication:</p>
+        <div class="math-formula">
+          (\mathbb{N}_{\ge 1}, \times) \cong \bigoplus_{p \in \mathbb{P}} \mathbb{N}_0
+        </div>
+        <p>In contrast, Goldbach's conjecture concerns the additive structure $(\mathbb{N}, +)$. The representation set:</p>
+        <div class="math-formula">
+          \mathcal{G}(N) = \{(p, q) \in \mathbb{P}^2 \mid p \le q, p + q = N\}
+        </div>
+        <p>is non-empty for all even $N \ge 4$. Addition does not satisfy unique factorization, leading to the rich multi-branched additive trees seen above.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <a href="index.html">← Return to 100 Explorations Hub</a> | Goldbach Discovery Labs &copy; 2026
+  </footer>
+
+  <script src="i18n.js"></script>
+  <script src="common.js"></script>
+  <script>
+    const slider = document.getElementById('num-slider');
+    const numDisplay = document.getElementById('num-display');
+    const branchCount = document.getElementById('branch-count');
+    const btnAdditive = document.getElementById('btn-additive');
+    const btnMultiplicative = document.getElementById('btn-multiplicative');
+    const canvas = document.getElementById('treeCanvas');
+    const ctx = canvas.getContext('2d');
+
+    let mode = 'additive';
+
+    function getPrimeFactors(n) {
+      const factors = [];
+      let temp = n;
+      for (let d = 2; d * d <= temp; d++) {
+        while (temp % d === 0) {
+          factors.push(d);
+          temp /= d;
+        }
+      }
+      if (temp > 1) factors.push(temp);
+      return factors;
+    }
+
+    function renderTree() {
+      const n = parseInt(slider.value);
+      numDisplay.textContent = n;
+      const w = canvas.width = canvas.parentElement.clientWidth;
+      const h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      const rootX = w / 2;
+      const rootY = 60;
+
+      // Draw root node
+      drawNode(rootX, rootY, n, '#fbbf24', 'Root N');
+
+      if (mode === 'additive') {
+        const pairs = GLab.getGoldbachPairs(n);
+        branchCount.textContent = pairs.length;
+
+        if (pairs.length === 0) return;
+        const total = pairs.length;
+        const span = Math.min(w * 0.85, total * 160);
+        const startX = rootX - span / 2;
+        const stepX = total === 1 ? 0 : span / (total - 1);
+
+        pairs.forEach((pair, idx) => {
+          const branchX = total === 1 ? rootX : startX + idx * stepX;
+          const branchY = 180;
+
+          // Connect root to pair junction
+          ctx.strokeStyle = '#475569';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(rootX, rootY + 24);
+          ctx.bezierCurveTo(rootX, (rootY + branchY) / 2, branchX, (rootY + branchY) / 2, branchX, branchY - 20);
+          ctx.stroke();
+
+          // Draw pair operator symbol
+          ctx.fillStyle = '#94a3b8';
+          ctx.font = 'bold 12px monospace';
+          ctx.textAlign = 'center';
+          ctx.fillText(`Pair #${idx + 1}`, branchX, branchY - 26);
+
+          // Sub-branch to p and q
+          const leafY = 290;
+          const subSpan = Math.min(60, stepX / 2.5);
+          const pX = branchX - (total > 3 ? 30 : 45);
+          const qX = branchX + (total > 3 ? 30 : 45);
+
+          ctx.strokeStyle = '#38bdf8';
+          ctx.beginPath();
+          ctx.moveTo(branchX, branchY);
+          ctx.lineTo(pX, leafY - 20);
+          ctx.stroke();
+
+          ctx.strokeStyle = '#34d399';
+          ctx.beginPath();
+          ctx.moveTo(branchX, branchY);
+          ctx.lineTo(qX, leafY - 20);
+          ctx.stroke();
+
+          drawNode(pX, leafY, pair[0], '#38bdf8', 'Prime');
+          drawNode(qX, leafY, pair[1], '#34d399', 'Prime');
+
+          // Label sum
+          ctx.fillStyle = '#f8fafc';
+          ctx.font = '13px monospace';
+          ctx.fillText(`${pair[0]} + ${pair[1]}`, branchX, branchY + 6);
+        });
+      } else {
+        // Multiplicative factors
+        const factors = getPrimeFactors(n);
+        branchCount.textContent = factors.length + ' factors';
+
+        const total = factors.length;
+        const span = Math.min(w * 0.7, total * 90);
+        const startX = rootX - span / 2;
+        const stepX = total === 1 ? 0 : span / (total - 1);
+        const leafY = 220;
+
+        factors.forEach((f, idx) => {
+          const fx = total === 1 ? rootX : startX + idx * stepX;
+          ctx.strokeStyle = '#c084fc';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(rootX, rootY + 24);
+          ctx.lineTo(fx, leafY - 20);
+          ctx.stroke();
+
+          drawNode(fx, leafY, f, '#c084fc', 'Factor');
+        });
+
+        // Multiplication label
+        ctx.fillStyle = '#f8fafc';
+        ctx.font = 'bold 16px monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText(factors.join(' × ') + ` = ${n}`, rootX, 310);
+      }
+    }
+
+    function drawNode(x, y, label, color, sublabel) {
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.arc(x, y, 22, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = '#0b1120';
+      ctx.font = 'bold 15px monospace';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(label, x, y);
+
+      if (sublabel) {
+        ctx.fillStyle = '#94a3b8';
+        ctx.font = '11px sans-serif';
+        ctx.fillText(sublabel, x, y + 32);
+      }
+    }
+
+    slider.addEventListener('input', () => {
+      renderTree();
+      GLab.audio.playTone(250 + parseInt(slider.value) * 5, 0.08, 'triangle');
+    });
+
+    btnAdditive.addEventListener('click', () => {
+      mode = 'additive';
+      btnAdditive.classList.add('active');
+      btnMultiplicative.classList.remove('active');
+      renderTree();
+      GLab.audio.playClick();
+    });
+
+    btnMultiplicative.addEventListener('click', () => {
+      mode = 'multiplicative';
+      btnMultiplicative.classList.add('active');
+      btnAdditive.classList.remove('active');
+      renderTree();
+      GLab.audio.playClick();
+    });
+
+    window.addEventListener('resize', renderTree);
+
+    GLab.init({
+      labNum: 3,
+      title: "Binary Prime Partition Trees",
+      clusterNum: 1,
+      clusterName: "Foundations & Small Integers",
+      prevId: "lab002_parity_sandbox",
+      nextId: "lab004_sieve_radar"
+    });
+
+    renderTree();
+  </script>
+</body>
+</html>

@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 099: Virtual Exhibition Hall of Primes - Goldbach Discovery Labs</title>
+  <link rel="stylesheet" href="common.css">
+  <style>
+    .gallery-nav {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      margin-bottom: 16px;
+    }
+    .gallery-tab {
+      background: #1e293b;
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-sm);
+      padding: 8px 16px;
+      color: #94a3b8;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+    .gallery-tab.active {
+      background: var(--accent);
+      color: #0f172a;
+      border-color: var(--accent);
+    }
+    .exhibit-stage {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 16px;
+    }
+    @media (max-width: 900px) {
+      .exhibit-stage {
+        grid-template-columns: 1fr;
+      }
+    }
+    .canvas-frame {
+      background: #060913;
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-md);
+      position: relative;
+      height: 440px;
+      overflow: hidden;
+      box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.8);
+    }
+    .museum-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .exhibit-plaque {
+      background: var(--card-bg-subtle);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-md);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+    }
+    .plaque-num {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+    }
+    .plaque-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+    .plaque-artist {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 12px;
+      font-style: italic;
+    }
+    .plaque-body {
+      font-size: 13px;
+      color: #cbd5e1;
+      line-height: 1.5;
+      margin-bottom: 14px;
+    }
+    .plaque-controls {
+      margin-top: auto;
+      background: #0f172a;
+      border-radius: var(--radius-sm);
+      padding: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .plaque-controls label {
+      display: block;
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <div id="lab-nav" class="lab-nav"></div>
+
+  <div class="container">
+    <div class="lab-header">
+      <h1>Lab 099: Virtual Exhibition Hall of Primes & Goldbach</h1>
+      <p class="hook">Step into the mathematical gallery! Experience the breathtaking aesthetic beauty of prime spirals, Fourier circle arcs, the Goldbach comet rainbow, and 3D prime simplices.</p>
+    </div>
+
+    <div class="lab-stage">
+      <div class="gallery-nav">
+        <button class="gallery-tab active" data-exhibit="0">Gallery 1: Ulam Spiral</button>
+        <button class="gallery-tab" data-exhibit="1">Gallery 2: Goldbach Comet Rainbow</button>
+        <button class="gallery-tab" data-exhibit="2">Gallery 3: Circle Method Arcs</button>
+        <button class="gallery-tab" data-exhibit="3">Gallery 4: Sieve Tapestry</button>
+        <button class="gallery-tab" data-exhibit="4">Gallery 5: 3D Prime Simplex</button>
+      </div>
+
+      <div class="exhibit-stage">
+        <div class="canvas-frame">
+          <canvas id="gallery-canvas" class="museum-canvas"></canvas>
+        </div>
+
+        <div class="exhibit-plaque">
+          <div class="plaque-num" id="plaque-id">Exhibit I of V</div>
+          <div class="plaque-title" id="plaque-title">The Ulam Prime Spiral</div>
+          <div class="plaque-artist" id="plaque-artist">Discovered by Stanislaw Ulam (1963)</div>
+          <div class="plaque-body" id="plaque-desc">
+            Integers spiraling outward from the center reveal stunning non-random diagonal rays where prime numbers cluster densely along quadratic polynomials like Euler's famous $n^2 + n + 41$.
+          </div>
+
+          <div class="plaque-controls" id="plaque-controls">
+            <label for="param-slider">Interactive Dimension:</label>
+            <input type="range" id="param-slider" min="20" max="100" value="50" style="width: 100%;">
+            <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--accent); margin-top: 4px;">
+              <span>Fine</span>
+              <span id="param-val">50</span>
+              <span>Coarse</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pedagogy Section -->
+    <div class="pedagogy-grid">
+      <div class="pedagogy-card story">
+        <h3>Classroom Story: The Aesthetics of Pure Mathematics</h3>
+        <p>In 1963, during a boring lecture at a scientific meeting, Polish mathematician Stanislaw Ulam began doodling numbers in a spiral on a grid sheet.</p>
+        <p>To his astonishment, when he circled the prime numbers, long unbroken diagonal lines emerged across the paper. The doodling landed on the cover of <i>Scientific American</i> in March 1964.</p>
+        <p>Mathematics is not merely abstract symbol manipulation; numbers possess profound, organic visual geometries waiting to be unearthed!</p>
+      </div>
+
+      <div class="pedagogy-card challenge">
+        <h3>Curator's Discovery Challenge</h3>
+        <div class="challenge-item">
+          <p><strong>Challenge 1:</strong> In Exhibit 2 (Goldbach Comet Rainbow), why do the green points (multiples of 6) form an elevated band high above the red points (powers of 2)?</p>
+          <button class="reveal-btn" onclick="GLab.toggleSolution(this)">Reveal Answer</button>
+          <div class="challenge-answer">
+            Multiples of 6 ($2N = 6k$) satisfy $3 \mid 2N$, eliminating prime candidates $p \equiv 0 \pmod 3$ from dividing $2N - p$. This doubles their singular series factor $C(2N) = 2 \prod \frac{p-1}{p-2}$, creating the distinct upper comet rainbow streamer!
+          </div>
+        </div>
+        <div class="challenge-item">
+          <p><strong>Challenge 2:</strong> In Exhibit 3 (Circle Method Arcs), why are the highest Fourier peaks centered around fractions with small denominators like $1/2, 1/3, 2/3$?</p>
+          <button class="reveal-btn" onclick="GLab.toggleSolution(this)">Reveal Answer</button>
+          <div class="challenge-answer">
+            These are the <b>Major Arcs</b> ($\mathfrak{M}_{q,a}$). Prime exponential sums $\sum e(p \alpha)$ constructively interfere most violently when $\alpha$ is close to rationals $a/q$ with small modulus $q$, generating the principal contribution to Goldbach partitions!
+          </div>
+        </div>
+      </div>
+
+      <div class="pedagogy-card rigor">
+        <h3>Mathematical Duality: Space vs. Frequency</h3>
+        <p>The exhibits represent two complementary mathematical perspectives on additive problems:</p>
+        <div class="math-formula">
+          $$\text{Spatial / Discrete: } g(2N) = \sum_{p < 2N} \mathbf{1}_{\mathbb{P}}(p)\mathbf{1}_{\mathbb{P}}(2N-p)$$
+          $$\text{Spectral / Continuous: } g(2N) = \int_0^1 \left|\sum_{p \le 2N} e^{2\pi i p \theta}\right|^2 e^{-2\pi i (2N)\theta} d\theta$$
+        </div>
+        <p>The beauty of number theory lies in toggling between spatial representations (spirals, lattices) and harmonic frequencies (circle arcs, Fourier transforms).</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="i18n.js"></script>
+  <script src="common.js"></script>
+  <script>
+    const canvas = document.getElementById('gallery-canvas');
+    const ctx = canvas.getContext('2d');
+    const tabs = document.querySelectorAll('.gallery-tab');
+    const slider = document.getElementById('param-slider');
+    const paramVal = document.getElementById('param-val');
+
+    const plaqueId = document.getElementById('plaque-id');
+    const plaqueTitle = document.getElementById('plaque-title');
+    const plaqueArtist = document.getElementById('plaque-artist');
+    const plaqueDesc = document.getElementById('plaque-desc');
+
+    let currentExhibit = 0;
+    let animPhase = 0;
+
+    // Fast Prime Sieve
+    const MAX_PRIME = 50000;
+    const isPrime = new Uint8Array(MAX_PRIME + 1);
+    isPrime.fill(1);
+    isPrime[0] = isPrime[1] = 0;
+    for (let p = 2; p * p <= MAX_PRIME; p++) {
+      if (isPrime[p]) {
+        for (let i = p * p; i <= MAX_PRIME; i += p) isPrime[i] = 0;
+      }
+    }
+
+    const EXHIBITS = [
+      {
+        id: "Exhibit I of V",
+        title: "The Ulam Prime Spiral",
+        artist: "Discovered by Stanislaw Ulam (1963)",
+        desc: "Integers spiraling outward from the center reveal stunning non-random diagonal rays where prime numbers cluster densely along quadratic polynomials like Euler's famous n² + n + 41."
+      },
+      {
+        id: "Exhibit II of V",
+        title: "The Goldbach Comet Rainbow",
+        artist: "Modular Spectrum of Partition Richness",
+        desc: "Goldbach partition counts g(2N) stratified by arithmetic structure. Multiples of 6 soar into the upper cyan stratosphere, while powers of 2 hug the bottom crimson floor."
+      },
+      {
+        id: "Exhibit III of V",
+        title: "Circle Method Major Arcs Hologram",
+        artist: "Hardy, Littlewood & Ramanujan",
+        desc: "Harmonic frequencies on the complex unit circle. Sharp resonant spikes correspond to rational angles a/q where prime phase angles constructively align to form Goldbach pairs."
+      },
+      {
+        id: "Exhibit IV of V",
+        title: "Sieve of Eratosthenes Tapestry",
+        artist: "Ancient Cyrene Sieve Topology",
+        desc: "A rhythmic harmonic matrix where composite frequencies intertwine. Prime numbers emerge as the unplucked luminous threads running unbroken through the cloth of arithmetic."
+      },
+      {
+        id: "Exhibit V of V",
+        title: "Weak Goldbach 3D Prime Simplex",
+        artist: "Isometric Geometry of 3-Prime Sums",
+        desc: "Visualizing p1 + p2 + p3 = 2N+1 as an equilateral triangular slice in three-dimensional prime space, rotated in real-time."
+      }
+    ];
+
+    function drawUlamSpiral(w, h, param) {
+      const cx = w / 2;
+      const cy = h / 2;
+      const step = Math.max(3, Math.floor(400 / param));
+
+      let x = 0, y = 0;
+      let dx = 0, dy = -1;
+      const maxIter = param * param;
+
+      for (let n = 1; n <= maxIter; n++) {
+        if ((-param / 2 <= x && x <= param / 2) && (-param / 2 <= y && y <= param / 2)) {
+          if (n <= MAX_PRIME && isPrime[n]) {
+            const px = cx + x * step;
+            const py = cy + y * step;
+            ctx.fillStyle = '#38bdf8';
+            ctx.fillRect(px - 1.5, py - 1.5, 3, 3);
+          }
+        }
+        if (x === y || (x < 0 && x === -y) || (x > 0 && x === 1 - y)) {
+          const temp = dx;
+          dx = -dy;
+          dy = temp;
+        }
+        x += dx;
+        y += dy;
+      }
+    }
+
+    function drawComet(w, h, param) {
+      const maxN = param * 10;
+      const pad = 40;
+      const pw = w - pad * 2;
+      const ph = h - pad * 2;
+
+      for (let n = 4; n <= maxN; n += 2) {
+        let count = 0;
+        for (let p = 3; p <= n / 2; p += 2) {
+          if (isPrime[p] && isPrime[n - p]) count++;
+        }
+
+        const px = pad + ((n - 4) / (maxN - 4)) * pw;
+        const py = h - pad - (count / (maxN * 0.15)) * ph;
+
+        if (n % 6 === 0) ctx.fillStyle = '#38bdf8'; // Multiples of 6
+        else if ((n & (n - 1)) === 0) ctx.fillStyle = '#f87171'; // Powers of 2
+        else ctx.fillStyle = '#fbbf24';
+
+        ctx.fillRect(px, py, 2, 2);
+      }
+    }
+
+    function drawCircleArcs(w, h, param) {
+      const cx = w / 2;
+      const cy = h / 2;
+      const radius = Math.min(w, h) * 0.38;
+
+      // Base circle
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Major rational spikes
+      const fractions = [
+        { num: 1, den: 2, height: 45, color: '#f87171' },
+        { num: 1, den: 3, height: 35, color: '#fbbf24' },
+        { num: 2, den: 3, height: 35, color: '#fbbf24' },
+        { num: 1, den: 4, height: 28, color: '#34d399' },
+        { num: 3, den: 4, height: 28, color: '#34d399' },
+        { num: 1, den: 6, height: 30, color: '#38bdf8' },
+        { num: 5, den: 6, height: 30, color: '#38bdf8' }
+      ];
+
+      fractions.forEach(f => {
+        const theta = (f.num / f.den) * Math.PI * 2 + animPhase * 0.005;
+        const x1 = cx + Math.cos(theta) * (radius - 5);
+        const y1 = cy + Math.sin(theta) * (radius - 5);
+        const x2 = cx + Math.cos(theta) * (radius + f.height);
+        const y2 = cy + Math.sin(theta) * (radius + f.height);
+
+        ctx.strokeStyle = f.color;
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.stroke();
+
+        ctx.fillStyle = '#fff';
+        ctx.font = '10px monospace';
+        ctx.fillText(`${f.num}/${f.den}`, x2 + Math.cos(theta) * 12 - 8, y2 + Math.sin(theta) * 12 + 4);
+      });
+    }
+
+    function drawSieveTapestry(w, h, param) {
+      const cols = 20;
+      const rows = 15;
+      const cellW = w / cols;
+      const cellH = h / rows;
+
+      let num = 1;
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          const x = c * cellW;
+          const y = r * cellH;
+
+          if (num <= MAX_PRIME && isPrime[num]) {
+            ctx.fillStyle = 'rgba(56, 189, 248, 0.8)';
+            ctx.fillRect(x + 2, y + 2, cellW - 4, cellH - 4);
+            ctx.fillStyle = '#fff';
+            ctx.font = 'bold 11px sans-serif';
+            ctx.fillText(num, x + cellW / 2 - 8, y + cellH / 2 + 4);
+          } else {
+            ctx.fillStyle = 'rgba(15, 23, 42, 0.6)';
+            ctx.fillRect(x + 2, y + 2, cellW - 4, cellH - 4);
+            ctx.fillStyle = '#475569';
+            ctx.font = '10px sans-serif';
+            ctx.fillText(num, x + cellW / 2 - 8, y + cellH / 2 + 4);
+          }
+          num++;
+        }
+      }
+    }
+
+    function draw3DSimplex(w, h, param) {
+      const cx = w / 2;
+      const cy = h / 2;
+      const angle = animPhase * 0.02;
+
+      // Draw rotating 3-prime simplex tetrahedron
+      const r = 120;
+      const vertices = [
+        { x: 0, y: -r, z: 0 },
+        { x: -r * 0.866, y: r * 0.5, z: -r * 0.5 },
+        { x: r * 0.866, y: r * 0.5, z: -r * 0.5 },
+        { x: 0, y: 0, z: r * 0.9 }
+      ];
+
+      // Rotate around Y and X axis
+      const cosA = Math.cos(angle);
+      const sinA = Math.sin(angle);
+      const proj = vertices.map(v => {
+        const x1 = v.x * cosA + v.z * sinA;
+        const z1 = -v.x * sinA + v.z * cosA;
+        return { x: cx + x1, y: cy + v.y, z: z1 };
+      });
+
+      const edges = [[0,1], [1,2], [2,0], [0,3], [1,3], [2,3]];
+
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 2;
+      edges.forEach(([i, j]) => {
+        ctx.beginPath();
+        ctx.moveTo(proj[i].x, proj[i].y);
+        ctx.lineTo(proj[j].x, proj[j].y);
+        ctx.stroke();
+      });
+
+      proj.forEach(p => {
+        ctx.fillStyle = '#fbbf24';
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 6, 0, Math.PI * 2);
+        ctx.fill();
+      });
+    }
+
+    function render() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const param = parseInt(slider.value, 10);
+
+      if (currentExhibit === 0) drawUlamSpiral(canvas.width, canvas.height, param);
+      else if (currentExhibit === 1) drawComet(canvas.width, canvas.height, param);
+      else if (currentExhibit === 2) drawCircleArcs(canvas.width, canvas.height, param);
+      else if (currentExhibit === 3) drawSieveTapestry(canvas.width, canvas.height, param);
+      else if (currentExhibit === 4) draw3DSimplex(canvas.width, canvas.height, param);
+
+      animPhase++;
+      requestAnimationFrame(render);
+    }
+
+    function setExhibit(idx) {
+      currentExhibit = idx;
+      tabs.forEach((t, i) => t.classList.toggle('active', i === idx));
+
+      const info = EXHIBITS[idx];
+      plaqueId.textContent = info.id;
+      plaqueTitle.textContent = info.title;
+      plaqueArtist.textContent = info.artist;
+      plaqueDesc.textContent = info.desc;
+
+      GLab.audio.playTone(400 + idx * 80, 'sine', 0.15);
+    }
+
+    tabs.forEach((t, idx) => {
+      t.addEventListener('click', () => setExhibit(idx));
+    });
+
+    slider.addEventListener('input', () => {
+      paramVal.textContent = slider.value;
+    });
+
+    function resizeCanvas() {
+      canvas.width = canvas.parentElement.clientWidth;
+      canvas.height = canvas.parentElement.clientHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+
+    GLab.init({
+      labNum: 99,
+      title: "Virtual Exhibition Hall of Primes",
+      clusterNum: 10,
+      clusterName: "Classroom Tools & Grand Unification",
+      prevId: "lab098_student_journal",
+      nextId: "lab100_grand_unification_lab"
+    });
+
+    resizeCanvas();
+    render();
+  </script>
+</body>
+</html>

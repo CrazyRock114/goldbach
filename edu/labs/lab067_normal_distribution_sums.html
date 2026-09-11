@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 067: Normal Distribution of Prime Sums - Goldbach Discovery Labs</title>
+  <link rel="stylesheet" href="common.css">
+  <style>
+    .stats-dashboard {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    @media (max-width: 768px) {
+      .stats-dashboard {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    .hud-box {
+      background: var(--card-bg-subtle);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-sm);
+      padding: 12px;
+      text-align: center;
+    }
+    .hud-title {
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .hud-val {
+      font-size: 20px;
+      font-weight: 800;
+      font-family: monospace;
+      margin-top: 4px;
+    }
+    .canvas-box {
+      height: 340px;
+      position: relative;
+    }
+  </style>
+</head>
+<body>
+  <div id="lab-nav" class="lab-nav"></div>
+
+  <div class="container">
+    <div class="lab-header">
+      <h1>Lab 067: Normal Distribution of Prime Partner Sums</h1>
+      <p class="hook">Add every prime under $M$ to every other prime under $M$. What shape does the resulting frequency histogram take? Discover how the <b>Central Limit Theorem</b> creates a bell-shaped Gaussian envelope over Goldbach sums!</p>
+    </div>
+
+    <div class="lab-stage">
+      <div class="controls-bar">
+        <div class="control-group">
+          <label for="prime-m">Prime Pool Cutoff <i>M</i>:</label>
+          <input type="range" id="prime-m" min="50" max="300" step="10" value="120">
+          <span style="font-size: 18px; font-weight: 800; color: var(--accent);" id="m-val">120</span>
+        </div>
+        <div class="control-group">
+          <label><input type="checkbox" id="chk-gaussian" checked> Overlay Gaussian Curve</label>
+        </div>
+      </div>
+
+      <div class="stats-dashboard">
+        <div class="hud-box">
+          <div class="hud-title">Prime Sample Size</div>
+          <div class="hud-val" style="color: #38bdf8;" id="stat-primes">30 Primes</div>
+        </div>
+        <div class="hud-box">
+          <div class="hud-title">Total Sum Combinations</div>
+          <div class="hud-val" style="color: #fbbf24;" id="stat-combos">900</div>
+        </div>
+        <div class="hud-box">
+          <div class="hud-title">Distribution Mean μ</div>
+          <div class="hud-val" style="color: #34d399;" id="stat-mean">118.4</div>
+        </div>
+        <div class="hud-box">
+          <div class="hud-title">Standard Deviation σ</div>
+          <div class="hud-val" style="color: #c084fc;" id="stat-std">38.2</div>
+        </div>
+      </div>
+
+      <div style="font-size: 12px; color: var(--muted); text-transform: uppercase; margin-bottom: 6px;">Frequency Histogram of All Prime Sums p₁ + p₂:</div>
+      <div class="canvas-container canvas-box">
+        <canvas id="distCanvas" height="340"></canvas>
+      </div>
+    </div>
+
+    <div class="pedagogy-grid">
+      <div class="pedagogy-card story">
+        <h2>✨ Why Addition Breeds the Bell Curve</h2>
+        <p>The <b>Central Limit Theorem</b> states that when independent random variables are added together, their normalized sum converges toward a <b>Gaussian normal distribution</b> (bell curve).</p>
+        <p>Although prime numbers are completely deterministic, their distribution along the number line mimics pseudo-random noise. When we compute the sum $S = p_1 + p_2$ for all primes $p_1, p_2 \le M$, the probability density of the sum is the convolution of two distributions.</p>
+        <p>This creates a smooth, symmetric bell curve centered at the mean $\mu \approx M$, with maximum pair density right in the middle! The tooth-like ripples along the curve reflect the multiple-of-6 modular resonances.</p>
+      </div>
+
+      <div class="pedagogy-card challenge">
+        <h2>🎯 Try This! (Hands-On Challenges)</h2>
+        <div class="challenge-item">
+          <span class="badge">Challenge 1</span>
+          Why does the peak of the histogram occur near $N \approx M$?
+          <button class="reveal-btn" data-target="ans-1">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-1">
+            Because the average prime in the pool is approximately $M / 2$. Adding two such primes yields an expected sum of $M/2 + M/2 = M$!
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 2</span>
+          Increase $M$ from 50 to 200. How does the bell curve change?
+          <button class="reveal-btn" data-target="ans-2">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-2">
+            The curve widens ($\sigma$ grows) and smooths out, as the larger sample of primes makes the Central Limit approximation even more pronounced.
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 3</span>
+          Why are there gaps (zero bars) between adjacent bars in the histogram?
+          <button class="reveal-btn" data-target="ans-3">💡 Parity Gap</button>
+          <div class="answer" id="ans-3">
+            Because almost all odd integers cannot be formed by adding two odd primes! The histogram is dominated by even sums, leaving odd sums near zero.
+          </div>
+        </div>
+      </div>
+
+      <div class="pedagogy-card rigor">
+        <h2>📐 Convolution of Prime Densities & Lyapunov CLT</h2>
+        <p>Let $X_1, X_2$ be random variables drawn from the prime counting measure $d\pi(x) \sim \frac{dx}{\ln x}$. The density function of their sum $Z = X_1 + X_2$ is the convolution:</p>
+        <div class="math-formula">
+          f_Z(z) = (f_{X_1} * f_{X_2})(z) = \int_2^{z-2} \frac{dt}{\ln t \cdot \ln(z - t)}
+        </div>
+        <p>By the Lyapunov central limit condition, the asymptotic envelope of $f_Z(z)$ converges to a Gaussian kernel $\mathcal{N}(\mu, \sigma^2)$ where $\mu = 2 \mathbb{E}[P] \approx M$ and $\sigma^2 = 2 \operatorname{Var}(P) \approx \frac{M^2}{6}$.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <a href="index.html">← Return to 100 Explorations Hub</a> | Goldbach Discovery Labs &copy; 2026
+  </footer>
+
+  <script src="i18n.js"></script>
+  <script src="common.js"></script>
+  <script>
+    const sliderM = document.getElementById('prime-m');
+    const dispM = document.getElementById('m-val');
+    const chkGaussian = document.getElementById('chk-gaussian');
+    const statPrimes = document.getElementById('stat-primes');
+    const statCombos = document.getElementById('stat-combos');
+    const statMean = document.getElementById('stat-mean');
+    const statStd = document.getElementById('stat-std');
+    const canvas = document.getElementById('distCanvas');
+    const ctx = canvas.getContext('2d');
+
+    function calculateDistribution(M) {
+      const primes = GLab.getPrimes(M);
+      const maxDegree = M * 2;
+      const freq = new Int32Array(maxDegree + 1);
+
+      let sumTotal = 0;
+      let count = 0;
+
+      for (let i = 0; i < primes.length; i++) {
+        for (let j = 0; j < primes.length; j++) {
+          const s = primes[i] + primes[j];
+          freq[s]++;
+          sumTotal += s;
+          count++;
+        }
+      }
+
+      const mean = count > 0 ? sumTotal / count : 0;
+      let varSum = 0;
+      for (let i = 0; i < primes.length; i++) {
+        for (let j = 0; j < primes.length; j++) {
+          const s = primes[i] + primes[j];
+          varSum += (s - mean) ** 2;
+        }
+      }
+      const std = count > 0 ? Math.sqrt(varSum / count) : 0;
+
+      return { primes, freq, maxDegree, mean, std, count };
+    }
+
+    function render() {
+      const M = parseInt(sliderM.value);
+      dispM.textContent = M;
+
+      const data = calculateDistribution(M);
+      statPrimes.textContent = `${data.primes.length} Primes`;
+      statCombos.textContent = data.count.toLocaleString();
+      statMean.textContent = data.mean.toFixed(1);
+      statStd.textContent = data.std.toFixed(1);
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const padding = 35;
+      const w = canvas.width - padding * 2;
+      const h = canvas.height - padding * 2;
+
+      let maxFreq = 0;
+      for (let i = 4; i <= data.maxDegree; i++) {
+        if (data.freq[i] > maxFreq) maxFreq = data.freq[i];
+      }
+      if (maxFreq === 0) maxFreq = 1;
+
+      const barW = Math.max(2, w / data.maxDegree);
+
+      // Baseline
+      ctx.strokeStyle = '#334155';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(padding, canvas.height - padding);
+      ctx.lineTo(canvas.width - padding, canvas.height - padding);
+      ctx.stroke();
+
+      // Draw Histogram Bars
+      for (let n = 4; n <= data.maxDegree; n++) {
+        const val = data.freq[n];
+        if (val === 0) continue;
+
+        const x = padding + (n / data.maxDegree) * w;
+        const barH = (val / maxFreq) * (h - 20);
+        const y = canvas.height - padding - barH;
+
+        ctx.fillStyle = (n % 2 === 0) ? '#38bdf8' : '#f59e0b';
+        ctx.fillRect(x, y, Math.max(1.5, barW), barH);
+      }
+
+      // Draw Gaussian Overlay if checked
+      if (chkGaussian.checked && data.std > 0) {
+        ctx.strokeStyle = '#f43f5e';
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+
+        const A = maxFreq * (data.std * Math.sqrt(2 * Math.PI));
+
+        for (let xPixel = 0; xPixel <= w; xPixel += 2) {
+          const n = (xPixel / w) * data.maxDegree;
+          const gauss = (1 / (data.std * Math.sqrt(2 * Math.PI))) * Math.exp(-0.5 * ((n - data.mean) / data.std) ** 2);
+          const y = canvas.height - padding - (gauss * A / maxFreq) * (h - 20);
+
+          if (xPixel === 0) ctx.moveTo(padding + xPixel, y);
+          else ctx.lineTo(padding + xPixel, y);
+        }
+        ctx.stroke();
+
+        // Legend
+        ctx.fillStyle = '#f43f5e';
+        ctx.font = '12px sans-serif';
+        ctx.textAlign = 'right';
+        ctx.fillText(`Gaussian Normal Fit N(μ=${data.mean.toFixed(0)}, σ=${data.std.toFixed(0)})`, canvas.width - padding, 20);
+      }
+    }
+
+    function resizeCanvas() {
+      canvas.width = canvas.parentElement.clientWidth;
+      render();
+    }
+    window.addEventListener('resize', resizeCanvas);
+
+    sliderM.addEventListener('input', () => {
+      render();
+      GLab.audio.playClick();
+    });
+
+    chkGaussian.addEventListener('change', render);
+
+    GLab.init({
+      labNum: 67,
+      title: "Normal Distribution of Prime Sums",
+      clusterNum: 7,
+      clusterName: "Combinatorics, Generating Functions & Probability",
+      prevId: "lab066_coin_change_machine",
+      nextId: "lab068_divisor_hyperbola"
+    });
+
+    resizeCanvas();
+  </script>
+</body>
+</html>

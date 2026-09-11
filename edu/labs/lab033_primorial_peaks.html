@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab 033: The Oasis Peaks of Primorials - Goldbach Discovery Labs</title>
+  <link rel="stylesheet" href="common.css">
+  <style>
+    .peaks-stage {
+      height: 400px;
+      position: relative;
+    }
+    .primorial-pills {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding: 8px 0;
+    }
+    .prim-btn {
+      background: var(--card-bg-subtle);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-sm);
+      padding: 6px 14px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+      cursor: pointer;
+    }
+    .prim-btn.active {
+      background: var(--primary);
+      color: #0b1120;
+      border-color: var(--primary);
+    }
+  </style>
+</head>
+<body>
+  <div id="lab-nav" class="lab-nav"></div>
+
+  <div class="container">
+    <div class="lab-header">
+      <h1>Lab 033: The Oasis Peaks of Primorials ($2, 6, 30, 210, 2310$)</h1>
+      <p class="hook">If powers of 2 are the desert floor, primorials are Everest! Explore how products of the first $k$ primes achieve the absolute maximum Goldbach richness in the universe.</p>
+    </div>
+
+    <div class="lab-stage">
+      <div class="controls-bar">
+        <span style="font-size: 13px; font-weight: 600; color: var(--muted); text-transform: uppercase;">Select Primorial:</span>
+        <div class="primorial-pills">
+          <button class="prim-btn active" data-n="6">P₂# = 6</button>
+          <button class="prim-btn" data-n="30">P₃# = 30</button>
+          <button class="prim-btn" data-n="210">P₄# = 210</button>
+          <button class="prim-btn" data-n="420">2 × P₄# = 420</button>
+        </div>
+        <div class="stat-pill" style="margin-left: auto;">
+          <span>Singular Series Factor:</span>
+          <span class="num" id="factor-display" style="color: var(--green);">2.00×</span>
+        </div>
+      </div>
+
+      <div class="canvas-container peaks-stage">
+        <canvas id="peaksCanvas" height="400"></canvas>
+      </div>
+
+      <div style="margin-top: 14px; background: var(--card-bg-subtle); padding: 12px 18px; border-radius: var(--radius-sm); border: 1px solid var(--card-border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+        <div>
+          <span style="font-size: 11px; color: var(--muted); text-transform: uppercase;">Primorial Profile:</span>
+          <div style="font-size: 17px; font-weight: 800; color: var(--accent);" id="profile-text">N = 6 (2 × 3)</div>
+        </div>
+        <div class="stat-pill">
+          <span>Actual Goldbach Pairs:</span>
+          <span class="num" id="pairs-display">1 pair (3 + 3)</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pedagogy-grid">
+      <div class="pedagogy-card story">
+        <h2>✨ Intuitive Concept: The Mountain Peaks</h2>
+        <p>A <b>primorial</b> is formed by multiplying consecutive primes: $2$, $2 \times 3 = 6$, $2 \times 3 \times 5 = 30$, $2 \times 3 \times 5 \times 7 = 210$.</p>
+        <p>Every new prime factor multiplies the number of open residue channels by $\frac{p-1}{p-2}$. For example:</p>
+        <ul>
+          <li>Factor 3 multiplies by $2.00\times$.</li>
+          <li>Factor 5 multiplies by $1.33\times$ (Total: $2.67\times$).</li>
+          <li>Factor 7 multiplies by $1.20\times$ (Total: $3.20\times$).</li>
+          <li>Factor 11 multiplies by $1.11\times$ (Total: $3.56\times$).</li>
+        </ul>
+        <p>Because they collect all possible prime multipliers, primorials form the <b>highest soaring peaks of the Goldbach comet</b>, leaving surrounding numbers far below!</p>
+      </div>
+
+      <div class="pedagogy-card challenge">
+        <h2>🎯 Try This! (Hands-On Challenges)</h2>
+        <div class="challenge-item">
+          <span class="badge">Challenge 1</span>
+          Select $P_4\# = 210$. How many Goldbach pairs does 210 have compared to $208$ and $212$?
+          <button class="reveal-btn" data-target="ans-1">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-1">
+            $N = 210$ has <b>19 distinct Goldbach pairs</b>! In contrast, $N = 208$ has only 7 pairs, and $N = 212$ has only 6 pairs. 210 has nearly <b>3× more pairs</b> than its neighbors!
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 2</span>
+          Does the primorial boost factor ever reach a finite maximum ceiling?
+          <button class="reveal-btn" data-target="ans-2">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-2">
+            <b>No!</b> By Mertens' third theorem, the product $\prod_{p \le z} \frac{p-1}{p-2}$ diverges to infinity like $O(\ln \ln N)$. The upper envelope grows unboundedly!
+          </div>
+        </div>
+        <div class="challenge-item">
+          <span class="badge">Challenge 3</span>
+          Select $N = 420 = 2 \times 210$. Why does 420 have so many pairs?
+          <button class="reveal-btn" data-target="ans-3">💡 Show Solution & Explanation</button>
+          <div class="answer" id="ans-3">
+            Because $420$ inherits all the prime divisors of 210 (2, 3, 5, 7) while having twice the total length, giving it an astounding <b>31 distinct Goldbach pairs</b>!
+          </div>
+        </div>
+      </div>
+
+      <div class="pedagogy-card rigor">
+        <h2>📐 Mathematical Rigor & Formal Definition</h2>
+        <p>For the primorial $P_k\# = \prod_{i=1}^k p_i$, the singular series evaluates to:</p>
+        <div class="math-formula">
+          \mathfrak{S}(P_k\#) = 2 C_2 \prod_{i=2}^k \frac{p_i - 1}{p_i - 2}
+        </div>
+        <p>By Mertens' theorem, $\mathfrak{S}(P_k\#) \sim 2 C_2 e^\gamma \ln(p_k) \asymp \ln \ln(P_k\#)$. Thus, the upper envelope of $g(N)$ satisfies $g(N) = O\left(\frac{N \ln \ln N}{\ln^2 N}\right)$.</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <a href="index.html">← Return to 100 Explorations Hub</a> | Goldbach Discovery Labs &copy; 2026
+  </footer>
+
+  <script src="i18n.js"></script>
+  <script src="common.js"></script>
+  <script>
+    const primBtns = document.querySelectorAll('.prim-btn');
+    const factorDisplay = document.getElementById('factor-display');
+    const profileText = document.getElementById('profile-text');
+    const pairsDisplay = document.getElementById('pairs-display');
+    const canvas = document.getElementById('peaksCanvas');
+    const ctx = canvas.getContext('2d');
+
+    let currentN = 6;
+
+    const primorialFactors = {
+      6: '2.00× (Divisible by 2, 3)',
+      30: '2.67× (Divisible by 2, 3, 5)',
+      210: '3.20× (Divisible by 2, 3, 5, 7)',
+      420: '3.20× (Divisible by 2, 3, 5, 7)'
+    };
+
+    function renderPeaks() {
+      const n = currentN;
+      factorDisplay.textContent = primorialFactors[n] || '2.00×';
+      profileText.textContent = `N = ${n}`;
+
+      const pairs = GLab.getGoldbachPairs(n);
+      pairsDisplay.textContent = `${pairs.length} pair${pairs.length>1?'s':''}`;
+
+      const w = canvas.width = canvas.parentElement.clientWidth;
+      const h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      // Neighborhood window: [n - 20, n + 20]
+      const minN = Math.max(4, n - 20);
+      const maxN = n + 20;
+      const windowData = [];
+      let maxP = pairs.length;
+
+      for (let i = minN; i <= maxN; i += 2) {
+        const pCount = GLab.getGoldbachPairs(i).length;
+        if (pCount > maxP) maxP = pCount;
+        windowData.push({ n: i, pairs: pCount, isCenter: i === n });
+      }
+
+      const margin = 50;
+      const plotW = w - margin * 2;
+      const plotH = h - margin * 2;
+
+      // Draw Axes
+      ctx.strokeStyle = '#334155';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(margin, h - margin);
+      ctx.lineTo(w - margin, h - margin);
+      ctx.moveTo(margin, h - margin);
+      ctx.lineTo(margin, margin);
+      ctx.stroke();
+
+      // Draw Bar Chart of Neighborhood
+      const barWidth = Math.max(8, (plotW / windowData.length) - 6);
+
+      windowData.forEach((d, idx) => {
+        const x = margin + idx * (plotW / windowData.length) + 4;
+        const barH = (d.pairs / (maxP * 1.15)) * plotH;
+        const y = h - margin - barH;
+
+        if (d.isCenter) {
+          ctx.fillStyle = '#fbbf24'; // Peak!
+        } else if (d.n % 6 === 0) {
+          ctx.fillStyle = '#38bdf8';
+        } else {
+          ctx.fillStyle = '#334155';
+        }
+
+        ctx.beginPath();
+        ctx.roundRect(x, y, barWidth, barH, 3);
+        ctx.fill();
+
+        if (d.isCenter) {
+          ctx.strokeStyle = '#f59e0b';
+          ctx.lineWidth = 2;
+          ctx.stroke();
+
+          // Crown marker on peak
+          ctx.fillStyle = '#fbbf24';
+          ctx.font = 'bold 12px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText('👑 PEAK', x + barWidth / 2, y - 8);
+        }
+
+        ctx.fillStyle = d.isCenter ? '#fbbf24' : '#94a3b8';
+        ctx.font = d.isCenter ? 'bold 10px monospace' : '8px monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText(d.n, x + barWidth / 2, h - margin + 16);
+      });
+    }
+
+    primBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        primBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentN = parseInt(btn.dataset.n);
+        renderPeaks();
+        GLab.audio.playSuccess();
+      });
+    });
+
+    window.addEventListener('resize', renderPeaks);
+
+    GLab.init({
+      labNum: 33,
+      title: "The Oasis Peaks of Primorials",
+      clusterNum: 4,
+      clusterName: "The Goldbach Comet & Asymptotic Landscape",
+      prevId: "lab032_powers_of_2_desert",
+      nextId: "lab034_hardy_littlewood"
+    });
+
+    renderPeaks();
+  </script>
+</body>
+</html>

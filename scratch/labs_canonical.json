@@ -1,0 +1,802 @@
+[
+  {
+    "num": 1,
+    "file": "lab001_unique_four.html",
+    "title": "The Solo Four Mystery {4, 6, 8, 12}",
+    "hook": "Across the entire infinite universe of even integers, only FOUR numbers possess exactly ONE prime pair decomposition. Why does every other even number have two or more?",
+    "clusterNum": 1,
+    "clusterName": "Foundations & Small Integers"
+  },
+  {
+    "num": 2,
+    "file": "lab002_parity_sandbox.html",
+    "title": "The Parity Arithmetic Sandbox (Odd + Odd = Even)",
+    "hook": "Why does Goldbach's Conjecture ask only about EVEN numbers? Explore visual 2-row tiles to understand why primes (except 2) must always fuse into perfectly paired even rectangles!",
+    "clusterNum": 1,
+    "clusterName": "Foundations & Small Integers"
+  },
+  {
+    "num": 3,
+    "file": "lab003_partition_tree.html",
+    "title": "Binary Prime Partition Trees",
+    "hook": "Students know prime factor trees (multiplication), but what does an ADDITIVE Goldbach tree look like? Explore how even numbers branch into pairs of prime leaves!",
+    "clusterNum": 1,
+    "clusterName": "Foundations & Small Integers"
+  },
+  {
+    "num": 4,
+    "file": "lab004_sieve_radar.html",
+    "title": "Dynamic Eratosthenes Sieve & Prime Complement Radar",
+    "hook": "Watch the ancient Sieve of Eratosthenes sift composite numbers in real time, then fire the Complement Radar beam to detect when prime reflections $N - p$ are also prime!",
+    "clusterNum": 1,
+    "clusterName": "Foundations & Small Integers"
+  },
+  {
+    "num": 5,
+    "file": "lab005_twin_prime_bridges.html",
+    "title": "Twin Prime Bridges & Midpoints",
+    "hook": "Twin primes $(p, p+2)$ have an even midpoint $m$. Discover why every twin prime pair naturally builds an indestructible suspension bridge proving Goldbach for $2m$!",
+    "clusterNum": 1,
+    "clusterName": "Foundations & Small Integers"
+  },
+  {
+    "num": 6,
+    "file": "lab006_cousin_sexy_constellations.html",
+    "title": "Cousin & Sexy Prime Constellations",
+    "hook": "Beyond twin primes ($d=2$) lie cousin primes ($d=4$) and \"sexy\" primes ($d=6$, from Latin sex). Look up at the number-theory night sky to see these prime constellations generate Goldbach sums!",
+    "clusterNum": 1,
+    "clusterName": "Foundations & Small Integers"
+  },
+  {
+    "num": 7,
+    "file": "lab007_step_staircase.html",
+    "title": "The Goldbach Step-Staircase",
+    "hook": "Climb an ascending staircase where each step is an even integer and stacked blocks represent its Goldbach pairs. Watch how skyscrapers rise on multiples of 6 while valleys dip on powers of 2!",
+    "clusterNum": 1,
+    "clusterName": "Foundations & Small Integers"
+  },
+  {
+    "num": 8,
+    "file": "lab008_string_art.html",
+    "title": "Circular Chord String Art",
+    "hook": "Wrap primes around a circle and connect Goldbach pairs with luminous string chords. Discover the mesmerizing cardioids, envelopes, and geometric harp strings of prime addition!",
+    "clusterNum": 1,
+    "clusterName": "Foundations & Small Integers"
+  },
+  {
+    "num": 9,
+    "file": "lab009_dominoes.html",
+    "title": "Goldbach Dominoes",
+    "hook": "Can you fit exactly TWO prime dominoes into the target strip? Click prime dominoes to snap them into the frame and discover all possible solutions for each level!",
+    "clusterNum": 1,
+    "clusterName": "Foundations & Small Integers"
+  },
+  {
+    "num": 10,
+    "file": "lab010_prime_abacus.html",
+    "title": "The Prime Bead Abacus",
+    "hook": "Slide authentic prime beads along dual brass wires to reach exact numerical equilibrium. When the top bead $p$ and bottom bead $q$ sum to target $N$, the abacus glows with balanced energy!",
+    "clusterNum": 1,
+    "clusterName": "Foundations & Small Integers"
+  },
+  {
+    "num": 11,
+    "file": "lab011_mod6_gears.html",
+    "title": "The 6k ± 1 Gear Mechanism",
+    "hook": "Why do all prime numbers greater than 3 live exclusively on just TWO numbers: $6k-1$ and $6k+1$? Turn the 6-toothed mechanical gear to see four of the six teeth completely blocked by 2 and 3!",
+    "clusterNum": 2,
+    "clusterName": "Modular Arithmetic & The Power of 6"
+  },
+  {
+    "num": 12,
+    "file": "lab012_multiple_of_6_bonus.html",
+    "title": "The Multiple-of-6 Prime Bonus Lab",
+    "hook": "Compare three consecutive even numbers: $6k-2$, $6k$, and $6k+2$. Why does the multiple of 6 ALWAYS get approximately twice as many Goldbach pairs as its neighbors?",
+    "clusterNum": 2,
+    "clusterName": "Modular Arithmetic & The Power of 6"
+  },
+  {
+    "num": 13,
+    "file": "lab013_primorial_oasis.html",
+    "title": "The Primorial Oasis ($N \\pmod{30}$)",
+    "hook": "The primorial $30 = 2 \\times 3 \\times 5$ acts as an ultra-rich oasis in number theory. Spin the concentric mod-30 wheel to see how divisibility by 2, 3, and 5 produces an astonishing 2.67× pair boost!",
+    "clusterNum": 2,
+    "clusterName": "Modular Arithmetic & The Power of 6"
+  },
+  {
+    "num": 14,
+    "file": "lab014_forbidden_residues.html",
+    "title": "The Forbidden Residues Inspector",
+    "hook": "Why can't primes land on just any remainder? Inspect modular lockouts across moduli $m = 3, 5, 7, 11$ and see which residue channels are strictly forbidden from producing Goldbach pairs!",
+    "clusterNum": 2,
+    "clusterName": "Modular Arithmetic & The Power of 6"
+  },
+  {
+    "num": 15,
+    "file": "lab015_modular_kaleidoscope.html",
+    "title": "Modular Kaleidoscope",
+    "hook": "Turn the modular dial ($m = 6, 12, 24, 30, 60$) to transform raw prime pairs into luminous geometric mandalas and discover radial symmetry hidden in Goldbach sums!",
+    "clusterNum": 2,
+    "clusterName": "Modular Arithmetic & The Power of 6"
+  },
+  {
+    "num": 16,
+    "file": "lab016_sum_of_squares.html",
+    "title": "Fermat's Sum of Two Squares vs. Goldbach",
+    "hook": "Pierre de Fermat proved which primes are the sum of two squares ($a^2 + b^2 = p$). How does his solved theorem compare to Goldbach's unsolved sum of two primes ($p + q = N$)?",
+    "clusterNum": 2,
+    "clusterName": "Modular Arithmetic & The Power of 6"
+  },
+  {
+    "num": 17,
+    "file": "lab017_billiard_table.html",
+    "title": "Goldbach Billiard Table",
+    "hook": "Shoot a billiard ball around a 6-cushion hexagonal table. Can your shot bounce between Prime Pockets (1 and 5) to score a verified Goldbach combination for target $N$?",
+    "clusterNum": 2,
+    "clusterName": "Modular Arithmetic & The Power of 6"
+  },
+  {
+    "num": 18,
+    "file": "lab018_residue_roulette.html",
+    "title": "Residue Roulette Wheel",
+    "hook": "Spin the probabilistic prime roulette wheel! When a random prime $p$ is selected, what are the odds that its partner $N - p$ also hits a prime slot? Test the probabilistic heart of Goldbach's conjecture!",
+    "clusterNum": 2,
+    "clusterName": "Modular Arithmetic & The Power of 6"
+  },
+  {
+    "num": 19,
+    "file": "lab019_cross_sieve_42.html",
+    "title": "The 2·3·7 = 42 Cross-Sieve",
+    "hook": "Famous in pop culture as the \"Answer to the Ultimate Question,\" $42 = 2 \\times 3 \\times 7$ holds a profound secret in number theory: how divisibility by 7 creates an extra 1.20× resonance layer in the Goldbach comet!",
+    "clusterNum": 2,
+    "clusterName": "Modular Arithmetic & The Power of 6"
+  },
+  {
+    "num": 20,
+    "file": "lab020_modulo_clock.html",
+    "title": "Two Hands of the Modulo Clock",
+    "hook": "Rotate the dual hands of a mathematical clock ($m = 12$) to solve linear congruences $p + q \\equiv N \\pmod m$. When both hands point to primes summing to $N$, the clock bell chimes in harmonic resonance!",
+    "clusterNum": 2,
+    "clusterName": "Modular Arithmetic & The Power of 6"
+  },
+  {
+    "num": 21,
+    "file": "lab021_prime_lattice.html",
+    "title": "The Prime Grid Lattice ($p, q$ Coordinate Plane)",
+    "hook": "Plot every pair of primes $(p, q)$ as points of light in a 2D coordinate plane. Watch the diagonal line $x + y = N$ slice through the starfield, illuminating Goldbach solutions at every intersection!",
+    "clusterNum": 3,
+    "clusterName": "Geometric, Lattice & Visual Representations"
+  },
+  {
+    "num": 22,
+    "file": "lab022_paper_folding.html",
+    "title": "Paper-Folding Symmetry along $N/2$",
+    "hook": "Imagine the number line printed on a paper tape from 0 to $N$. Fold the tape in half along the midpoint crease $N/2$. Wherever two prime dots press against each other, a Goldbach pair is born!",
+    "clusterNum": 3,
+    "clusterName": "Geometric, Lattice & Visual Representations"
+  },
+  {
+    "num": 23,
+    "file": "lab023_step_pyramid.html",
+    "title": "The Goldbach Step Pyramid",
+    "hook": "Stack 3D isometric blocks for every Goldbach pair to construct an architectural monument! Layer $N=4$ crowns the pyramid tip; as numbers descend, layers widen into an unshakeable bedrock!",
+    "clusterNum": 3,
+    "clusterName": "Geometric, Lattice & Visual Representations"
+  },
+  {
+    "num": 24,
+    "file": "lab024_ulam_spiral.html",
+    "title": "Ulam Spiral Pair Highlighter",
+    "hook": "Stanislaw Ulam's famous spiral arranges integers in a counter-clockwise vortex. Watch diagonal prime constellations connect through glowing Goldbach bridges for any chosen even number $N$!",
+    "clusterNum": 3,
+    "clusterName": "Geometric, Lattice & Visual Representations"
+  },
+  {
+    "num": 25,
+    "file": "lab025_regular_polygons.html",
+    "title": "Regular Polygons with Prime Vertices",
+    "hook": "Inscribe a regular $N$-gon inside a circle with numbered vertices. Why do Goldbach prime chords always form a family of parallel geometric rungs spanning across the polygon?",
+    "clusterNum": 3,
+    "clusterName": "Geometric, Lattice & Visual Representations"
+  },
+  {
+    "num": 26,
+    "file": "lab026_prime_triangles.html",
+    "title": "Prime Right Triangles & Areas",
+    "hook": "Build right-angled triangles whose legs are prime numbers $p$ and $q$ summing to $N$. Which prime pair encloses the largest possible area, and which stretches into an ultra-sharp needle?",
+    "clusterNum": 3,
+    "clusterName": "Geometric, Lattice & Visual Representations"
+  },
+  {
+    "num": 27,
+    "file": "lab027_wave_interference.html",
+    "title": "Prime Wave Superposition",
+    "hook": "Send two wave pulses through a medium from opposite ends ($0$ and $N$). Where prime wavepackets collide, constructive interference produces glowing double-height crests: the Goldbach resonances!",
+    "clusterNum": 3,
+    "clusterName": "Geometric, Lattice & Visual Representations"
+  },
+  {
+    "num": 28,
+    "file": "lab028_voronoi_cells.html",
+    "title": "Voronoi Diagram of Goldbach Complements",
+    "hook": "Partition continuous mathematical space into Voronoi cells seeded by prime pairs $(p, N-p)$. Discover how dense prime attraction basins eliminate any \"void zones\" near the center!",
+    "clusterNum": 3,
+    "clusterName": "Geometric, Lattice & Visual Representations"
+  },
+  {
+    "num": 29,
+    "file": "lab029_honeycomb_mod6.html",
+    "title": "Hexagonal Honeycomb Goldbach Explorer",
+    "hook": "A bee's honeycomb has 6 natural directions. In modular arithmetic, hexagons provide the perfect geometric coordinate system for $6k \\pm 1$ prime pairs!",
+    "clusterNum": 3,
+    "clusterName": "Geometric, Lattice & Visual Representations"
+  },
+  {
+    "num": 30,
+    "file": "lab030_poincare_disk.html",
+    "title": "Poincaré Disk Prime Bridge",
+    "hook": "Step into the non-Euclidean realm of hyperbolic geometry! Map primes to the infinite boundary of the Poincaré disk, where Goldbach pairs weave through space as hyperbolic geodesics!",
+    "clusterNum": 3,
+    "clusterName": "Geometric, Lattice & Visual Representations"
+  },
+  {
+    "num": 31,
+    "file": "lab031_infinite_zoom_comet.html",
+    "title": "Infinite Zoom Goldbach Comet",
+    "hook": "Behold the celestial signature of Goldbach's Conjecture: the Goldbach Comet! Pan and zoom through thousands of even integers to see the multi-band parabolic rays formed by modular arithmetic.",
+    "clusterNum": 4,
+    "clusterName": "The Goldbach Comet & Asymptotic Landscape"
+  },
+  {
+    "num": 32,
+    "file": "lab032_powers_of_2_desert.html",
+    "title": "The Desert of Powers of 2 ($2^k$)",
+    "hook": "Powers of 2 ($16, 32, 64, 128, 256, 512...$) are the arid deserts of number theory. Why do they form the strict bottom floor of the Goldbach comet?",
+    "clusterNum": 4,
+    "clusterName": "The Goldbach Comet & Asymptotic Landscape"
+  },
+  {
+    "num": 33,
+    "file": "lab033_primorial_peaks.html",
+    "title": "The Oasis Peaks of Primorials ($2, 6, 30, 210, 2310$)",
+    "hook": "If powers of 2 are the desert floor, primorials are Everest! Explore how products of the first $k$ primes achieve the absolute maximum Goldbach richness in the universe.",
+    "clusterNum": 4,
+    "clusterName": "The Goldbach Comet & Asymptotic Landscape"
+  },
+  {
+    "num": 34,
+    "file": "lab034_hardy_littlewood.html",
+    "title": "The Hardy-Littlewood Conjecture Calculator",
+    "hook": "In 1923, G. H. Hardy and J. E. Littlewood predicted the exact frequency of Goldbach pairs using the Circle Method. Test their formula against empirical reality for any even integer!",
+    "clusterNum": 4,
+    "clusterName": "The Goldbach Comet & Asymptotic Landscape"
+  },
+  {
+    "num": 35,
+    "file": "lab035_twin_prime_constant.html",
+    "title": "The Twin Prime Constant $C_2 \\approx 0.66016$",
+    "hook": "A single magic number links Twin Primes to Goldbach's Conjecture: the Twin Prime Constant $C_2$. Watch an infinite product of prime fractions converge to the universal bedrock of the Goldbach comet!",
+    "clusterNum": 4,
+    "clusterName": "The Goldbach Comet & Asymptotic Landscape"
+  },
+  {
+    "num": 36,
+    "file": "lab036_comet_density_histogram.html",
+    "title": "Comet Density & Ratio Distribution",
+    "hook": "Normalize the Goldbach comet by dividing out $N / \\ln^2 N$. The resulting histogram reveals three distinct Gaussian peaks corresponding to modular resonances!",
+    "clusterNum": 4,
+    "clusterName": "The Goldbach Comet & Asymptotic Landscape"
+  },
+  {
+    "num": 37,
+    "file": "lab037_smallest_prime_hunter.html",
+    "title": "Smallest Prime Hunter $p_{\\min}(N)$",
+    "hook": "What is the very first prime $p$ that successfully unlocks a Goldbach pair for $N$? Hunt down $p_{\\min}(N)$ and discover why even massive numbers are unlocked by surprisingly tiny primes!",
+    "clusterNum": 4,
+    "clusterName": "The Goldbach Comet & Asymptotic Landscape"
+  },
+  {
+    "num": 38,
+    "file": "lab038_champion_integers.html",
+    "title": "The Champion Integers Hall of Fame",
+    "hook": "Meet the record-breaking \"Champion Integers\" that set brand-new all-time highs for the smallest Goldbach prime $p_{\\min}(N)$! Step through mathematical history to see who pushed the boundary furthest.",
+    "clusterNum": 4,
+    "clusterName": "The Goldbach Comet & Asymptotic Landscape"
+  },
+  {
+    "num": 39,
+    "file": "lab039_fourier_spectrogram.html",
+    "title": "Audio-Visual Fourier Spectrogram",
+    "hook": "Listen to the hidden music of the Goldbach Comet! Decompose the sequence of Goldbach pairs into Fourier frequencies to hear the resounding harmonic peaks of 3, 5, and 7.",
+    "clusterNum": 4,
+    "clusterName": "The Goldbach Comet & Asymptotic Landscape"
+  },
+  {
+    "num": 40,
+    "file": "lab040_envelope_bounds.html",
+    "title": "Logarithmic Upper & Lower Envelope Bounds",
+    "hook": "Between what two mathematical curves is the Goldbach Comet trapped? Discover the logarithmic envelope corridor that guarantees the comet never drops to zero or flies away to infinity!",
+    "clusterNum": 4,
+    "clusterName": "The Goldbach Comet & Asymptotic Landscape"
+  },
+  {
+    "num": 41,
+    "file": "lab041_ternary_scale.html",
+    "title": "Ternary Goldbach Scale ($p_1 + p_2 + p_3$)",
+    "hook": "The \"Weak\" Goldbach Conjecture states that every odd number $> 5$ is the sum of THREE primes. Fully PROVEN by Harald Helfgott in 2013! Balance the triple-pan prime scale to verify it yourself.",
+    "clusterNum": 5,
+    "clusterName": "Weak Goldbach & 3-Prime Partitions"
+  },
+  {
+    "num": 42,
+    "file": "lab042_journey_271_years.html",
+    "title": "The 271-Year Journey: Euler to Helfgott",
+    "hook": "From a handwritten letter in 1742 to a monumental 2013 mathematical proof: explore the 271-year epic quest that finally conquered the Weak Goldbach Conjecture!",
+    "clusterNum": 5,
+    "clusterName": "Weak Goldbach & 3-Prime Partitions"
+  },
+  {
+    "num": 43,
+    "file": "lab043_circle_method.html",
+    "title": "The Circle Method (Major & Minor Arcs)",
+    "hook": "The Hardy-Littlewood Circle Method is the most powerful weapon in additive number theory. See how prime vectors resonate into massive beams on \"Major Arcs\" and cancel into dust on \"Minor Arcs\"!",
+    "clusterNum": 5,
+    "clusterName": "Weak Goldbach & 3-Prime Partitions"
+  },
+  {
+    "num": 44,
+    "file": "lab044_3d_simplex.html",
+    "title": "3D Triangular Simplex of Prime Triples",
+    "hook": "In 3D space, $x + y + z = \\text{Odd}$ carves out an equilateral triangular plane. Rotate the 3D coordinate simplex to see prime triples $(p_1, p_2, p_3)$ scatter like glowing stars across the triangle!",
+    "clusterNum": 5,
+    "clusterName": "Weak Goldbach & 3-Prime Partitions"
+  },
+  {
+    "num": 45,
+    "file": "lab045_odd_minus_3.html",
+    "title": "Reducing Ternary to Binary ($\\text{Odd} - 3 = \\text{Even}$)",
+    "hook": "Why does solving the Strong (Even) Goldbach Conjecture automatically prove the Weak (Odd) one? Subtract a single block of 3 to watch the ternary problem reduce seamlessly to binary!",
+    "clusterNum": 5,
+    "clusterName": "Weak Goldbach & 3-Prime Partitions"
+  },
+  {
+    "num": 46,
+    "file": "lab046_triad_chords.html",
+    "title": "The 3-Prime Harmonic Chords",
+    "hook": "In music, three notes make a harmonic triad chord. Play the musical acoustic chords produced by 3-prime Goldbach partitions and hear harmony in pure prime ratios!",
+    "clusterNum": 5,
+    "clusterName": "Weak Goldbach & 3-Prime Partitions"
+  },
+  {
+    "num": 47,
+    "file": "lab047_smallest_prime_ternary.html",
+    "title": "Smallest Primes in Ternary Partitions",
+    "hook": "In binary Goldbach, the smallest prime can be as high as 19 or 73. But in ternary partitions, can EVERY odd number $\\ge 9$ be unlocked by the tiny prime 3? Test the \"Universal 3\" phenomenon!",
+    "clusterNum": 5,
+    "clusterName": "Weak Goldbach & 3-Prime Partitions"
+  },
+  {
+    "num": 48,
+    "file": "lab048_ramanujan_partitions.html",
+    "title": "Ramanujan Partitions $p(n)$ vs. Goldbach",
+    "hook": "Srinivasa Ramanujan unlocked unrestricted integer partitions $p(n)$, which explode exponentially ($p(100) = 190,569,292$). How does his combinatorial forest compare to the delicate prime stream of Goldbach?",
+    "clusterNum": 5,
+    "clusterName": "Weak Goldbach & 3-Prime Partitions"
+  },
+  {
+    "num": 49,
+    "file": "lab049_vinogradov_bounds.html",
+    "title": "Vinogradov's Astronomical Bound",
+    "hook": "How did mathematicians crush a bound from $10^{6,800,000}$ down to $10^{27}$ and finally to ZERO? Step through the 76-year exponential plummet that solved the Weak Goldbach Conjecture!",
+    "clusterNum": 5,
+    "clusterName": "Weak Goldbach & 3-Prime Partitions"
+  },
+  {
+    "num": 50,
+    "file": "lab050_ternary_dominoes.html",
+    "title": "Ternary Prime Dominoes",
+    "hook": "Fit exactly THREE prime dominoes into an odd target strip! Pick 3 prime lengths to seamlessly cover the interval with no gaps and celebrate Helfgott's proven theorem!",
+    "clusterNum": 5,
+    "clusterName": "Weak Goldbach & 3-Prime Partitions"
+  },
+  {
+    "num": 51,
+    "file": "lab051_memory_match.html",
+    "title": "Goldbach Concentration (Memory Match)",
+    "hook": "Flip the mystery prime cards and pair two numbers that sum exactly to the target even number N! Test your spatial memory and mental arithmetic in this classic card puzzle.",
+    "clusterNum": 6,
+    "clusterName": "Gamified Puzzles & Detective Cases"
+  },
+  {
+    "num": 52,
+    "file": "lab052_speed_blitz.html",
+    "title": "Speed Math: Goldbach Blitz Duel",
+    "hook": "Race against the countdown clock! Given target even N and prime $p$, instantly deduce the missing partner prime $q = N - p$. Chain streaks together for massive combo multipliers!",
+    "clusterNum": 6,
+    "clusterName": "Gamified Puzzles & Detective Cases"
+  },
+  {
+    "num": 53,
+    "file": "lab053_composite_maze.html",
+    "title": "Escape the Composite Maze",
+    "hook": "Navigate the dangerous dungeon! You carry a Prime Key. You can only step into an adjacent chamber if the chamber's number is a Prime, and their sum equals an even Goldbach milestone!",
+    "clusterNum": 6,
+    "clusterName": "Gamified Puzzles & Detective Cases"
+  },
+  {
+    "num": 54,
+    "file": "lab054_mini_sudoku.html",
+    "title": "Goldbach Mini-Sudoku",
+    "hook": "Fill the 4×4 grid exclusively with Prime Numbers {2, 3, 5, 7, 11, 13} so that every 2×1 block or row pair sums to the designated Goldbach even target!",
+    "clusterNum": 6,
+    "clusterName": "Gamified Puzzles & Detective Cases"
+  },
+  {
+    "num": 55,
+    "file": "lab055_cross_number.html",
+    "title": "Prime Cross-Number Puzzle",
+    "hook": "Crosswords meet Goldbach! Enter numbers into the grid where every Across and Down clue is deduced from prime pairs, modular complements, and Goldbach partitions.",
+    "clusterNum": 6,
+    "clusterName": "Gamified Puzzles & Detective Cases"
+  },
+  {
+    "num": 56,
+    "file": "lab056_oasis_heist.html",
+    "title": "Case of the Oasis Heist",
+    "hook": "The elusive \"Primorial Phantom\" has burgled three major vaults! The detective bureau discovered a secret pattern: the thief only strikes vaults whose combination number possesses an extreme Goldbach Richness Score. Deduce their next target!",
+    "clusterNum": 6,
+    "clusterName": "Gamified Puzzles & Detective Cases"
+  },
+  {
+    "num": 57,
+    "file": "lab057_desert_survival.html",
+    "title": "Desert Island Survival Math",
+    "hook": "Stranded in the harsh math desert! Each day, your expedition requires an exact calorie quota $N$. Craft your daily ration by combining exactly TWO Prime Supplies to survive the 5-day trek.",
+    "clusterNum": 6,
+    "clusterName": "Gamified Puzzles & Detective Cases"
+  },
+  {
+    "num": 58,
+    "file": "lab058_secret_cipher.html",
+    "title": "The Goldbach Secret Code Cipher",
+    "hook": "Can prime number theory encrypt secret messages? In this cryptographic cipher, each letter is encrypted as an Even Target & Prime Pair $(N, p)$. Decryption succeeds only if both $p$ and $N - p$ satisfy Goldbach primality!",
+    "clusterNum": 6,
+    "clusterName": "Gamified Puzzles & Detective Cases"
+  },
+  {
+    "num": 59,
+    "file": "lab059_trivia_ladder.html",
+    "title": "Who Wants to Be a Number Theorist?",
+    "hook": "Climb the 10-question mathematical ladder from $100 up to the grand $1,000,000 Goldbach Prize! Use your three historical lifelines when the questions get rigorous.",
+    "clusterNum": 6,
+    "clusterName": "Gamified Puzzles & Detective Cases"
+  },
+  {
+    "num": 60,
+    "file": "lab060_dragon_battle.html",
+    "title": "Boss Battle: The Goldbach Dragon",
+    "hook": "The mighty Dragon Ignis protects the ancient treasure vault with mystical even armor! To penetrate each armor shield, cast two Prime Magic Stones that sum exactly to the Dragon's Armor HP!",
+    "clusterNum": 6,
+    "clusterName": "Gamified Puzzles & Detective Cases"
+  },
+  {
+    "num": 61,
+    "file": "lab061_prime_polynomial_square.html",
+    "title": "Prime Polynomial Squaring $(P(x)^2)$",
+    "hook": "Square the generating polynomial of primes: $P(x) = x^2 + x^3 + x^5 + x^7 + \\dots$ The coefficient of $x^N$ in $P(x)^2$ is precisely the number of Goldbach representations of $N$!",
+    "clusterNum": 7,
+    "clusterName": "Combinatorics, Generating Functions & Probability"
+  },
+  {
+    "num": 62,
+    "file": "lab062_fft_convolution.html",
+    "title": "FFT Prime Convolution Visualizer",
+    "hook": "How did supercomputers verify Goldbach up to $4 \\times 10^{18}$? They didn't test pairs one-by-one! They used the Fast Fourier Transform (FFT) to multiply prime polynomials in $O(N \\log N)$ instead of $O(N^2)$ time!",
+    "clusterNum": 7,
+    "clusterName": "Combinatorics, Generating Functions & Probability"
+  },
+  {
+    "num": 63,
+    "file": "lab063_cramer_random_model.html",
+    "title": "Cramér's Random Model for Goldbach",
+    "hook": "If primes were generated by rolling weighted dice with probability $1/\\ln x$, what is the chance that any even number has zero Goldbach pairs? Explore Harald Cramér's probabilistic model and the Borel-Cantelli lemma.",
+    "clusterNum": 7,
+    "clusterName": "Combinatorics, Generating Functions & Probability"
+  },
+  {
+    "num": 64,
+    "file": "lab064_monte_carlo_darts.html",
+    "title": "Monte Carlo Prime Darts",
+    "hook": "Throw thousands of random prime coordinate darts $(p_1, p_2)$ onto a 2D integer square $[0, N]^2$. Measure how often random prime pairs collide onto the Goldbach diagonal $x + y = N$!",
+    "clusterNum": 7,
+    "clusterName": "Combinatorics, Generating Functions & Probability"
+  },
+  {
+    "num": 65,
+    "file": "lab065_goldbach_matrix_100.html",
+    "title": "The Complete Goldbach Matrix",
+    "hook": "Explore the prime addition table $M_{i, j} = p_i + p_j$. Hover across the matrix to inspect anti-diagonal level sets where distinct prime pairs converge to the exact same even sum!",
+    "clusterNum": 7,
+    "clusterName": "Combinatorics, Generating Functions & Probability"
+  },
+  {
+    "num": 66,
+    "file": "lab066_coin_change_machine.html",
+    "title": "The Prime Coin Change Machine",
+    "hook": "A vending machine stocked exclusively with Prime Coins: {2¢, 3¢, 5¢, 7¢, 11¢, 13¢, 17¢...}. Can every even price be paid with exactly two coins? What happens if you request an odd price?",
+    "clusterNum": 7,
+    "clusterName": "Combinatorics, Generating Functions & Probability"
+  },
+  {
+    "num": 67,
+    "file": "lab067_normal_distribution_sums.html",
+    "title": "Normal Distribution of Prime Partner Sums",
+    "hook": "Add every prime under $M$ to every other prime under $M$. What shape does the resulting frequency histogram take? Discover how the Central Limit Theorem creates a bell-shaped Gaussian envelope over Goldbach sums!",
+    "clusterNum": 7,
+    "clusterName": "Combinatorics, Generating Functions & Probability"
+  },
+  {
+    "num": 68,
+    "file": "lab068_divisor_hyperbola.html",
+    "title": "Divisor Functions & Prime Pair Bounds",
+    "hook": "How do modern sieves prove upper bounds on Goldbach pairs? Explore the Dirichlet hyperbola method and see how the divisor function $d(N)$ and Selberg's sieve construct an impenetrable ceiling over $g(N)$!",
+    "clusterNum": 7,
+    "clusterName": "Combinatorics, Generating Functions & Probability"
+  },
+  {
+    "num": 69,
+    "file": "lab069_polignac_vs_goldbach.html",
+    "title": "Polignac's Conjecture vs. Goldbach",
+    "hook": "Are prime sums and prime differences two sides of the same coin? Compare Goldbach ($p + q = 2k$, finite pairs) with Polignac ($p - q = 2k$, infinitely many pairs)!",
+    "clusterNum": 7,
+    "clusterName": "Combinatorics, Generating Functions & Probability"
+  },
+  {
+    "num": 70,
+    "file": "lab070_additive_bases_schnirelmann.html",
+    "title": "Additive Bases & Schnirelmann Density",
+    "hook": "Can every number be built from adding at most $h$ primes? In 1930, Lev Schnirelmann shocked the world by proving the primes form a finite additive basis. Watch integer coverage explode from order 1 to order 3!",
+    "clusterNum": 7,
+    "clusterName": "Combinatorics, Generating Functions & Probability"
+  },
+  {
+    "num": 71,
+    "file": "lab071_goldbach_euler_letter.html",
+    "title": "The 1742 Goldbach-Euler Letter",
+    "hook": "Step back to June 7, 1742! Inspect the historic letter from Christian Goldbach to Leonhard Euler that sparked the most famous unsolved problem in arithmetic. Click the highlighted manuscript passages to analyze their mathematical significance.",
+    "clusterNum": 8,
+    "clusterName": "Historical Perspectives & Conjectures"
+  },
+  {
+    "num": 72,
+    "file": "lab072_chen_theorem.html",
+    "title": "Chen's Theorem: $N = p + P_2$ (1 + 2)",
+    "hook": "In 1973, Chinese mathematician Chen Jingrun (陈景润) astonished the mathematical world with \"1 + 2\": every sufficiently large even number is the sum of a prime and an \"almost prime\" having at most 2 prime factors!",
+    "clusterNum": 8,
+    "clusterName": "Historical Perspectives & Conjectures"
+  },
+  {
+    "num": 73,
+    "file": "lab073_schnirelmann_constant.html",
+    "title": "Schnirelmann's Constant: The 300,000 to 3 Plummet",
+    "hook": "How many primes does it take to build ANY integer? In 1930, Lev Schnirelmann proved at most 300,000. Over 83 years, mathematicians drove this cosmic ceiling down to 3! Step through the timeline of discoveries.",
+    "clusterNum": 8,
+    "clusterName": "Historical Perspectives & Conjectures"
+  },
+  {
+    "num": 74,
+    "file": "lab074_landau_four_problems.html",
+    "title": "Landau's Four Unsolved Prime Problems",
+    "hook": "At the 1912 International Congress of Mathematicians in Cambridge, Edmund Landau highlighted four foundational prime conjectures that he declared \"unattackable in the present state of science\". Over a century later, all four remain open!",
+    "clusterNum": 8,
+    "clusterName": "Historical Perspectives & Conjectures"
+  },
+  {
+    "num": 75,
+    "file": "lab075_gauss_pi_li.html",
+    "title": "Gauss's $\\text{Li}(x)$ & Prime Counting Function $\\pi(x)$",
+    "hook": "At age 15, Carl Friedrich Gauss noticed that primes thin out like $1/\\ln x$. Discover how Gauss's logarithmic integral $\\text{Li}(x)$ underpins both the Prime Number Theorem and the Hardy-Littlewood Goldbach formula!",
+    "clusterNum": 8,
+    "clusterName": "Historical Perspectives & Conjectures"
+  },
+  {
+    "num": 76,
+    "file": "lab076_riemann_zeta_music.html",
+    "title": "The Music of the Primes: Riemann Zeta Zeros",
+    "hook": "In 1859, Bernhard Riemann uncovered the secret symphony of prime numbers: each complex zero of $\\zeta(s)$ is a musical harmonic! Summing these waves creates sharp acoustic interference peaks exactly at the prime numbers.",
+    "clusterNum": 8,
+    "clusterName": "Historical Perspectives & Conjectures"
+  },
+  {
+    "num": 77,
+    "file": "lab077_terence_tao_five_primes.html",
+    "title": "Terence Tao's 2012 Theorem: Odd Numbers as $\\le 5$ Primes",
+    "hook": "In 2012, Fields Medalist Terence Tao proved that every odd integer greater than 1 is the sum of at most FIVE prime numbers. Enter any odd number to decompose it into its minimal prime basis!",
+    "clusterNum": 8,
+    "clusterName": "Historical Perspectives & Conjectures"
+  },
+  {
+    "num": 78,
+    "file": "lab078_uncle_petros.html",
+    "title": "Uncle Petros & Goldbach's Conjecture",
+    "hook": "Inspired by Apostolos Doxiadis's celebrated mathematical novel! Step into the quiet Athens study of Uncle Petros Papachristos. Solve his three tests of mathematical intuition and confront Gödel's Incompleteness Theorem.",
+    "clusterNum": 8,
+    "clusterName": "Historical Perspectives & Conjectures"
+  },
+  {
+    "num": 79,
+    "file": "lab079_supercomputer_verifications.html",
+    "title": "Supercomputer Verifications: Up to $4 \\times 10^{18}$",
+    "hook": "From pencil-and-paper in 1938 to distributed supercomputing clusters in 2012, humanity has tested every single even number up to 4 Quintillion ($4 \\times 10^{18}$) without encountering a single counter-example!",
+    "clusterNum": 8,
+    "clusterName": "Historical Perspectives & Conjectures"
+  },
+  {
+    "num": 80,
+    "file": "lab080_hilbert_eighth_problem.html",
+    "title": "Hilbert's 8th Problem Explorer (Paris 1900)",
+    "hook": "At the dawn of the 20th century in Paris, David Hilbert unveiled 23 problems that charted the future of mathematics. Problem #8 united the Riemann Hypothesis and Goldbach's Conjecture. Why has Goldbach outlasted Fermat and Poincaré?",
+    "clusterNum": 8,
+    "clusterName": "Historical Perspectives & Conjectures"
+  },
+  {
+    "num": 81,
+    "file": "lab081_elliptic_curves.html",
+    "title": "Elliptic Curves over Finite Fields $E(\\mathbb{F}_p)$",
+    "hook": "Elliptic curves power modern cryptography and solved Fermat's Last Theorem! Decompose even number $N$ into a Goldbach pair $(p, q)$, and compare the elliptic curves $y^2 \\equiv x^3 + ax + b$ defined over the finite fields $\\mathbb{F}_p$ and $\\mathbb{F}_q$.",
+    "clusterNum": 9,
+    "clusterName": "Advanced Number Theory & Modular Forms"
+  },
+  {
+    "num": 82,
+    "file": "lab082_modular_forms_q_series.html",
+    "title": "Modular Forms & $q$-Series Expansion",
+    "hook": "Inside the unit disk $|q| < 1$, the prime series $P(q) = \\sum q^p$ transforms into a complex analytical field. Watch the major arc cusps ignite around the unit circle as $q$ approaches rational roots of unity $e^{2\\pi i a/b}$!",
+    "clusterNum": 9,
+    "clusterName": "Advanced Number Theory & Modular Forms"
+  },
+  {
+    "num": 83,
+    "file": "lab083_dirichlet_characters.html",
+    "title": "Dirichlet Characters $\\chi(n)$ & Orthogonality",
+    "hook": "How did Dirichlet prove primes exist in all coprimes progressions? By inventing Dirichlet Characters—periodic complex wavelets whose orthogonality cancels out every unwanted residue, isolating Goldbach pairs with algebraic precision!",
+    "clusterNum": 9,
+    "clusterName": "Advanced Number Theory & Modular Forms"
+  },
+  {
+    "num": 84,
+    "file": "lab084_primitive_roots_cyclic.html",
+    "title": "Primitive Roots & Cyclic Groups mod $p$",
+    "hook": "Every prime modulus $p$ possesses a magical generator $g$: its powers $g^1, g^2, g^3, \\dots, g^{p-1} \\pmod p$ visit every single non-zero number in a perfect cyclic loop! Explore cyclic group structure in Goldbach primes.",
+    "clusterNum": 9,
+    "clusterName": "Advanced Number Theory & Modular Forms"
+  },
+  {
+    "num": 85,
+    "file": "lab085_quadratic_reciprocity.html",
+    "title": "Gauss's Golden Theorem: Quadratic Reciprocity",
+    "hook": "Carl Friedrich Gauss was so proud of Quadratic Reciprocity that he published eight distinct proofs! Given any Goldbach prime pair $(p, q)$, test whether $p$ is a square mod $q$, and discover why their mutual solvability is linked by the golden law!",
+    "clusterNum": 9,
+    "clusterName": "Advanced Number Theory & Modular Forms"
+  },
+  {
+    "num": 86,
+    "file": "lab086_continued_fractions.html",
+    "title": "Continued Fractions of Goldbach Pairs",
+    "hook": "Expand the prime ratio $p / q$ of any Goldbach pair into its unique Continued Fraction $[a_0; a_1, a_2, \\dots]$. Watch Euclidean square-dissections and compute the optimal rational convergents!",
+    "clusterNum": 9,
+    "clusterName": "Advanced Number Theory & Modular Forms"
+  },
+  {
+    "num": 87,
+    "file": "lab087_farey_ford_circles.html",
+    "title": "Farey Sequences & Ford Circles for Goldbach Pairs",
+    "hook": "Lester R. Ford discovered that fractions $p/q$ can be represented as tangent bubbles resting on the number line! For any Goldbach partition $p + q = N$, the fractions $p/N$ and $q/N$ produce twin Ford circles mirrored across the center $1/2$.",
+    "clusterNum": 9,
+    "clusterName": "Advanced Number Theory & Modular Forms"
+  },
+  {
+    "num": 88,
+    "file": "lab088_p_adic_trees.html",
+    "title": "$p$-Adic Numbers & Hensel's Lemma",
+    "hook": "What if two numbers are considered \"close\" when their difference is divisible by a high power of prime $p$? Step into Kurt Hensel's $p$-Adic Ultrametric Universe and explore tree branching modulo $p, p^2, p^3$!",
+    "clusterNum": 9,
+    "clusterName": "Advanced Number Theory & Modular Forms"
+  },
+  {
+    "num": 89,
+    "file": "lab089_mobius_inversion.html",
+    "title": "The Möbius Function $\\mu(n)$ & Prime Filtering",
+    "hook": "August Ferdinand Möbius invented a function that takes only three values: $+1, -1, 0$. Yet this humble arithmetic function filters out all composite numbers and powers the modern sieves that attack Goldbach's conjecture!",
+    "clusterNum": 9,
+    "clusterName": "Advanced Number Theory & Modular Forms"
+  },
+  {
+    "num": 90,
+    "file": "lab090_mersenne_primes.html",
+    "title": "Mersenne Primes $2^p - 1$ in Goldbach Pairs",
+    "hook": "The largest known primes in human history are all Mersenne Primes $M_p = 2^p - 1$. What happens when a cosmic titan like $M_{31} = 2,147,483,647$ partners with a tiny prime like 3 to form a Goldbach pair?",
+    "clusterNum": 9,
+    "clusterName": "Advanced Number Theory & Modular Forms"
+  },
+  {
+    "num": 91,
+    "file": "lab091_whiteboard_scribe.html",
+    "title": "Classroom Whiteboard & Scribe",
+    "hook": "A dedicated classroom demonstration chalkboard! Enter any even number $N$, and watch the automated Smart Scribe execute and narrate each mathematical step of the Goldbach decomposition in real time.",
+    "clusterNum": 10,
+    "clusterName": "Classroom Tools & Grand Unification"
+  },
+  {
+    "num": 92,
+    "file": "lab092_teacher_lesson_builder.html",
+    "title": "Teacher's Custom Lesson & Challenge Builder",
+    "hook": "Empowering educators! Configure customized Goldbach discovery worksheets tailored to your grade level (Elementary, Middle, or High School), preview the live assignment, and export printable student activity sheets.",
+    "clusterNum": 10,
+    "clusterName": "Classroom Tools & Grand Unification"
+  },
+  {
+    "num": 93,
+    "file": "lab093_counterexample_hunter.html",
+    "title": "The Ultimate Counter-Example Hunter",
+    "hook": "Unleash the high-speed search engine! Scan millions of even integers in real time to hunt for any anomaly or zero-partition counter-example $g(N) = 0$. Can your browser discover a crack in Goldbach's armor?",
+    "clusterNum": 10,
+    "clusterName": "Classroom Tools & Grand Unification"
+  },
+  {
+    "num": 94,
+    "file": "lab094_dataset_laboratory.html",
+    "title": "CSV & JSON Dataset Laboratory",
+    "hook": "A full scientific dataset generator for student research and science fair projects! Customize your number range, filter by modular properties, explore data tables, and export standard CSV or JSON files.",
+    "clusterNum": 10,
+    "clusterName": "Classroom Tools & Grand Unification"
+  },
+  {
+    "num": 95,
+    "file": "lab095_prime_gaps_bridges.html",
+    "title": "Prime Gaps $g_n = p_{n+1} - p_n$ & Goldbach Bridges",
+    "hook": "How large can composite deserts grow between consecutive primes? Compare the Maximal Prime Gap $G(N)$ with the Least Goldbach Prime $p_{\\min}(N)$ to see why Goldbach bridges easily cross prime chasms!",
+    "clusterNum": 10,
+    "clusterName": "Classroom Tools & Grand Unification"
+  },
+  {
+    "num": 96,
+    "file": "lab096_algorithm_benchmark.html",
+    "title": "Primality Benchmark & Goldbach Arena",
+    "hook": "How fast can computers find Goldbach pairs $p + q = 2N$? Pit Trial Division, Fermat Pseudoprimality, and Miller-Rabin Deterministic tests against each other in real-time execution!",
+    "clusterNum": 10,
+    "clusterName": "Classroom Tools & Grand Unification"
+  },
+  {
+    "num": 97,
+    "file": "lab097_atlas_number_theory.html",
+    "title": "Interactive Atlas of Number Theory",
+    "hook": "Explore the constellation of mathematical ideas surrounding Goldbach's Conjecture! Discover how Sieve Theory, Circle Method, Riemann Zeta, and Elliptic Curves interweave across 300 years of history.",
+    "clusterNum": 10,
+    "clusterName": "Classroom Tools & Grand Unification"
+  },
+  {
+    "num": 98,
+    "file": "lab098_student_journal.html",
+    "title": "Student Research Journal & Conjecture Log",
+    "hook": "Become a number theorist! Formulate your own mathematical hypotheses about primes and sums, run empirical verification tests, and maintain your personal research logbook.",
+    "clusterNum": 10,
+    "clusterName": "Classroom Tools & Grand Unification"
+  },
+  {
+    "num": 99,
+    "file": "lab099_virtual_exhibition_hall.html",
+    "title": "Virtual Exhibition Hall of Primes & Goldbach",
+    "hook": "Step into the mathematical gallery! Experience the breathtaking aesthetic beauty of prime spirals, Fourier circle arcs, the Goldbach comet rainbow, and 3D prime simplices.",
+    "clusterNum": 10,
+    "clusterName": "Classroom Tools & Grand Unification"
+  },
+  {
+    "num": 100,
+    "file": "lab100_grand_unification_lab.html",
+    "title": "Grand Unification Laboratory - The Goldbach Symphony",
+    "hook": "The culmination of our 100-lab voyage! Witness how physical scales, modular clocks, asymptotic comets, and ternary partitions harmonize into a single unified mathematical truth for any even number $2N$.",
+    "clusterNum": 10,
+    "clusterName": "Classroom Tools & Grand Unification"
+  }
+]
