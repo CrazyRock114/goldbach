@@ -201,6 +201,7 @@
     <a href="index.html">← Return to 100 Explorations Hub</a> | Goldbach Discovery Labs &copy; 2026
   </footer>
 
+  <script src="pedagogy_i18n.js"></script>
   <script src="i18n.js"></script>
   <script src="common.js"></script>
   <script>
@@ -230,11 +231,28 @@
         }
       });
 
-      explorerTitle.textContent = `Decompositions of N = ${n}:`;
-      if ([4, 6, 8, 12].includes(n)) {
-        explorerDesc.innerHTML = `<span style="color:var(--accent); font-weight:700;">★ Member of the Solo Four!</span> Exactly one unique prime pair unlocks this number.`;
+      const curLang = (window.GLabI18N && window.GLabI18N.currentLang) || 'en';
+      if (curLang === 'zh-CN') {
+        explorerTitle.textContent = `N = ${n} 的素数拆分：`;
+        if ([4, 6, 8, 12].includes(n)) {
+          explorerDesc.innerHTML = `<span style="color:var(--accent); font-weight:700;">★ 独解四数成员！</span> 恰好只有唯一一把素数钥匙可以解开此数。`;
+        } else {
+          explorerDesc.innerHTML = `非独解偶数！拥有 <b style="color:var(--green);">${pairs.length} 组不同素数对</b>。`;
+        }
+      } else if (curLang === 'zh-TW') {
+        explorerTitle.textContent = `N = ${n} 的質數拆分：`;
+        if ([4, 6, 8, 12].includes(n)) {
+          explorerDesc.innerHTML = `<span style="color:var(--accent); font-weight:700;">★ 獨解四數成員！</span> 恰好只有唯一一把質數鑰匙可以解開此數。`;
+        } else {
+          explorerDesc.innerHTML = `非獨解偶數！擁有 <b style="color:var(--green);">${pairs.length} 組不同質數對</b>。`;
+        }
       } else {
-        explorerDesc.innerHTML = `Not a solo number! Has <b style="color:var(--green);">${pairs.length} distinct prime pairs</b>.`;
+        explorerTitle.textContent = `Decompositions of N = ${n}:`;
+        if ([4, 6, 8, 12].includes(n)) {
+          explorerDesc.innerHTML = `<span style="color:var(--accent); font-weight:700;">★ Member of the Solo Four!</span> Exactly one unique prime pair unlocks this number.`;
+        } else {
+          explorerDesc.innerHTML = `Not a solo number! Has <b style="color:var(--green);">${pairs.length} distinct prime pairs</b>.`;
+        }
       }
 
       pairsContainer.innerHTML = pairs.map(p => `<span class="pair-badge">${p[0]} + ${p[1]} = ${n}</span>`).join('');
@@ -347,6 +365,10 @@
       prevId: null,
       nextId: "lab002_parity_sandbox"
     });
+
+    window.onLabLanguageChanged = function() {
+      updateView(parseInt(slider.value), false);
+    };
 
     updateView(4, false);
   </script>

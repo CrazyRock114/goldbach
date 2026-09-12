@@ -58,9 +58,18 @@
 
       if (!LANGUAGES[saved]) saved = 'en';
       this.currentLang = saved;
+
+      // Lazy load pedagogy_i18n.js if not yet loaded in DOM
+      const self = this;
+      if (typeof window !== 'undefined' && !window.GLAB_PEDAGOGY && typeof document !== 'undefined') {
+        const s = document.createElement('script');
+        s.src = 'pedagogy_i18n.js';
+        s.onload = () => { self.applyToDOM(self.currentLang); };
+        document.head.appendChild(s);
+      }
+
       this.applyToDOM(saved);
 
-      const self = this;
       if (typeof document !== 'undefined' && document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', function() {
           self.applyToDOM(saved);
@@ -166,21 +175,98 @@
         }
       }
 
-      // 5. Unconditionally update Pedagogy Card titles across all 100 labs
-      const storyCard = document.querySelector('.pedagogy-card.story h2, .pedagogy-card.story h3');
-      if (storyCard) {
-        storyCard.innerHTML = `✨ ${this.t('storyTitle', l)}`;
-      }
-      const challengeCard = document.querySelector('.pedagogy-card.challenge h2, .pedagogy-card.challenge h3');
-      if (challengeCard) {
-        challengeCard.innerHTML = `🎯 ${this.t('challengeTitle', l)}`;
-      }
-      const rigorCard = document.querySelector('.pedagogy-card.rigor h2, .pedagogy-card.rigor h3');
-      if (rigorCard) {
-        rigorCard.innerHTML = `📐 ${this.t('rigorTitle', l)}`;
+      // 5. Update Pedagogy Cards (Title, Story, Challenges, Rigor) across all 100 labs
+      const labNum = (window.GLab && window.GLab.activeConfig && window.GLab.activeConfig.labNum) || 
+                     (function() {
+                       if (typeof window === 'undefined' || !window.location) return 0;
+                       const m = window.location.pathname.match(/lab(\d+)/i);
+                       return m ? parseInt(m[1], 10) : 0;
+                     })();
+
+      const storyEl = document.querySelector('.pedagogy-card.story');
+      if (storyEl) {
+        const h = storyEl.querySelector('h2, h3');
+        if (h) h.innerHTML = `✨ ${this.t('storyTitle', l)}`;
+        if (labNum && window.GLAB_PEDAGOGY && window.GLAB_PEDAGOGY[labNum]) {
+          const ped = window.GLAB_PEDAGOGY[labNum];
+          if (storyEl._origBody === undefined) {
+            storyEl._origBody = storyEl.innerHTML.replace(/^\s*<h[23][^>]*>[\s\S]*?<\/h[23]>\s*/i, '');
+          }
+          const hHtml = `<h2>✨ ${this.t('storyTitle', l)}</h2>`;
+          if (ped[l] && ped[l].story) {
+            storyEl.innerHTML = hHtml + '\n' + ped[l].story;
+          } else if (l === 'en' && storyEl._origBody !== undefined) {
+            storyEl.innerHTML = hHtml + '\n' + storyEl._origBody;
+          }
+        }
       }
 
-      // 6. Update challenge badges: "Challenge 1" -> "挑战 1" / etc.
+      const challengeEl = document.querySelector('.pedagogy-card.challenge');
+      if (challengeEl) {
+        const h = challengeEl.querySelector('h2, h3');
+        if (h) h.innerHTML = `🎯 ${this.t('challengeTitle', l)}`;
+        if (labNum && window.GLAB_PEDAGOGY && window.GLAB_PEDAGOGY[labNum]) {
+          const ped = window.GLAB_PEDAGOGY[labNum];
+          const items = challengeEl.querySelectorAll('.challenge-item');
+          items.forEach((item, idx) => {
+            let qSpan = item.querySelector('.q-text');
+            if (!qSpan) {
+              const badge = item.querySelector('.badge');
+              const btn = item.querySelector('.reveal-btn');
+              qSpan = document.createElement('span');
+              qSpan.className = 'q-text';
+              if (badge && btn && btn.parentNode) {
+                let curr = badge.nextSibling;
+                const toMove = [];
+                while (curr && curr !== btn) {
+                  toMove.push(curr);
+                  curr = curr.nextSibling;
+                }
+                btn.parentNode.insertBefore(qSpan, btn);
+                toMove.forEach(node => qSpan.appendChild(node));
+              }
+              item._origQHtml = qSpan.innerHTML;
+              const ans = item.querySelector('.answer');
+              item._origAHtml = ans ? ans.innerHTML : '';
+            }
+
+            const ans = item.querySelector('.answer');
+            const badge = item.querySelector('.badge');
+            if (badge) {
+              badge.textContent = `${this.t('challengePrefix', l)} ${idx + 1}`;
+            }
+
+            if (ped[l] && ped[l].challenges && ped[l].challenges[idx]) {
+              const ch = ped[l].challenges[idx];
+              if (qSpan) qSpan.innerHTML = ' ' + ch.q + ' ';
+              if (ans) ans.innerHTML = ch.a;
+            } else if (l === 'en' && item._origQHtml !== undefined) {
+              if (qSpan) qSpan.innerHTML = item._origQHtml;
+              if (ans && item._origAHtml !== undefined) ans.innerHTML = item._origAHtml;
+            }
+          });
+        }
+      }
+
+      const rigorEl = document.querySelector('.pedagogy-card.rigor');
+      if (rigorEl) {
+        const h = rigorEl.querySelector('h2, h3');
+        if (h) h.innerHTML = `📐 ${this.t('rigorTitle', l)}`;
+        if (labNum && window.GLAB_PEDAGOGY && window.GLAB_PEDAGOGY[labNum]) {
+          const ped = window.GLAB_PEDAGOGY[labNum];
+          if (rigorEl._origBody === undefined) {
+            rigorEl._origBody = rigorEl.innerHTML.replace(/^\s*<h[23][^>]*>[\s\S]*?<\/h[23]>\s*/i, '');
+          }
+          const hHtml = `<h2>📐 ${this.t('rigorTitle', l)}</h2>`;
+          if (ped[l] && ped[l].rigor) {
+            rigorEl.innerHTML = hHtml + '\n' + ped[l].rigor;
+          } else if (l === 'en' && rigorEl._origBody !== undefined) {
+            rigorEl.innerHTML = hHtml + '\n' + rigorEl._origBody;
+          }
+        }
+      }
+
+      // 6. Update challenge badges & reveal buttons for any remaining items
       document.querySelectorAll('.challenge-item .badge, .pedagogy-card.challenge .badge').forEach(b => {
         const m = b.textContent.match(/(\d+)/);
         if (m) {
@@ -232,6 +318,37 @@
       document.querySelectorAll('footer').forEach(f => {
         f.innerHTML = `<a href="index.html">${this.t('returnToHub', l)}</a> | ${this.t('footerCopyright', l)}`;
       });
+
+      // 12. Update Stage Elements (e.g. Solo Cards tags in Lab 1)
+      if (labNum === 1 || document.querySelector('.solo-card')) {
+        const tagsZhCN = {
+          4: "唯一的偶数素数对",
+          6: "最小的奇素数对",
+          8: "孪生素数之和",
+          12: "最后的独解偶数"
+        };
+        const tagsZhTW = {
+          4: "唯一的偶數質數對",
+          6: "最小的奇質數對",
+          8: "雙生質數之和",
+          12: "最後的獨解偶數"
+        };
+        const tagsEn = {
+          4: "The Only Even Prime Pair",
+          6: "Smallest Odd Prime Pair",
+          8: "Twin Prime Sum",
+          12: "The Last Solo Standing"
+        };
+        document.querySelectorAll('.solo-card').forEach(card => {
+          const n = card.dataset.n;
+          const tagEl = card.querySelector('.tag');
+          if (tagEl) {
+            if (l === 'zh-CN') tagEl.textContent = tagsZhCN[n] || tagEl.textContent;
+            else if (l === 'zh-TW') tagEl.textContent = tagsZhTW[n] || tagEl.textContent;
+            else if (l === 'en') tagEl.textContent = tagsEn[n] || tagEl.textContent;
+          }
+        });
+      }
     }
   };
 
