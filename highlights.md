@@ -1,7 +1,15 @@
 # Goldbach Investigation — Key Highlights
 
-A curated list of the most important findings from the investigation. The
-complete database has 3,619 findings; this is the cream.
+> [!WARNING]
+> **ARCHIVED PRELIMINARY DOCUMENT (SUPERSEDED):**
+> This file is an uncurated historical snapshot from the initial automated exploration run (Phase 1).
+> Several preliminary heuristics mentioned herein (such as early formulations of E0030, F1788, F1901) were subsequently refined, refuted, or replaced during the formal mathematical audit.
+> For the authoritative audited theorems and verified datasets, please refer to:
+> - [`FINAL_REPORT.md`](FINAL_REPORT.md) — Comprehensive, audited final project report.
+> - [`data/curated_findings.jsonl`](data/curated_findings.jsonl) & [`docs/curated_findings.md`](docs/curated_findings.md) — The 29 strictly validated findings.
+
+A curated list of the most important findings from the preliminary investigation. The
+preliminary database had 3,619 uncurated candidate findings; this summarizes the early highlights.
 
 ## Top 5 Most Important Findings
 

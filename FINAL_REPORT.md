@@ -2,7 +2,7 @@
 
 **Project:** Computational Exploration & Rigorous Analytic Modeling of the Goldbach Conjecture  
 **Date:** 2026-09-05  
-**Working Directory:** `/Users/crazyrock/Antigravity/goldbach`  
+**Working Directory:** `.` (Repository Root)  
 **Status:** All 4 Project Phases Complete
 
 ---

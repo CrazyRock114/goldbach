@@ -1,6 +1,13 @@
 # Goldbach Conjecture Investigation — Findings Report
 
-**Total findings: 3056**
+> [!WARNING]
+> **ARCHIVED PRELIMINARY DOCUMENT (SUPERSEDED):**
+> This file contains the raw uncurated findings log generated during an intermediate stage of Phase 1 automated exploration (recording 3,056 candidate items before final generation reached 3,619 candidates and before mathematical deduplication/formalization).
+> For the authoritative audited theorems and verified datasets, please refer to:
+> - [`FINAL_REPORT.md`](FINAL_REPORT.md) — Comprehensive, audited final project report.
+> - [`data/curated_findings.jsonl`](data/curated_findings.jsonl) & [`docs/curated_findings.md`](docs/curated_findings.md) — The 29 strictly validated findings.
+
+**Total preliminary raw entries recorded in this run: 3056**
 
 ## By category
 

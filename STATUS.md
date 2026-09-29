@@ -37,7 +37,7 @@ In this phase, we bridged high-performance computational number theory with **K-
 ## Complete Project Directory Structure
 
 ```
-/Users/crazyrock/Antigravity/goldbach/
+goldbach/ (Repository Root)
 ├── edu/
 │   ├── index.html            # Interactive K-12 Discovery Lab (6 Modules, Audio, Badges)
 │   ├── edu_app.js            # Synthesizer, Confetti, Sieve Matrix, Comet & Game Logic
@@ -53,9 +53,9 @@ In this phase, we bridged high-performance computational number theory with **K-
 ├── docs/
 │   ├── visualizer.html       # Scientific visualizer dashboard (comet & champions)
 │   ├── web_data.js           # Visualizer datasets (champions + comet spectrum)
-│   ├── curated_findings.md   # Audited findings database (29 findings, human-readable)
-│   ├── highlights.md         # Legacy highlights (archived reference)
-│   └── findings_report.md    # Legacy raw findings report (archived reference)
+│   └── curated_findings.md   # Audited findings database (29 findings, human-readable)
+├── highlights.md             # Archived preliminary exploration highlights (legacy reference)
+├── findings_report.md        # Archived raw findings report (legacy reference)
 ├── STATUS.md                 # Current project status (this file)
 ├── FINAL_REPORT.md           # Publication-grade comprehensive final report
 ├── formal/
