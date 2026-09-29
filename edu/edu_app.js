@@ -451,21 +451,34 @@ function resetScale() {
 function onScalePrimeClicked(p) {
   playClick();
 
-  // 1. If prime p is currently in slot 0, clicking it REMOVES it
-  if (scalePrimes[0] === p) {
+  // 1. If both slots already contain p, clicking p clears both
+  if (scalePrimes[0] === p && scalePrimes[1] === p) {
+    scalePrimes[0] = null;
+    scalePrimes[1] = null;
+  }
+  // 2. If slot 0 is p and slot 1 is empty, place duplicate p in slot 1 (e.g. 2+2=4 or 3+3=6)
+  else if (scalePrimes[0] === p && scalePrimes[1] === null) {
+    scalePrimes[1] = p;
+  }
+  // 3. If slot 1 is p and slot 0 is empty, place duplicate p in slot 0
+  else if (scalePrimes[1] === p && scalePrimes[0] === null) {
+    scalePrimes[0] = p;
+  }
+  // 4. If slot 0 is p (and slot 1 has another prime), remove slot 0
+  else if (scalePrimes[0] === p) {
     scalePrimes[0] = null;
   }
-  // 2. If prime p is currently in slot 1, clicking it REMOVES it
+  // 5. If slot 1 is p (and slot 0 has another prime), remove slot 1
   else if (scalePrimes[1] === p) {
     scalePrimes[1] = null;
   }
-  // 3. Otherwise, PLACE prime p in the first empty slot
+  // 6. Otherwise place p in first empty slot
   else if (scalePrimes[0] === null) {
     scalePrimes[0] = p;
   } else if (scalePrimes[1] === null) {
     scalePrimes[1] = p;
   }
-  // 4. If both slots are full, replace slot 0 with the new prime
+  // 7. If both full with other primes, replace slot 0
   else {
     scalePrimes[0] = p;
   }
@@ -588,7 +601,7 @@ function updateDiscoveredPairsList() {
   if (badgeEl) badgeEl.innerText = _t('scale.pairsFound', { found: scaleDiscoveredPairs.length, total: totalAvailable });
 
   if (scaleDiscoveredPairs.length === 0) {
-    container.innerHTML = `<span style="color: var(--muted); font-size: 13px;">${_t('matrix.noPairsFound', { n: scaleTarget })}</span>`;
+    container.innerHTML = `<span style="color: var(--muted); font-size: 13px;">${_t('scale.noPairsDiscovered', { n: scaleTarget })}</span>`;
     return;
   }
 
@@ -1697,8 +1710,8 @@ const DETECTIVE_CASES = [
     title: 'The Multiples-of-6 Jackpot',
     badge: 'Intermediate',
     story: 'Multiples of 6 receive twice as many pairs! Find an even number under 40 with at least 3 pairs:',
-    hint: 'Hint: Try a multiple of 6 like 24, 30, or 36.',
-    validSolutions: [24, 30, 36],
+    hint: 'Hint: Try a multiple of 6 like 24, 30, or 36 (or even 22, 26, 34).',
+    validSolutions: [22, 24, 26, 30, 34, 36],
     explanation: 'Jackpot hit! Multiples of 6 connect primes from both 6k-1 and 6k+1 residue classes.'
   },
   {
@@ -1724,8 +1737,9 @@ const DETECTIVE_CASES = [
     title: 'The Smallest Prime Leap',
     badge: 'Investigation',
     story: 'Find an even number where NEITHER 3 nor 5 can be used (so smallest prime p ≥ 7):',
-    hint: 'Hint: A multiple of 2, 3, and 5 is a multiple of 30! (e.g. 30, 42, 60, 90)',
-    validSolutions: [30, 42, 60, 90],
+    hint: 'Hint: Multiples of 30 like 30, 60, 90, 120, or even 38, 54, 68 work!',
+    validSolutions: [30, 38, 54, 60, 68, 80, 90, 96, 98, 120, 122, 124, 126, 128, 138, 146, 148, 150, 158, 164, 174, 180, 188, 190, 192],
+    validator: (n) => n > 4 && n % 2 === 0 && !isNumberPrime(n - 3) && !isNumberPrime(n - 5),
     explanation: 'Mystery solved! Divisibility by 3 and 5 forces the prime search to leap all the way to 7.'
   },
   {
@@ -1823,7 +1837,9 @@ function solveDetectiveCase(caseNum) {
   }
 
   let isCorrect = false;
-  if (c.validSolutions && c.validSolutions.includes(val)) {
+  if (c.validator && typeof c.validator === 'function') {
+    isCorrect = c.validator(val);
+  } else if (c.validSolutions && c.validSolutions.includes(val)) {
     isCorrect = true;
   }
 

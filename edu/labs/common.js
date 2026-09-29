@@ -86,9 +86,10 @@ const GLab = {
     const C2 = 0.6601618158;
     let prod = 1;
     let temp = n;
-    // Odd prime factors
-    const limit = Math.floor(Math.sqrt(temp));
-    for (let d = 3; d <= limit; d += 2) {
+    // Strip factors of 2
+    while (temp % 2 === 0) temp /= 2;
+    // Factor out odd primes
+    for (let d = 3; d * d <= temp; d += 2) {
       if (temp % d === 0) {
         prod *= (d - 1) / (d - 2);
         while (temp % d === 0) temp /= d;
@@ -98,7 +99,7 @@ const GLab = {
       prod *= (temp - 1) / (temp - 2);
     }
     const logN = Math.log(n);
-    return 2 * C2 * prod * (n / (logN * logN));
+    return C2 * prod * (n / (logN * logN));
   },
 
   // --- Web Audio Synthesizer ---

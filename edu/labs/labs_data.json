@@ -602,30 +602,30 @@
   {
     "num": 16,
     "file": "lab016_sum_of_squares.html",
-    "title": "Fermat",
+    "title": "Fermat's Sum of Two Squares vs. Goldbach",
     "clusterNum": 2,
     "clusterName": "Modular Arithmetic & The Power of 6",
     "hook": "Pierre de Fermat proved which primes are the sum of two squares ($a^2 + b^2 = p$). How does his solved theorem compare to Goldbach's unsolved sum of two primes ($p + q = N$)?",
     "translations": {
       "title": {
-        "en": "Fermat's Little Theorem & Pseudoprimes",
-        "de": "Fermats Kleiner Satz & Pseudoprimzahlen",
-        "fr": "Petit Théorème de Fermat & Pseudopremiers",
-        "it": "Piccolo Teorema di Fermat & Pseudoprimi",
-        "ja": "フェルマーの小定理と擬素数",
-        "ko": "페르마의 소정리와 유사 소수",
-        "zh-CN": "费马小定理与费马拟素数陷阱",
-        "zh-TW": "費馬小定理與費馬擬質數陷阱"
+        "en": "Fermat's Sum of Two Squares vs. Goldbach",
+        "de": "Fermats Zwei-Quadrate-Satz vs. Goldbach",
+        "fr": "Somme de Deux Carrés de Fermat vs Goldbach",
+        "it": "Somma di Due Quadrati di Fermat vs Goldbach",
+        "ja": "フェルマーの二平方和定理 vs ゴールドバッハ",
+        "ko": "페르마의 두 제곱수 합 정리 vs 골드바흐",
+        "zh-CN": "费马双平方和定理与哥德巴赫对决",
+        "zh-TW": "費馬雙平方和定理與哥德巴赫對決"
       },
       "hook": {
-        "en": "Power up modular exponentiation a^(p-1) = 1 (mod p). Test candidate primes and beware of the infamous Carmichael numbers that masquerade as primes!",
-        "de": "Nutze modulare Potenzen a^(p-1) = 1 (mod p). Prüfe Primzahl-Kandidaten und hüte dich vor Carmichael-Zahlen, die sich als Primzahlen tarnen!",
-        "fr": "Activez l'exponentiation modulaire a^(p-1) = 1 (mod p). Testez des candidats et déjouez les pièges des nombres de Carmichael !",
-        "it": "Usa l'esponenziazione modulare a^(p-1) = 1 (mod p). Testa i candidati e fai attenzione ai numeri di Carmichael che ingannano il test!",
-        "ja": "合同式べき乗 a^(p-1) ≡ 1 (mod p) を検証！候補数をテストし、素数のふりをする悪名高いカーマイケル数の罠を見破りましょう。",
-        "ko": "모듈러 거듭제곱 a^(p-1) ≡ 1 (mod p)을 가동하세요! 후보 수를 테스트하고 소수로 위장하는 카마이클 수를 판별해봅니다.",
-        "zh-CN": "驱动快速模幂运算 a^(p-1) ≡ 1 (mod p)。检验候选素数并识别伪装成素数的卡迈克尔数（Carmichael numbers）！",
-        "zh-TW": "驅動快速模冪運算 a^(p-1) ≡ 1 (mod p)。檢驗候選質數並識別偽裝成質數的卡邁克爾數（Carmichael numbers）！"
+        "en": "Pierre de Fermat proved which primes are the sum of two squares ($a^2 + b^2 = p$). How does his solved theorem compare to Goldbach's unsolved sum of two primes ($p + q = N$)?",
+        "de": "Pierre de Fermat bewies, welche Primzahlen die Summe zweier Quadrate sind ($a^2 + b^2 = p$). Wie verhält sich sein gelöstes Theorem zu Goldbachs ungelöster Summe zweier Primzahlen ($p + q = N$)?",
+        "fr": "Pierre de Fermat a prouvé quels nombres premiers sont la somme de deux carrés ($a^2 + b^2 = p$). Comment son théorème résolu se compare-t-il à la somme non résolue de deux nombres premiers de Goldbach ($p + q = N$) ?",
+        "it": "Pierre de Fermat dimostrò quali numeri primi sono la somma di due quadrati ($a^2 + b^2 = p$). Come si confronta il suo teorema risolto con la somma irrisolta di due primi di Goldbach ($p + q = N$)?",
+        "ja": "フェルマーはどの素数が2つの平方数の和 ($a^2 + b^2 = p$) になるかを証明しました。解決済みのこの定理と、未解決のゴールドバッハ予想 ($p + q = N$) を比較してみましょう！",
+        "ko": "피에르 드 페르마는 어떤 소수가 두 제곱수의 합($a^2 + b^2 = p$)이 되는지 증명했습니다. 해결된 이 정리와 미해결인 골드바흐 추측($p + q = N$)을 비교해 보세요!",
+        "zh-CN": "皮埃尔·德·费马证明了哪些素数可以写成两个平方数之和（$a^2 + b^2 = p$）。他的已解定理与哥德巴赫未解的双素数之和（$p + q = N$）有何异曲同工之妙？",
+        "zh-TW": "皮埃爾·德·費馬證明了哪些質數可以寫成兩個平方數之和（$a^2 + b^2 = p$）。他的已解定理與哥德巴赫未解的雙質數之和（$p + q = N$）有何異曲同工之妙？"
       }
     },
     "clusterTranslations": {

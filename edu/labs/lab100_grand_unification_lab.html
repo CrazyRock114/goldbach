@@ -249,11 +249,11 @@
 
       <div class="pedagogy-card rigor">
         <h3>The Asymptotic Guarantee: Hardy-Littlewood</h3>
-        <p>The Hardy-Littlewood asymptotic formula for the number of representations:</p>
+        <p>The Hardy-Littlewood asymptotic formula for the number of unordered representations:</p>
         <div class="math-formula">
-          $$g(2N) \sim 2 C_2 \prod_{p \mid N, p > 2} \left(\frac{p-1}{p-2}\right) \int_2^{2N} \frac{dx}{\ln(x) \ln(2N-x)}$$
+          $$g(2N) \sim C_2 \prod_{p \mid N, p > 2} \left(\frac{p-1}{p-2}\right) \frac{2N}{\ln^2(2N)}$$
         </div>
-        <p>Because the twin prime constant $2 C_2 \approx 1.3203 > 0$ and the integral diverges as $\Theta\left(\frac{2N}{\ln^2(2N)}\right)$, the conjecture is asymptotically guaranteed to have infinite partitions for all sufficiently large $2N$.</p>
+        <p>Because the twin prime constant $C_2 \approx 0.6602 > 0$ and the asymptotic density grows as $\Theta\left(\frac{2N}{\ln^2(2N)}\right)$, the conjecture is asymptotically guaranteed to have abundant partitions for all sufficiently large $2N$.</p>
       </div>
     </div>
   </div>
@@ -546,7 +546,7 @@
       clusterNum: 10,
       clusterName: "Classroom Tools & Grand Unification",
       prevId: "lab099_virtual_exhibition_hall",
-      nextId: "index"
+      nextId: null
     });
 
     resizeAll();

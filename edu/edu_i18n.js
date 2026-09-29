@@ -94,6 +94,7 @@ window.EDU_I18N = {
       "statusEmpty": "Place two prime weights on the right pan to balance the target!",
       "statusOneWeight": "Added {p}. Place one more prime weight to balance!",
       "discoveredTitle": "Discovered Prime Pairs for {n}:",
+      "noPairsDiscovered": "No prime pairs discovered yet for {n}.",
       "toastFound": "Pair Discovered! {p} + {q} = {n}",
       "toastAllFound": "All {count} Prime Pairs Found for {n}!",
       "alreadyOnScale": "{p} is already on the scale pan! Click it to remove.",
@@ -204,7 +205,7 @@ window.EDU_I18N = {
           "title": "The Multiples-of-6 Jackpot",
           "badge": "Intermediate",
           "story": "Multiples of 6 receive twice as many pairs! Find an even number under 40 with at least 3 pairs:",
-          "hint": "Hint: Try a multiple of 6 like 24, 30, or 36.",
+          "hint": "Hint: Try a multiple of 6 like 24, 30, or 36 (or even 22, 26, 34).",
           "explanation": "Jackpot hit! Multiples of 6 connect primes from both 6k-1 and 6k+1 residue classes."
         },
         {
@@ -228,7 +229,7 @@ window.EDU_I18N = {
           "title": "The Smallest Prime Leap",
           "badge": "Investigation",
           "story": "Find an even number where NEITHER 3 nor 5 can be used (so smallest prime p ≥ 7):",
-          "hint": "Hint: A multiple of 2, 3, and 5 is a multiple of 30! (e.g. 30, 42, 60, 90)",
+          "hint": "Hint: Multiples of 30 like 30, 60, 90, 120, or even 38, 54, 68 work!",
           "explanation": "Mystery solved! Divisibility by 3 and 5 forces the prime search to leap all the way to 7."
         },
         {
@@ -342,6 +343,7 @@ window.EDU_I18N = {
       "statusEmpty": "Lege zwei Primzahlgewichte auf die rechte Schale, um das Ziel auszugleichen!",
       "statusOneWeight": "{p} platziert. Lege noch eine Primzahl auf, um das Ziel zu erreichen!",
       "discoveredTitle": "Entdeckte Primzahlpaare für {n}:",
+      "noPairsDiscovered": "Für {n} wurden noch keine Primzahlpaare entdeckt.",
       "toastFound": "Paar entdeckt! {p} + {q} = {n}",
       "toastAllFound": "Alle {count} Primzahlpaare für {n} gefunden!",
       "alreadyOnScale": "{p} liegt bereits auf der Waagschale! Klicke darauf zum Entfernen.",
@@ -452,7 +454,7 @@ window.EDU_I18N = {
           "title": "Der 6er-Vielfachen-Jackpot",
           "badge": "Mittelstufe",
           "story": "Vielfache von 6 erhalten doppelt so viele Paare! Finde eine gerade Zahl unter 40 mit mindestens 3 Paaren:",
-          "hint": "Hinweis: Probiere ein Vielfaches von 6 wie 24, 30 oder 36.",
+          "hint": "Hinweis: Probiere ein Vielfaches von 6 wie 24, 30 oder 36 (oder auch 22, 26, 34).",
           "explanation": "Jackpot geknackt! Vielfache von 6 verbinden Primzahlen aus beiden Restklassen 6k-1 und 6k+1."
         },
         {
@@ -476,7 +478,7 @@ window.EDU_I18N = {
           "title": "Der kleinste Primzahlsprung",
           "badge": "Ermittlung",
           "story": "Finde eine gerade Zahl, bei der weder 3 noch 5 verwendet werden können (also kleinste Primzahl p ≥ 7):",
-          "hint": "Hinweis: Ein Vielfaches von 2, 3 und 5 ist ein Vielfaches von 30! (z.B. 30, 42, 60, 90)",
+          "hint": "Hinweis: Ein Vielfaches von 2, 3 und 5 ist ein Vielfaches von 30! (z.B. 30, 60, 90, 120 oder auch 38, 54)",
           "explanation": "Rätsel gelöst! Die Teilbarkeit durch 3 und 5 zwingt die Primzahlsuche zum Sprung bis 7."
         },
         {
@@ -590,6 +592,7 @@ window.EDU_I18N = {
       "statusEmpty": "Posez deux poids premiers sur le plateau droit pour équilibrer la cible !",
       "statusOneWeight": "{p} posé. Posez un deuxième nombre premier pour atteindre l'équilibre !",
       "discoveredTitle": "Paires premières découvertes pour {n} :",
+      "noPairsDiscovered": "Aucune paire de premiers découverte pour {n} pour le moment.",
       "toastFound": "Paire Découverte ! {p} + {q} = {n}",
       "toastAllFound": "Les {count} paires premières de {n} ont été trouvées !",
       "alreadyOnScale": "{p} est déjà sur le plateau ! Cliquez dessus pour le retirer.",
@@ -700,7 +703,7 @@ window.EDU_I18N = {
           "title": "Le Jackpot des Multiples de 6",
           "badge": "Intermédiaire",
           "story": "Les multiples de 6 reçoivent deux fois plus de paires ! Trouvez un nombre pair inférieur à 40 avec au moins 3 paires :",
-          "hint": "Indice : Essayez un multiple de 6 comme 24, 30 ou 36.",
+          "hint": "Indice : Essayez un multiple de 6 comme 24, 30 ou 36 (ou même 22, 26, 34).",
           "explanation": "Jackpot décroché ! Les multiples de 6 relient les nombres premiers des deux classes 6k-1 et 6k+1."
         },
         {
@@ -724,7 +727,7 @@ window.EDU_I18N = {
           "title": "Le Grand Saut du Premier",
           "badge": "Investigation",
           "story": "Trouvez un nombre pair où NI 3 NI 5 ne peuvent être utilisés (donc le plus petit premier p ≥ 7) :",
-          "hint": "Indice : Un multiple de 2, 3 et 5 est un multiple de 30 ! (ex. 30, 42, 60, 90)",
+          "hint": "Indice : Un multiple de 2, 3 et 5 est un multiple de 30 ! (ex. 30, 60, 90, 120 ou même 38, 54)",
           "explanation": "Mystère résolu ! La divisibilité par 3 et 5 contraint la recherche de premiers à sauter jusqu'à 7."
         },
         {
@@ -838,6 +841,7 @@ window.EDU_I18N = {
       "statusEmpty": "Metti due numeri primi sul piatto destro per bilanciare il bersaglio!",
       "statusOneWeight": "{p} posizionato. Aggiungi un altro numero primo per raggiungere l'equilibrio!",
       "discoveredTitle": "Coppie prime scoperte per {n}:",
+      "noPairsDiscovered": "Nessuna coppia prima ancora scoperta per {n}.",
       "toastFound": "Coppia Trovata! {p} + {q} = {n}",
       "toastAllFound": "Tutte le {count} coppie prime per {n} trovate!",
       "alreadyOnScale": "{p} è già sul piatto! Fai clic su di esso per rimuoverlo.",
@@ -948,7 +952,7 @@ window.EDU_I18N = {
           "title": "Il Jackpot dei Multipli di 6",
           "badge": "Intermedio",
           "story": "I multipli di 6 ricevono il doppio delle coppie! Trova un numero pari sotto il 40 con almeno 3 coppie:",
-          "hint": "Suggerimento: Prova un multiplo di 6 come 24, 30 o 36.",
+          "hint": "Suggerimento: Prova un multiplo di 6 come 24, 30 o 36 (oppure anche 22, 26, 34).",
           "explanation": "Jackpot centrato! I multipli di 6 collegano i primi di entrambe le classi di resto 6k-1 e 6k+1."
         },
         {
@@ -972,7 +976,7 @@ window.EDU_I18N = {
           "title": "Il Grande Salto del Primo",
           "badge": "Investigazione",
           "story": "Trova un numero pari in cui NÉ 3 NÉ 5 possono essere usati (quindi il primo più piccolo p ≥ 7):",
-          "hint": "Suggerimento: Un multiplo di 2, 3 e 5 è un multiplo di 30! (es. 30, 42, 60, 90)",
+          "hint": "Suggerimento: Un multiplo di 2, 3 e 5 è un multiplo di 30! (es. 30, 60, 90, 120 oppure anche 38, 54)",
           "explanation": "Mistero risolto! La divisibilità per 3 e 5 costringe la ricerca di primi a saltare fino al 7."
         },
         {
@@ -1086,6 +1090,7 @@ window.EDU_I18N = {
       "statusEmpty": "右の皿に2つの素数おもりを乗せて、目標の重さとつり合わせよう！",
       "statusOneWeight": "{p} を乗せました。あと1つ素数おもりを乗せてつり合わせよう！",
       "discoveredTitle": "発見された {n} の素数ペア:",
+      "noPairsDiscovered": "{n} の素数ペアはまだ発見されていません。",
       "toastFound": "素数ペア発見！ {p} + {q} = {n}",
       "toastAllFound": "{n} の全 {count} 個の素数ペアをすべて発見しました！",
       "alreadyOnScale": "{p} はすでに皿に乗っています！ クリックして取り外します。",
@@ -1196,7 +1201,7 @@ window.EDU_I18N = {
           "title": "6の倍数の大当たり",
           "badge": "中級",
           "story": "6の倍数は2倍のペアを獲得できます！ 40未満で3組以上のペアを持つ偶数を1つ見つけてください:",
-          "hint": "ヒント: 24, 30, 36 などの6の倍数を試してみよう。",
+          "hint": "ヒント: 24, 30, 36 などの6の倍数（または 22, 26, 34）を試してみよう。",
           "explanation": "大当たり！ 6の倍数は、6k-1型と6k+1型の両方の剰余類の素数を結びつけます。"
         },
         {
@@ -1220,7 +1225,7 @@ window.EDU_I18N = {
           "title": "最小素数の大跳躍",
           "badge": "調査",
           "story": "3も5も使えない（最小素数が7以上になる）偶数を見つけてください:",
-          "hint": "ヒント: 2と3と5の倍数は30の倍数です！（例: 30, 42, 60, 90）",
+          "hint": "ヒント: 2と3と5の公倍数は30の倍数です！（例: 30, 60, 90, 120、または 38, 54）",
           "explanation": "謎解明！ 3と5の両方で割り切れるため、素数探しは7までスキップせざるを得ません。"
         },
         {
@@ -1334,6 +1339,7 @@ window.EDU_I18N = {
       "statusEmpty": "오른쪽 접시에 두 개의 소수 추를 올려 목표 무게를 맞추세요!",
       "statusOneWeight": "{p}을(를) 올렸습니다. 소수 추 하나를 더 올려 균형을 맞추세요!",
       "discoveredTitle": "발견된 {n}의 소수 쌍:",
+      "noPairsDiscovered": "아직 {n}에 대한 소수 쌍을 발견하지 못했습니다.",
       "toastFound": "소수 쌍 발견! {p} + {q} = {n}",
       "toastAllFound": "{n}의 모든 {count}개 소수 쌍을 찾았습니다!",
       "alreadyOnScale": "{p}은(는) 이미 저울에 올려져 있습니다! 클릭하여 제거하세요.",
@@ -1444,7 +1450,7 @@ window.EDU_I18N = {
           "title": "6의 배수 대박 사건",
           "badge": "중급",
           "story": "6의 배수는 두 배로 많은 소수 쌍을 받습니다! 40 미만에서 3개 이상의 쌍을 갖는 짝수를 찾으세요:",
-          "hint": "힌트: 24, 30, 36 같은 6의 배수를 시도해 보세요.",
+          "hint": "힌트: 24, 30, 36 같은 6의 배수(또는 22, 26, 34)를 시도해 보세요.",
           "explanation": "대박 적중! 6의 배수는 6k-1형과 6k+1형의 소수들을 모두 연결합니다."
         },
         {
@@ -1468,7 +1474,7 @@ window.EDU_I18N = {
           "title": "최소 소수의 대도약",
           "badge": "수사",
           "story": "3도 5도 사용할 수 없는(가장 작은 소수가 7 이상인) 짝수를 찾으세요:",
-          "hint": "힌트: 2, 3, 5의 공배수는 30의 배수입니다! (예: 30, 42, 60, 90)",
+          "hint": "힌트: 2, 3, 5의 공배수는 30의 배수입니다! (예: 30, 60, 90, 120 또는 38, 54)",
           "explanation": "미스터리 해결! 3과 5로 모두 나누어떨어지기 때문에 소수 탐색이 7까지 건너뛰어야 합니다."
         },
         {
@@ -1582,6 +1588,7 @@ window.EDU_I18N = {
       "statusEmpty": "请在右侧盘中放入两个质数砝码以平衡目标！",
       "statusOneWeight": "已放入 {p}。再放入一个质数砝码以达到平衡！",
       "discoveredTitle": "已发现的 {n} 质数对:",
+      "noPairsDiscovered": "尚未为 {n} 找到素数对。",
       "toastFound": "发现质数对！ {p} + {q} = {n}",
       "toastAllFound": "{n} 的全部 {count} 组质数对已集齐！",
       "alreadyOnScale": "{p} 已经在天平盘上了！点击它可取下。",
@@ -1692,7 +1699,7 @@ window.EDU_I18N = {
           "title": "6的倍数超级大奖",
           "badge": "中级侦探",
           "story": "6的倍数能获得双倍质数对奖赏！请找出一个小于40且至少有3组质数对的偶数：",
-          "hint": "提示：尝试 24, 30 或 36 等 6 的倍数。",
+          "hint": "提示：尝试 24, 30 或 36 等 6 的倍数（亦可尝试 22, 26, 34）。",
           "explanation": "命中大奖！6的倍数将 6k-1 与 6k+1 两个剩余类的质数完美连接。"
         },
         {
@@ -1716,7 +1723,7 @@ window.EDU_I18N = {
           "title": "最小质数大跳跃",
           "badge": "破案专家",
           "story": "找出一个既不能用 3 也不能用 5 的偶数（即最小质数 p ≥ 7）：",
-          "hint": "提示：同时是 2、3、5 倍数的数必定是 30 的倍数！（如 30, 42, 60, 90）",
+          "hint": "提示：同时是 2、3、5 倍数的数必定是 30 的倍数！（如 30, 60, 90, 120，亦可如 38, 54）",
           "explanation": "真相大白！由于被 3 和 5 整除，质数搜索不得不一路跳跃至 7。"
         },
         {
@@ -1830,6 +1837,7 @@ window.EDU_I18N = {
       "statusEmpty": "請在右側盤中放入兩個質數砝碼以平衡目標！",
       "statusOneWeight": "已放入 {p}。再放入一個質數砝碼以達到平衡！",
       "discoveredTitle": "已發現的 {n} 質數對:",
+      "noPairsDiscovered": "尚未為 {n} 找到質數對。",
       "toastFound": "發現質數對！ {p} + {q} = {n}",
       "toastAllFound": "{n} 的全部 {count} 組質數對已集齊！",
       "alreadyOnScale": "{p} 已經在天平盤上了！點擊它可取下。",
@@ -1940,16 +1948,16 @@ window.EDU_I18N = {
           "title": "6的倍數超級大獎",
           "badge": "中級偵探",
           "story": "6的倍數能獲得雙倍質數對獎賞！請找出一個小於40且至少有3組質數對的偶數：",
-          "hint": "提示：嘗試 24, 30 或 36 等 6 的倍數。",
+          "hint": "提示：嘗試 24, 30 或 36 等 6 的倍數（亦可嘗試 22, 26, 34）。",
           "explanation": "命中大獎！6的倍數將 6k-1 與 6k+1 兩個剩餘類的質數完美連接。"
         },
         {
           "num": 3,
-          "title": "蠻生素數彩虹橋",
+          "title": "雙生質數彩虹橋",
           "badge": "幾何偵探",
-          "story": "蠻生素數 (29, 31) 的中點是 30。它們所跨越的雙倍橋梁數 N 是多少？",
+          "story": "雙生質數 (29, 31) 的中點是 30。它們所跨越的雙倍橋樑數 N 是多少？",
           "hint": "提示：2 × 中點 = 2 × 30。",
-          "explanation": "成功跨橋！60 = 29 + 31。每一對蠻生素數都能確鑿無誤地搭起一座哥德巴赫橋梁！"
+          "explanation": "成功跨橋！60 = 29 + 31。每一對雙生質數都能確鑿無誤地搭起一座哥德巴赫橋樑！"
         },
         {
           "num": 4,
@@ -1964,7 +1972,7 @@ window.EDU_I18N = {
           "title": "最小質數大跳躍",
           "badge": "破案專家",
           "story": "找出一個既不能用 3 也不能用 5 的偶數（即最小質數 p ≥ 7）：",
-          "hint": "提示：同時是 2、3、5 倍數的數必定是 30 的倍數！（如 30, 42, 60, 90）",
+          "hint": "提示：同時是 2、3、5 倍數的數必定是 30 的倍數！（如 30, 60, 90, 120，亦可如 38, 54）",
           "explanation": "真相大白！由於被 3 和 5 整除，質數搜尋不得不一路跳躍至 7。"
         },
         {

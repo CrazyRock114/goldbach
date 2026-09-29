@@ -41,15 +41,15 @@
       <div style="margin-top: 14px; background: var(--card-bg-subtle); padding: 12px 18px; border-radius: var(--radius-sm); border: 1px solid var(--card-border); display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap; gap: 12px;">
         <div style="text-align: center;">
           <span style="font-size: 11px; color: #94a3b8; text-transform: uppercase;">Peak 1 (6k ± 2)</span>
-          <div style="font-size: 18px; font-weight: 800; color: #34d399;">ρ ≈ 1.32</div>
+          <div style="font-size: 18px; font-weight: 800; color: #34d399;">ρ ≈ 0.66</div>
         </div>
         <div style="text-align: center;">
           <span style="font-size: 11px; color: #94a3b8; text-transform: uppercase;">Peak 2 (6k)</span>
-          <div style="font-size: 18px; font-weight: 800; color: #38bdf8;">ρ ≈ 2.64</div>
+          <div style="font-size: 18px; font-weight: 800; color: #38bdf8;">ρ ≈ 1.32</div>
         </div>
         <div style="text-align: center;">
           <span style="font-size: 11px; color: #94a3b8; text-transform: uppercase;">Peak 3 (30k Oasis)</span>
-          <div style="font-size: 18px; font-weight: 800; color: #fbbf24;">ρ ≈ 3.52</div>
+          <div style="font-size: 18px; font-weight: 800; color: #fbbf24;">ρ ≈ 1.76</div>
         </div>
       </div>
     </div>
@@ -60,9 +60,9 @@
         <p>In raw counts, $g(N)$ seems to fluctuate chaotically between low valleys and high skyscrapers. But what happens if you divide by the overall growth rate $N / \ln^2 N$?</p>
         <p>The chaos instantly condenses into <b>three beautifully neat peaks</b>!</p>
         <ul>
-          <li><b>Peak 1 (Center $\approx 1.32$):</b> Numbers that are NOT divisible by 3 ($6k \pm 2$).</li>
-          <li><b>Peak 2 (Center $\approx 2.64$):</b> Numbers that ARE divisible by 3 ($6k$). Notice this is exactly $2 \times 1.32$!</li>
-          <li><b>Peak 3 (Center $\approx 3.52$):</b> Numbers divisible by both 3 and 5 ($30k$)! ($2.64 \times 4/3 \approx 3.52$).</li>
+          <li><b>Peak 1 (Center $\approx 0.66$):</b> Numbers that are NOT divisible by 3 ($6k \pm 2$).</li>
+          <li><b>Peak 2 (Center $\approx 1.32$):</b> Numbers that ARE divisible by 3 ($6k$). Notice this is exactly $2 \times 0.66$!</li>
+          <li><b>Peak 3 (Center $\approx 1.76$):</b> Numbers divisible by both 3 and 5 ($30k$)! ($1.32 \times 4/3 \approx 1.76$).</li>
         </ul>
       </div>
 
@@ -70,7 +70,7 @@
         <h2>🎯 Try This! (Hands-On Challenges)</h2>
         <div class="challenge-item">
           <span class="badge">Challenge 1</span>
-          Why is there a clear "valley" (gap) between Peak 1 ($\approx 1.32$) and Peak 2 ($\approx 2.64$)?
+          Why is there a clear "valley" (gap) between Peak 1 ($\approx 0.66$) and Peak 2 ($\approx 1.32$)?
           <button class="reveal-btn" data-target="ans-1">💡 Show Solution & Explanation</button>
           <div class="answer" id="ans-1">
             Because an integer is either divisible by 3 or it is not! There is no "half-divisibility" by 3. This sharp arithmetic dichotomy creates the pronounced valley separating the two peaks.
@@ -86,10 +86,10 @@
         </div>
         <div class="challenge-item">
           <span class="badge">Challenge 3</span>
-          Can any integer ever have a normalized ratio $\rho < 1.0$?
+          Can any integer ever have a normalized ratio $\rho < 0.5$?
           <button class="reveal-btn" data-target="ans-3">💡 Show Solution & Explanation</button>
           <div class="answer" id="ans-3">
-            For small numbers like $N=4$ or $N=6$, edge effects can occur, but asymptotically, the minimum ratio is strictly bounded below by $2 C_2 \approx 1.3203 > 1.0$!
+            For small numbers like $N=4$ or $N=6$, edge effects can occur, but asymptotically, the minimum ratio is strictly bounded below by $C_2 \approx 0.6602 > 0.5$!
           </div>
         </div>
       </div>
@@ -134,8 +134,8 @@
       }
 
       const numBins = 45;
-      const minRho = 0.5;
-      const maxRho = 4.5;
+      const minRho = 0.2;
+      const maxRho = 2.5;
       const bins = new Array(numBins).fill(0);
 
       ratios.forEach(r => {
@@ -180,8 +180,8 @@
 
         const binCenter = minRho + ((idx + 0.5) / numBins) * (maxRho - minRho);
         let barColor = '#34d399'; // Default Peak 1
-        if (binCenter > 2.0 && binCenter < 3.0) barColor = '#38bdf8'; // Peak 2
-        else if (binCenter >= 3.0) barColor = '#fbbf24'; // Peak 3
+        if (binCenter > 1.0 && binCenter < 1.5) barColor = '#38bdf8'; // Peak 2
+        else if (binCenter >= 1.5) barColor = '#fbbf24'; // Peak 3
 
         ctx.fillStyle = barColor;
         ctx.fillRect(x + 1, y, binWidth - 2, barH);
@@ -205,9 +205,9 @@
         ctx.fillText(label, mx, margin - 6);
       };
 
-      drawMarker(1.32, '1.32 (6k±2)', '#34d399');
-      drawMarker(2.64, '2.64 (6k)', '#38bdf8');
-      drawMarker(3.52, '3.52 (30k)', '#fbbf24');
+      drawMarker(0.66, '0.66 (6k±2)', '#34d399');
+      drawMarker(1.32, '1.32 (6k)', '#38bdf8');
+      drawMarker(1.76, '1.76 (30k)', '#fbbf24');
     }
 
     slider.addEventListener('input', () => {

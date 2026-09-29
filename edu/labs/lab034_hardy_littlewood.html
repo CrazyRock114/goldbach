@@ -109,7 +109,7 @@
           Test $N = 120$. What is the ratio between actual pairs and the Hardy-Littlewood estimate?
           <button class="reveal-btn" data-target="ans-1">💡 Show Solution & Explanation</button>
           <div class="answer" id="ans-1">
-            $N = 120$ has <b>12 actual pairs</b> ($7+113, 11+109, 13+107, 17+103, 19+101, 23+97, 31+89, 37+83, 41+79, 47+73, 53+67, 59+61$). The Hardy-Littlewood prediction is $11.84$, an accuracy of over <b>98.7%</b>!
+            $N = 120$ has <b>12 actual pairs</b> ($7+113, 11+109, 13+107, 17+103, 19+101, 23+97, 31+89, 37+83, 41+79, 47+73, 53+67, 59+61$). The Hardy-Littlewood asymptotic estimate is $9.22$, with a ratio $g(120) / \text{HL}(120) \approx 1.30$.
           </div>
         </div>
         <div class="challenge-item">
@@ -117,7 +117,7 @@
           Enter a large power of 2, like $N = 512$. How does the breakdown look?
           <button class="reveal-btn" data-target="ans-2">💡 Show Solution & Explanation</button>
           <div class="answer" id="ans-2">
-            Because $512 = 2^9$, it has no odd prime divisors! The singular series multiplier is simply $2 C_2 \approx 1.320$. The estimate is $10.96$, and the actual pair count is $11$—a virtually perfect match!
+            Because $512 = 2^9$, it has no odd prime divisors! The singular series multiplier is simply $C_2 \approx 0.6602$. The asymptotic estimate is $8.69$, closely tracking the actual pair count of $11$!
           </div>
         </div>
         <div class="challenge-item">
@@ -134,9 +134,9 @@
         <h2>📐 Mathematical Rigor & Formal Definition</h2>
         <p>The Hardy-Littlewood Conjecture A (1923) asserts that for even $N \ge 4$:</p>
         <div class="math-formula">
-          g(N) \sim 2 C_2 \left(\prod_{p \mid N, p > 2} \frac{p - 1}{p - 2}\right) \int_2^{N-2} \frac{dt}{\ln t \ln(N - t)}
+          g(N) \sim C_2 \left(\prod_{p \mid N, p > 2} \frac{p - 1}{p - 2}\right) \frac{N}{\ln^2 N}
         </div>
-        <p>where $C_2 = \prod_{p > 2} \left(1 - \frac{1}{(p-1)^2}\right) \approx 0.6601618158$ is the twin prime constant. Asymptotically, the integral is equivalent to $\frac{N}{\ln^2 N}$.</p>
+        <p>where $C_2 = \prod_{p > 2} \left(1 - \frac{1}{(p-1)^2}\right) \approx 0.6601618158$ is the twin prime constant. Asymptotically, $\int_2^{N-2} \frac{dt}{\ln t \ln(N - t)} \sim \frac{N}{\ln^2 N}$. (Note: for ordered representations $R(N) \sim 2 g(N)$, the formula includes an additional factor of 2).</p>
       </div>
     </div>
   </div>
@@ -181,6 +181,7 @@
       // Extract odd prime factors
       const oddFactors = [];
       let temp = n;
+      while (temp % 2 === 0) temp /= 2;
       for (let d = 3; d * d <= temp; d += 2) {
         if (temp % d === 0) {
           oddFactors.push(d);
@@ -189,7 +190,7 @@
       }
       if (temp > 2) oddFactors.push(temp);
 
-      let formulaHtml = `<b>Singular Series Factors:</b> 2 × C₂ (1.3203)`;
+      let formulaHtml = `<b>Singular Series Factors:</b> C₂ (0.6602)`;
       if (oddFactors.length > 0) {
         oddFactors.forEach(p => {
           const factor = (p - 1) / (p - 2);

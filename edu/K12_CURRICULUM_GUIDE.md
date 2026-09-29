@@ -130,7 +130,7 @@ Have students divide primes by 6 and examine the remainder:
 - If $N$ is NOT a multiple of 6 (e.g. $N \equiv 2 \pmod 6$):
   - If $p \equiv -1$, then $N - p \equiv 2 - (-1) = 3 \pmod 6$. A number ending in remainder 3 is divisible by 3, so it is composite (unless it is 3 itself)!
   - **Result:** Half of all candidate primes are automatically blocked by divisibility!
-  - That is why numbers like 18, 24, 30 have roughly **twice as many pairs** as 16, 20, 22!
+  - That is why across broader ranges (e.g., $N \in [100, 2000]$), multiples of 6 have on average roughly **twice as many pairs** as neighboring non-multiples of 6 (such as 60 with 6 pairs vs 58 with 4 pairs, or 120 with 12 pairs vs 118 with 6 pairs)!
 
 ---
 
@@ -177,7 +177,7 @@ Have students open **Module 5** and solve the first three Case Files:
    - $p = 37 \implies \text{Remainder: ______}$
 2. Compare the number of Goldbach pairs for:
    - $N = 24$ (multiple of 6): pairs = ______
-   - $N = 26$ (not a multiple of 6): pairs = ______
+   - $N = 28$ (not a multiple of 6): pairs = ______
 3. Use the Twin Prime Bridge theorem to write an exact Goldbach decomposition for:
    - Midpoint 20 (between twin primes 19 and 21... wait! Is 21 prime? No!).
    - Midpoint 42 (between twin primes 41 and 43):
@@ -186,7 +186,7 @@ Have students open **Module 5** and solve the first three Case Files:
 
 #### Teacher Answer Key (Worksheet 2):
 1. $23 \implies 5$; $29 \implies 5$; $31 \implies 1$; $37 \implies 1$.
-2. $N = 24$ has 3 pairs ($5+19, 7+17, 11+13$). $N = 26$ has only 2 pairs ($3+23, 7+19$).
+2. $N = 24$ has 3 pairs ($5+19, 7+17, 11+13$). $N = 28$ has 2 pairs ($5+23, 11+17$). (Note: $N = 26$ has 3 pairs: $3+23, 7+19, 13+13$, where $13+13$ is a prime pair).
 3. $84 = 41 + 43$.
 4. If $N > 4$ is even, $N - 2$ is an even number greater than 2, which is divisible by 2 and therefore composite.
 
@@ -239,7 +239,7 @@ Because primes are **deterministic**, not truly random! Sieve methods encounter 
 ### High School Detective Cases: The Jump to 19
 Have students solve **Detective Academy Cases 4, 5, and 6**:
 - **Case 4: The Desert Mirage** ($N = 64$).
-- **Case 5: The Smallest Prime Leap** ($N \in \{30, 42, 60, 90\}$, where $p_{\min} \ge 7$).
+- **Case 5: The Smallest Prime Leap** ($N \in \{30, 60, 90, 120, \dots\}$ or $N \in \{38, 54, 68\}$, where $p_{\min} \ge 7$).
 - **Case 6: The Grand Champion of 98** ($N = 98 = 19 + 79$, unlocking the Chief Inspector badge).
 
 ---

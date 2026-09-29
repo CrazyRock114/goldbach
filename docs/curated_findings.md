@@ -322,7 +322,7 @@
 | 840 | 51 | 2.753 |
 | 1260 | 68 | 2.750 |
 | 1680 | 83 | 2.725 |
-| 2310 | 114 | 3.764 |
+| 2310 | 114 | 2.960 |
 
 *Note:* Student-accessible metric comparing decomposition abundance across number families.
 

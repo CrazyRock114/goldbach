@@ -376,7 +376,7 @@ def generate_curated_findings() -> List[Dict[str, Any]]:
             {"N": 840, "k": 51, "richness": 2.753},
             {"N": 1260, "k": 68, "richness": 2.750},
             {"N": 1680, "k": 83, "richness": 2.725},
-            {"N": 2310, "k": 114, "richness": 3.764}
+            {"N": 2310, "k": 114, "richness": 2.960}
         ],
         "notes": "Student-accessible metric comparing decomposition abundance across number families."
     })
