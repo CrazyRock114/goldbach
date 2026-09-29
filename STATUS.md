@@ -42,15 +42,22 @@ In this phase, we bridged high-performance computational number theory with **K-
 │   ├── index.html            # Interactive K-12 Discovery Lab (6 Modules, Audio, Badges)
 │   ├── edu_app.js            # Synthesizer, Confetti, Sieve Matrix, Comet & Game Logic
 │   ├── edu_data.js           # Educational datasets (comet points, primes & factorizations)
-│   └── K12_CURRICULUM_GUIDE.md # 3-tier teacher's curriculum guide & printable worksheets
+│   ├── edu_i18n.js           # 8-language localization database for K-12 portal
+│   ├── K12_CURRICULUM_GUIDE.md # 3-tier teacher's curriculum guide & printable worksheets
+│   └── labs/                 # 100 standalone zero-dependency interactive discovery labs
+│       ├── index.html        # 100 Labs Hub & search/filter catalog
+│       ├── common.css / js   # Shared styles and arithmetic helpers
+│       ├── i18n.js           # Multi-language routing & DOM translation engine
+│       ├── pedagogy_i18n.js  # Bilingual (zh-CN/zh-TW) pedagogy database
+│       └── lab001_*.html ... lab100_*.html
 ├── docs/
 │   ├── visualizer.html       # Scientific visualizer dashboard (comet & champions)
 │   ├── web_data.js           # Visualizer datasets (champions + comet spectrum)
 │   ├── curated_findings.md   # Audited findings database (29 findings, human-readable)
-│   ├── STATUS.md             # Current project status (this file)
-│   ├── FINAL_REPORT.md       # Publication-grade comprehensive final report
 │   ├── highlights.md         # Legacy highlights (archived reference)
 │   └── findings_report.md    # Legacy raw findings report (archived reference)
+├── STATUS.md                 # Current project status (this file)
+├── FINAL_REPORT.md           # Publication-grade comprehensive final report
 ├── formal/
 │   └── GoldbachLemmas.lean   # Machine-checked Lean 4 proofs for structural lemmas
 ├── csrc/

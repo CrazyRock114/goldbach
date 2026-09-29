@@ -159,7 +159,7 @@ Analysis over 261,145 even numbers ($N \le 524,288$):
    - Interactive champion trajectory chart against Cramér curves.
    - Live Singular Series and decomposition calculator.
 3. **Curated Database (`data/curated_findings.jsonl` & `docs/curated_findings.md`):**
-   - 26 strictly audited findings (11 Proved Theorems, 5 Conjectures, 5 Refuted Hypotheses with concrete counterexamples, 5 Empirical Benchmarks).
+   - 29 strictly audited findings (13 Proved Theorems, 5 Conjectures, 5 Refuted Hypotheses with concrete counterexamples, 6 Empirical Benchmarks).
    - 100% linter pass rate with 0 warnings.
 4. **Test Suite:**
    - 14 automated unit tests (`tests/test_core.py` and `tests/test_engines.py`) passing in 0.28s.
